@@ -200,7 +200,7 @@ export default function WasteManagementHero() {
         
         </div>
     {/* <div className='border-2 '> 
-  
+
     
 
     </div> */}
