@@ -36,19 +36,19 @@ const Navbar = () => {
         <Marquee />
 
         {/* Top Row: Menu, Logo, Search, and Actions */}
-        <div className="flex items-center justify-between px-4 py-2 gap-4">
+        <div className="flex items-center justify-between px-4 py-2 gap-x-4 flex-wrap md:flex-nowrap">
           {/* Menu & Logo */}
           <div className="flex items-center gap-2 md:gap-4 shrink-0">
             <button className="p-2 hover:bg-gray-100 rounded-lg transition" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
             <Link href="/" className="flex items-center gap-2">
-              <img src="/emart.png" alt="letronix logo" className="w-8 h-8 md:w-20 md:h-14" />
+              <img src="/emart.png" alt="letronix logo" className="w-12 h-12 md:w-20 md:h-14 object-contain" />
             </Link>
           </div>
 
           {/* Amazon-style Search Bar */}
-          <div className="flex-1 max-w-2xl px-2">
+          <div className="w-full order-last mt-2 md:order-none md:flex-1 md:w-auto md:mt-0 max-w-2xl px-0 md:px-2">
             <div className="flex w-full group">
               <div className="relative flex-1">
                 <input
