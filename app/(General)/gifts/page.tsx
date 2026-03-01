@@ -1,11 +1,11 @@
-'use client'  
+'use client'
 
-import RecyclingGiftComponent from "@/components/gift";
+import FalaaDealsComponent from "@/components/gift";
 
 export default function GiftsPage() {
   return (
-    <div className="flex min-h-screen font-sans    bg-blue-100">
-     <RecyclingGiftComponent />
+    <div className="flex min-h-screen font-sans">
+      <FalaaDealsComponent />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 
-
 export default function NewsPage() {
   return (
     <div className="flex min-h-screen font-sans  w-full bg-linear-to-t 

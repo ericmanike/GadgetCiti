@@ -17,14 +17,14 @@ export default function DropdownMenuRadioGroupDemo() {
   return (
     <DropdownMenu >
       <DropdownMenuTrigger asChild>
-        <ChevronDown size={28} className="cursor-pointer hover:text-[#2fff00b9]" />
+        <ChevronDown size={20} className="cursor-pointer hover:text-[#2fff00b9]" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40 flex  justify-around h-fit py-3 bg-gray-50 text-black cursor-pointer">
-       
+
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-         <Link href="/news"> <DropdownMenuRadioItem value="top" className="cursor-pointer w-full hover:bg-green-500"> News</DropdownMenuRadioItem></Link>
-        <Link href="/support">  <DropdownMenuRadioItem value="right" className="cursor-pointer w-full hover:bg-green-500">Support our work</DropdownMenuRadioItem></Link>
+          <Link href="/news"> <DropdownMenuRadioItem value="top" className="cursor-pointer w-full hover:bg-green-500"> News</DropdownMenuRadioItem></Link>
+          <Link href="/support">  <DropdownMenuRadioItem value="right" className="cursor-pointer w-full hover:bg-green-500">Support our work</DropdownMenuRadioItem></Link>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,7 +1,11 @@
-'use client'
 
 import React from 'react'
 import AuthForm from '@/components/Login'
+
+export const metadata = {
+  title: "Login/SignUp - Letronix",
+  description: "Authenticate to your account",
+};
 
 function page() {
   return (

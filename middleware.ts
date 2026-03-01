@@ -13,10 +13,7 @@ export function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith(route)
   );
   
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/Login", req.url));
-  }
-
+ 
   return NextResponse.next();
 }
 

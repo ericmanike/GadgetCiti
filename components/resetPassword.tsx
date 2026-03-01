@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { useToast } from './toastProvider'
-import { ArrowLeft, Eye, EyeOff} from 'lucide-react'
- import { useSearchParams,useRouter} from 'next/navigation'
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 
 
@@ -18,8 +18,8 @@ const newPasswordValidationSchema = Yup.object().shape({
 export default function ResetPasswordForm() {
 
 
- const  Router = useRouter()
-   const [isSending, setIsSending] = useState(false);
+  const Router = useRouter()
+  const [isSending, setIsSending] = useState(false);
   const { showToast } = useToast()
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -28,14 +28,14 @@ export default function ResetPasswordForm() {
   const email = searchParams.get('email') || ''
   const token = searchParams.get('token') || ''
 
-  
 
 
-  
+
+
 
   const resetPassword = async (newPassword: string) => {
-     setIsSending(true);
-     if (!token || !email) {
+    setIsSending(true);
+    if (!token || !email) {
       showToast('Invalid or missing token/email', 'error')
       setIsSending(false);
       return;
@@ -44,39 +44,39 @@ export default function ResetPasswordForm() {
       const res = await fetch('https://api.recyco.me/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({token:token,email:email,new_password:newPassword } ),
+        body: JSON.stringify({ token: token, email: email, new_password: newPassword }),
       })
       if (!res.ok) {
-        console.log(' this is the token'+ token)
-        console.log(' this is the email'+ email)
-        console.log(' this is the new password'+ newPassword)
+        console.log(' this is the token' + token)
+        console.log(' this is the email' + email)
+        console.log(' this is the new password' + newPassword)
         console.log('response', res)
-        
-         throw new Error('Password reset failed')
+
+        throw new Error('Password reset failed')
       }
-      
+
       const data = await res.json()
       console.log('Password reset successful:', data)
       showToast('Password reset successful!', 'success')
       Router.replace('/Login')
     } catch (err: any) {
-        showToast(err.message, 'error')
+      showToast(err.message, 'error')
       console.error(err)
-    }finally {
+    } finally {
       setIsSending(false);
     }
   }
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100 p-10  md:w-1/2">
-   
-      
-       <button onClick={() => Router.replace('/Login')} className="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
-          <ArrowLeft/>
-         <span>Back</span>
-       </button>
-      { (
-        <Formik 
+    <div className="h-screen flex justify-center items-center bg-gray-300 p-10  md:w-1/2">
+
+
+      <button onClick={() => Router.replace('/Login')} className="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
+        <ArrowLeft />
+        <span>Back</span>
+      </button>
+      {(
+        <Formik
           initialValues={{ newPassword: '', confirmPassword: '' }}
           validationSchema={newPasswordValidationSchema}
           onSubmit={(values) => resetPassword(values.newPassword)}
@@ -86,10 +86,10 @@ export default function ResetPasswordForm() {
               <h2 className="text-xl font-bold text-center">Enter New Password</h2>
               <label>New Password</label>
               <div className="relative">
-                <Field 
-                  type={showNewPassword ? "text" : "password"} 
-                  name="newPassword" 
-                  className="border p-2 rounded w-full pr-10" 
+                <Field
+                  type={showNewPassword ? "text" : "password"}
+                  name="newPassword"
+                  className="border p-2 rounded w-full pr-10"
                 />
                 <button
                   type="button"
@@ -103,10 +103,10 @@ export default function ResetPasswordForm() {
 
               <label>Confirm Password</label>
               <div className="relative">
-                <Field 
-                  type={showConfirmPassword ? "text" : "password"} 
-                  name="confirmPassword" 
-                  className="border p-2 rounded w-full pr-10" 
+                <Field
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  className="border p-2 rounded w-full pr-10"
                 />
                 <button
                   type="button"
@@ -121,9 +121,9 @@ export default function ResetPasswordForm() {
               <button
                 type="submit"
                 disabled={!dirty || !isValid || isSubmitting}
-              className={` ${ !dirty || !isValid ? 'bg-gray-600 cursor-not-allowed ' : 'bg-green-400 cursor-pointer'} text-white p-2 rounded transition-colors`}
+                className={` ${!dirty || !isValid ? 'bg-gray-600 cursor-not-allowed ' : 'bg-green-400 cursor-pointer'} text-white p-2 rounded transition-colors`}
               >
-                {isSending ? 'Reseting...' : 'Reset Password'} 
+                {isSending ? 'Reseting...' : 'Reset Password'}
               </button>
             </Form>
           )}

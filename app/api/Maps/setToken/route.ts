@@ -6,7 +6,6 @@ export async function GET( token: NextRequest) {
   try {
     
 
-   
 }
  
 catch (error) {

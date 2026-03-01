@@ -5,6 +5,9 @@ import { Camera, Calendar, Mail, MapPin, Award, Save, X, Edit2, User } from 'luc
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuth } from './Auth_Context';
+import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string()
@@ -43,7 +46,7 @@ export default function RecycoProfile() {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const {user, setUser} = useAuth();
+  const { user, setUser } = useAuth();
   const formik = useFormik({
     initialValues: {
       name: profile.name,
@@ -101,7 +104,7 @@ export default function RecycoProfile() {
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -121,15 +124,18 @@ export default function RecycoProfile() {
   const currentData = editMode ? formik.values : profile;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <button
-        onClick={() => router.back()}
-        className="mb-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center cursor-pointer"
-
+    <div className="min-h-screen bg-gray-300 p-4 md:p-8">
+      <motion.button
+        whileHover={{ x: -5 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => router.replace('/')}
+        className="absolute top-4 md:top-8 left-4 md:left-8 flex
+         items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer
+           py-2 rounded-full shadow-lg py-2 px-4"
       >
-        Back
-      </button>
-
+        <ArrowLeft size={18} />
+        <span>Back</span>
+      </motion.button>
       <div className="max-w-5xl mx-auto">
         <form onSubmit={formik.handleSubmit}>
           {/* Main Profile Card */}
@@ -137,13 +143,13 @@ export default function RecycoProfile() {
             {/* Cover Image */}
             <div className="h-48 bg-linear-to-r from-emerald-500 to-teal-600 relative group">
               {currentData.coverImage ? (
-                <img 
-                  src={currentData.coverImage} 
-                  alt="Cover" 
+                <img
+                  src={currentData.coverImage}
+                  alt="Cover"
                   className="w-full h-full object-cover"
                 />
               ) : null}
-              <button 
+              <button
                 type="button"
                 onClick={() => coverInputRef.current?.click()}
                 className="absolute top-4 right-4 bg-white text-gray-700 px-3 py-2 rounded-md shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm font-medium border border-gray-300"
@@ -151,10 +157,10 @@ export default function RecycoProfile() {
                 <Camera size={16} />
                 Edit cover photo
               </button>
-              <input 
+              <input
                 ref={coverInputRef}
-                type="file" 
-                accept="image/*" 
+                type="file"
+                accept="image/*"
                 onChange={handleCoverUpload}
                 className="hidden"
               />
@@ -166,23 +172,23 @@ export default function RecycoProfile() {
               <div className="flex items-end justify-between -mt-16 mb-4">
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full border-4 border-white shadow-sm bg-white overflow-hidden">
-                    <img 
+                    <img
                       src={currentData.avatar}
                       alt={currentData.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     className="absolute bottom-0 right-0 bg-white text-gray-700 p-2 rounded-full shadow-sm hover:bg-gray-50 transition-colors border border-gray-300"
                   >
                     <Camera size={16} />
                   </button>
-                  <input 
+                  <input
                     ref={fileInputRef}
-                    type="file" 
-                    accept="image/*" 
+                    type="file"
+                    accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
                   />
@@ -190,14 +196,14 @@ export default function RecycoProfile() {
 
                 {editMode ? (
                   <div className="flex gap-2 mb-2">
-                    <button 
+                    <button
                       type="button"
                       onClick={handleCancel}
                       className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
                     >
                       Cancel
                     </button>
-                    <button 
+                    <button
                       type="submit"
                       className="px-4 py-2 rounded-md text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                     >
@@ -205,7 +211,7 @@ export default function RecycoProfile() {
                     </button>
                   </div>
                 ) : (
-                  <button 
+                  <button
                     type="button"
                     onClick={handleEdit}
                     className="mb-2 px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors flex items-center gap-2"
@@ -228,9 +234,8 @@ export default function RecycoProfile() {
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`text-2xl font-semibold text-gray-900 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full ${
-                          formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`text-2xl font-semibold text-gray-900 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full ${formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
+                          }`}
                       />
                       {formik.touched.name && formik.errors.name && (
                         <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
@@ -243,9 +248,8 @@ export default function RecycoProfile() {
                         value={formik.values.role}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full max-w-xs text-gray-900 ${
-                          formik.touched.role && formik.errors.role ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full max-w-xs text-gray-900 ${formik.touched.role && formik.errors.role ? 'border-red-500' : 'border-gray-300'
+                          }`}
                       >
                         <option value="Buyer/Seller">Buyer/Seller</option>
                         <option value="Pickup Driver">Pickup Driver</option>
@@ -275,9 +279,8 @@ export default function RecycoProfile() {
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${
-                          formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-gray-300'
+                          }`}
                       />
                       {formik.touched.email && formik.errors.email && (
                         <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
@@ -297,9 +300,8 @@ export default function RecycoProfile() {
                         value={formik.values.location}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${
-                          formik.touched.location && formik.errors.location ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.location && formik.errors.location ? 'border-red-500' : 'border-gray-300'
+                          }`}
                       />
                       {formik.touched.location && formik.errors.location && (
                         <p className="text-red-500 text-xs mt-1">{formik.errors.location}</p>
@@ -323,9 +325,8 @@ export default function RecycoProfile() {
                       value={formik.values.startDate}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className={`font-medium text-gray-900 border-b focus:border-emerald-500 outline-none bg-transparent ${
-                        formik.touched.startDate && formik.errors.startDate ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                      className={`font-medium text-gray-900 border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.startDate && formik.errors.startDate ? 'border-red-500' : 'border-gray-300'
+                        }`}
                     />
                     {formik.touched.startDate && formik.errors.startDate && (
                       <p className="text-red-500 text-xs mt-1">{formik.errors.startDate}</p>
@@ -348,9 +349,8 @@ export default function RecycoProfile() {
                   value={formik.values.about}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className={`w-full text-gray-700 leading-relaxed border focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent rounded-md p-3 min-h-[120px] ${
-                    formik.touched.about && formik.errors.about ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full text-gray-700 leading-relaxed border focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent rounded-md p-3 min-h-[120px] ${formik.touched.about && formik.errors.about ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   placeholder="Tell us about yourself..."
                 />
                 {formik.touched.about && formik.errors.about && (

@@ -1,10 +1,10 @@
 'use client';
-import React, { useEffect,useRef } from 'react';
-import {  X } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus,MapPin,HelpCircle,ShoppingBagIcon,Trash, Motorbike} from 'lucide-react';
-import {motion} from 'framer-motion';
+import { MailPlus, Plus, MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, CircleUser, Motorbike } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface NotificationsPanelProps {
   isOpen: boolean;
@@ -12,16 +12,14 @@ interface NotificationsPanelProps {
 }
 
 
-
-
 const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOpen }) => {
 
- const sidebarRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
       setIsOpen(false);
-     
+
     }
   };
 
@@ -31,69 +29,72 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
- 
+
 
   const menus = [
-    { id: 1, name: 'Create Listing', href: '/sell', icon: Plus },
-    { id: 2, name: 'Recycle with us', href: '/contact', icon: Motorbike },
-    { id: 3, name: 'AI and Analytics', href: '/aisection', icon: ShoppingBagIcon },
-    { id: 4, name: 'Confused about anything?', href: '/help', icon: HelpCircle },
-    { id: 5, name: 'Dump Trash', href: '/dump', icon: MapPin },
+    { id: 4, name: 'Dashboard', href: '/customer/orders', icon: LayoutDashboard },
+    { id: 1, name: 'Start Selling', href: '/sell', icon: Plus },
+    { id: 2, name: 'Buy any gadget', href: '/buy', icon: ShoppingBagIcon },
+    { id: 3, name: 'Ask for any gadget ', href: '/chatroom', icon: MailPlus },
+    { id: 5, name: 'Help Center', href: '/help', icon: HelpCircle },
+    { id: 6, name: 'Pickup Trash', href: '/dump', icon: MapPin },
   ]
 
 
   const router = useRouter();
 
 
- 
- 
+
+
 
   return (
+
     <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} w-[80%] md:w-1/3 h-screen   overflow-y-auto bg-[#f9f8f8] fixed 
     scrollbar-hide  z-50 top-0 transition-all duration-300  ease-in-out shadow-lg`} ref={sidebarRef}>
 
 
-    <motion.button 
-    whileHover={{scale:1.1}}
-    whileTap={{scale:0.95}}
-    
-    className="p-2 transition cursor-pointer rounded-3xl bg-gray-600  hover:bg-gray-700  absolute top-1 right-2"  onClick={()=>setIsOpen(false)}>
-      <X size={24} className="text-red-500 " strokeWidth={2} /> 
-    </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
 
-  
-   <div className='w-full bg-gray-800 p-4 py-3 gap-4 flex justify-start'>  
-
-  
- <img src='/Wastocash.png' alt='Sidebar-banner' className='w-7 h-7'/>
- <span className='text-white'>Recyco |   Shortcuts </span>
+        className="p-2 transition cursor-pointer rounded-3xl bg-gray-600  hover:bg-gray-700  absolute top-1 right-2" onClick={() => setIsOpen(false)}>
+        <X size={24} className="text-orange-500 " strokeWidth={2} />
+      </motion.button>
 
 
-   </div>
-  {menus.map((menu)=>(
-    <div key={menu.id} className='w-full  p-4 py-3 gap-4  justify-start
-     hover:bg-gray-200 cursor-pointer mt-2 '> 
-    <Link href={menu.href}>
+      <div className='w-full bg-gray-800 p-4 py-3 gap-4 flex justify-start'>
 
-     <button className='flex  gap-4 items-center ' onClick={()=>setIsOpen(false)}> 
 
-       {<menu.icon className='text-green-500'/> }
-       <span> {menu.name }</span>
-          
-     </button>
-     </Link>
-    </div>
-  ))} 
+        <CircleUser className='w-7 h-7' color='white' />
+        <span className='text-white'>Hello </span>
 
-   <button className=' w-[90%] m-auto p-4 py-3 bg-green-500 
+
+      </div>
+      {menus.map((menu) => (
+        <div key={menu.id} className='w-full  p-4 py-3 gap-4  justify-start
+     hover:bg-gray-200 cursor-pointer mt-2 '>
+          <Link href={menu.href}>
+
+            <button className='flex  gap-4 items-center ' onClick={() => setIsOpen(false)}>
+
+              {<menu.icon className='text-orange-500' />}
+              <span> {menu.name}</span>
+
+            </button>
+          </Link>
+        </div>
+      ))}
+
+      <button className=' w-[90%] m-auto p-4 py-3 bg-orange-500 
     text-white rounded-xl absolute  bottom-3 
-    right-2 left-2 cursor-pointer' onClick={() =>{ router.push('/contact')
+    right-2 left-2 cursor-pointer' onClick={() => {
+          router.push('/contact')
 
-      setIsOpen(false)
-    }
+          setIsOpen(false)
+        }
 
-      
-    }>Contact Us</button>
+
+        }>Account</button>
     </div>
   );
 };

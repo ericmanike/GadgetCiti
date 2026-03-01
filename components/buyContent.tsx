@@ -1,32 +1,28 @@
 'use client';
-import Card from "@/components/Card";
+import { motion } from "framer-motion";
 import { Filter } from "lucide-react";
-import  {  useEffect, useState } from "react";
-import { useRouter,useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ProductCard } from "./ProductCard";
+import FramerMultiSlideCarousel from "./multicouresel";
+import { formatCurrency } from "@/lib/utils";
 
-
+import { ALL_PRODUCTS } from "@/lib/products";
 
 export default function BuyPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState({
-    search: '',
     category: '',
     priceRange: '',
     location: '',
-    isSorted: false,
+    condition: '',
   });
-   const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
- const searchfilter = searchParams.get("filter") || "All";
- const category = searchParams.get("category") || "All";
- const priceRange = searchParams.get("priceRange") || "All";
- 
-  const searchFilter = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("searchfilter", value);
-    router.push(`?${params.toString()}`);
-  };
+  const category = searchParams.get("category") || "All";
+  const priceRange = searchParams.get("priceRange") || "All";
+
 
   const categoryFilter = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -41,200 +37,253 @@ export default function BuyPage() {
   };
 
 
-    const locationFilter = (value: string) => {
+  const locationFilter = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("location", value);
     router.push(`?${params.toString()}`);
   };
 
-    const  handleConditionChange = (isSorted: boolean) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("isSorted", isSorted ? "true" : "false");
-      router.push(`?${params.toString()}`);
-    }
+  const handleConditionChange = (condition: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("condition", condition);
+    router.push(`?${params.toString()}`);
+  }
 
 
-  
- useEffect(() => {
-    console.log("Filters updated:", { searchfilter, category, priceRange });
-  }, [searchfilter, category, priceRange]);
+
+  useEffect(() => {
+    console.log("Filters updated:", { category, priceRange });
+  }, [category, priceRange]);
 
 
 
   return (
-    <div className="flex min-h-screen font-sans  w-full md:mt-30 mt-15   bg-blue-100 ">
-      
-    <div className="grid  grid-cols-1 md:grid-cols-[0.4fr_1fr] py-10 relative ">
-    <div className=" ">
+    <div className="flex min-h-screen font-sans w-full md:mt-30 mt-15 bg-gray-50">
 
-      
-           <button
+      <div className="grid  grid-cols-1 md:grid-cols-[0.4fr_1fr] py-10 relative ">
+        <div className=" ">
+
+
+          <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="md:hidden bg-green-500 text-white p-3 rounded-lg w-[80%]   m-auto flex items-center justify-center gap-2 mb-8 md:mb-0"
+            className="md:hidden bg-white text-gray-900 border border-gray-200 py-3 px-6 rounded-2xl w-fit min-w-[140px] mx-auto flex items-center justify-center gap-2 mb-8 shadow-sm active:scale-95 transition-all"
           >
-            <Filter size={20} />
-            Filters
+            <Filter size={18} className="text-blue-500" />
+            <span className="font-bold text-sm">Filters</span>
           </button>
 
-      <div className={`  md:block  ${isFilterOpen ? 'block' : 'hidden'}  bg-green-500 space-y-10 text-white p-5  m-3 rounded-lg shadow-lg z-100 transition-all duration-100`}>
-        <h2 className="text-xl font-bold mb-4 flex justify-between w-full ">
-          <span>Filters</span><button className="text-red-600 cursor-pointer" 
-          onClick={() => {
-          setFilteredProducts({ search: '', category: '', priceRange: '' , location: '', isSorted: false });
-         router.push('?');
-          }}>
-            Clear all
-          </button></h2>
-        <div className="">
-        <div className="mb-4 ">
-          <input
-            name="search"
-            type="text"
-            value={filteredProducts.search}
-            placeholder="Search products..."
-            className="w-full border border-gray-300 rounded-lg p-2"
-            onChange={(e)=>{
-              setFilteredProducts(prev => ({...prev, search: e.target.value}));
-              searchFilter(e.target.value)
-              
+          <div className={`md:block ${isFilterOpen ? 'block' : 'hidden'} bg-white border border-gray-100 space-y-8 text-gray-900 p-6 m-3 rounded-[2rem] shadow-sm z-40 transition-all duration-300`}>
+            <h2 className="text-xl font-bold mb-4 flex justify-between w-full ">
+              <span>Filters</span><button className="text-red-500 text-xs font-bold hover:underline cursor-pointer"
+                onClick={() => {
+                  setFilteredProducts({ category: '', priceRange: '', location: '', condition: '' });
+                  router.push('?');
+                }}>
+                Clear all
+              </button></h2>
+            <div className="mb-6">
+              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Category</label>
+              <div className="space-y-2.5">
+                {[
+                  { id: 'all', label: 'All Categories', value: '' },
+                  { id: 'phones', label: 'Smartphones', value: 'phones' },
+                  { id: 'laptops', label: 'Laptops', value: 'laptops' },
+                  { id: 'tablets', label: 'Tablets', value: 'tablets' },
+                  { id: 'accessories', label: 'Accessories', value: 'accessories' },
+                  { id: 'electronics', label: 'Other Electronics', value: 'electronics' },
+                ].map((cat) => (
+                  <label key={cat.id} className="flex items-center group cursor-pointer">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="radio"
+                        name="category"
+                        value={cat.value}
+                        checked={filteredProducts.category === cat.value}
+                        onChange={(e) => {
+                          setFilteredProducts(prev => ({ ...prev, category: e.target.value }));
+                          categoryFilter(e.target.value);
+                        }}
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                      />
+                      {filteredProducts.category === cat.value && (
+                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
+                      {cat.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            {/* Price Range Slider */}
+            <div className="mb-8">
+              <label className="block mb-4 font-bold text-base text-gray-900 border-b border-gray-100 pb-1 flex justify-between items-center">
+                Price Range
+                <span className="text-orange-500 text-xs font-black">Up to {formatCurrency(Number(filteredProducts.priceRange) || 5000)}</span>
+              </label>
+              <div className="px-1">
+                <input
+                  type="range"
+                  min="0"
+                  max="5000"
+                  step="50"
+                  value={filteredProducts.priceRange || '5000'}
+                  onChange={(e) => {
+                    setFilteredProducts(prev => ({ ...prev, priceRange: e.target.value }));
+                    priceRangeFilter(e.target.value);
+                  }}
+                  className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                />
+                <div className="flex justify-between mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <span>0 GHS</span>
+                  <span>2.5K</span>
+                  <span>5K GHS</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="mb-6">
+              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Location</label>
+              <div className="space-y-2.5">
+                {[
+                  { id: 'l-all', label: 'All Locations', value: '' },
+                  { id: 'l-accra', label: 'Accra', value: 'accra' },
+                  { id: 'l-kumasi', label: 'Kumasi', value: 'kumasi' },
+                  { id: 'l-takoradi', label: 'Takoradi', value: 'takoradi' },
+                  { id: 'l-tamale', label: 'Tamale', value: 'tamale' },
+                ].map((loc) => (
+                  <label key={loc.id} className="flex items-center group cursor-pointer">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="radio"
+                        name="location"
+                        value={loc.value}
+                        checked={filteredProducts.location === loc.value}
+                        onChange={(e) => {
+                          setFilteredProducts(prev => ({ ...prev, location: e.target.value }));
+                          locationFilter(e.target.value);
+                        }}
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                      />
+                      {filteredProducts.location === loc.value && (
+                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
+                      {loc.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Condition</label>
+              <div className="space-y-3">
+                {[
+                  { id: 'c-all', label: 'All Conditions', value: '' },
+                  { id: 'c-new', label: 'New', value: 'new' },
+                  { id: 'c-used', label: 'Used / Pre-owned', value: 'used' },
+                  { id: 'c-refurbished', label: 'Refurbished', value: 'refurbished' },
+                ].map((cond) => (
+                  <label key={cond.id} className="flex items-center group cursor-pointer">
+                    <div className="relative flex items-center justify-center">
+                      <input
+                        type="radio"
+                        name="condition"
+                        value={cond.value}
+                        checked={filteredProducts.condition === cond.value}
+                        onChange={(e) => {
+                          setFilteredProducts(prev => ({ ...prev, condition: e.target.value }));
+                          handleConditionChange(e.target.value);
+                        }}
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                      />
+                      {filteredProducts.condition === cond.value && (
+                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
+                      {cond.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+
+          </div>
+          {/*  Slider   */}
+
+
+
+
+        </div >
+        <div className="flex-1 p-2 md:p-4 overflow-hidden">
+          {/* Horizontal Category Carousel */}
+          <div className="mb-8 md:mb-10 w-full overflow-hidden">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm md:text-base font-bold text-gray-900">Browse Categories</h3>
+              <p className="text-[10px] md:text-xs text-blue-500 font-bold uppercase tracking-wider">Swipe to view more</p>
+            </div>
+
+            <FramerMultiSlideCarousel
+              items={[
+                { id: 'all', label: 'All', value: '' },
+                { id: 'phones', label: 'Phones', value: 'phones' },
+                { id: 'laptops', label: 'Laptops', value: 'laptops' },
+                { id: 'tablets', label: 'Tablets', value: 'tablets' },
+                { id: 'accessories', label: 'Accessories', value: 'accessories' },
+                { id: 'electronics', label: 'Electronics', value: 'electronics' },
+                { id: 'gaming', label: 'Gaming', value: 'gaming' },
+                { id: 'watches', label: 'Watches', value: 'watches' },
+              ]}
+              renderItem={(cat: { id: string, label: string, value: string }) => (
+                <button
+                  onClick={() => {
+                    setFilteredProducts(prev => ({ ...prev, category: cat.value }));
+                    categoryFilter(cat.value);
+                  }}
+                  className={`relative w-full flex flex-col items-center justify-center py-2 px-1 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap group
+                    ${filteredProducts.category === cat.value
+                      ? 'text-blue-600'
+                      : 'text-gray-500 hover:text-blue-500'
+                    }`}
+                >
+                  <span className="truncate pb-1">{cat.label}</span>
+                  <motion.div
+                    className={`h-0.5 w-full bg-blue-600 rounded-full transition-all duration-300
+                      ${filteredProducts.category === cat.value ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0 group-hover:opacity-40 group-hover:scale-x-50'}
+                    `}
+                  />
+                </button>
+              )}
+              breakpoints={{
+                0: { slidesToShow: 3 },
+                480: { slidesToShow: 4 },
+                768: { slidesToShow: 5 },
+                1024: { slidesToShow: 5 },
               }}
-          />
-          </div>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">Category</label>
-          <select 
-          value={filteredProducts.category}
-          className="w-full border bg-green-500 border-gray-300 rounded-lg p-2"
-           onChange={(e)=>{
-            setFilteredProducts(prev => ({...prev, category: e.target.value}));
-            categoryFilter(e.target.value) }}>
-            <option value=''>All Categories</option>
-            <option value='plastic'>Plastic</option>
-            <option value='metal'>Metal</option>
-            <option value='paper'>Paper</option>
-            <option value='electronics'>Electronics</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">Price Range</label>
-
-          <select 
-          value={filteredProducts.priceRange}
-          className="transition-all duration-500 w-full border bg-green-500 border-gray-300 rounded-lg p-2"
-           onChange={(e)=>{
-            setFilteredProducts(prev => ({...prev, priceRange: e.target.value}));
-            priceRangeFilter(e.target.value)
-
-
-           }}
-           >
-            <option value=''>All Prices</option>
-            <option value='under-50'>Under 50GHS</option>
-            <option value='50-100'>50 - 100GHS</option>
-            <option value='100-500'>100 - 500GHS</option>
-            <option value='over-500'>Over 500GHS</option>
-          </select>
-          </div>
-
-
-
-
-           <div className="mb-4">
-          <label className="block mb-2 font-medium">Location</label>
-
-          <select 
-          value={filteredProducts.location}
-  
-          className="transition-all duration-500 w-full border bg-green-500 border-gray-300 rounded-lg p-2"
-           onChange={(e)=>{
-            setFilteredProducts(prev => ({...prev, location: e.target.value}));
-            locationFilter(e.target.value)
-
-
-           }}
-           >
-            <option value=''>All Location</option>
-            <option value='accra'>Accra</option>
-            <option value='kumasi'>Kumasi</option>
-            <option value='takoradi'>Takoradi</option>
-            <option value='tamale'>Tamale</option>
-          </select>
-          </div>
-
-         <div className="space-y-2">
-          <label className="block mb-2 font-medium">Condition</label>
-          <label id='sorted' className=" flex flex-nowrap items-center  mr-4">
-           <input 
-           checked={filteredProducts.isSorted === true}
-           onChange={() => {
-              handleConditionChange(true);
-            setFilteredProducts(prev => ({...prev, isSorted: true}));
-          
-           }}
-           type="radio" name="condition"  className="form-checkbox h-5 w-5 text-green-600"
+              gap={12}
             />
-           <span className="ml-2 cursor-pointer">Sorted</span>
-          </label>
-          <label id='mixed' className="flex flex-nowrap items-center">
-           <input 
+          </div>
 
-           checked={filteredProducts.isSorted === false}
-           onChange={() => {
-              handleConditionChange(false);
-            setFilteredProducts(prev => ({...prev, isSorted: false}));
-          
-           }}
-           type="radio" name="condition"  className="form-checkbox h-5 w-5 text-green-600"
-           />
-           <span className="ml-2 cursor-pointer">Mixed</span>
-          </label>
-         
-         </div>
-
-
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
+            {ALL_PRODUCTS.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </div>
-        {/*  Slider   */ }
-
-
-      
-     
-    </div >
-    <div className=" flex flex-wrap justify-center gap-4 ">
-  <Card  discription='Plastic waste 1kg 200bags worth of 30 cedis 843985939728q7o9' image="/Wastocash.png" profile={{name:'Eric recycling',logo:'/Wastocash1.png'}} />
-  <Card  discription='Plastic waste 1kg 200bags worth of 30 cedis 843985939728q7o9' image="/Wastocash.png" profile={{name:'Eric recycling',logo:'/Wastocash1.png'}} />
-  <Card  discription='Plastic waste 1kg 200bags worth of 30 cedis 843985939728q7o9' image="/Wastocash.png" profile={{name:'Eric recycling',logo:'/Wastocash1.png'}} />
-  <Card  discription='Plastic waste 1kg 200bags worth of 30 cedis 843985939728q7o9' image="/Wastocash.png" profile={{name:'Eric recycling',logo:'/Wastocash1.png'}} />
 
 
 
 
- </div>
+      </div>
 
-   <div>
-    { /*space for pagination*/}
-   </div>
-  
 
-     <div className="my-5 flex justify-center items-center ">
-      <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors cursor-pointer">
-       previous
-      </button>
-      <span className="mx-4 text-gray-700 font-bold">Page 1 of 5</span>
-
-      <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors ml-5 cursor-pointer">
-       Next
-      </button>
-     
-     </div>
-    
- 
-    
 
     </div>
-
-     
-    
-    </div>
-  ); 
+  );
 }
