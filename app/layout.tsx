@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Letronix- Your Trusted Plug for Quality Gadgets",
     description: "buy quality and trusted gadget on letronix - your trusted platform for recycling and selling used items.",
-    image: "https://res.cloudinary.com/dzj8q4qtf/image/upload/v1700000000/recyco-twitter-card_ojl5n9.png",
+    images: "https://res.cloudinary.com/dzj8q4qtf/image/upload/v1700000000/recyco-twitter-card_ojl5n9.png",
   },
   openGraph: {
     title: "RECYCO - Your Trusted Recycling Platform",
