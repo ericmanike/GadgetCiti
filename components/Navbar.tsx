@@ -43,10 +43,7 @@ const Navbar = () => {
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
             <Link href="/" className="flex items-center gap-2">
-              <img src="/letronix.png" alt="letronix logo" className="w-8 h-8 md:w-10 md:h-10" />
-              <span className="hidden lg:block text-green-700 font-bold text-xl font-[bitcount]">
-                Letronix
-              </span>
+              <img src="/emart.png" alt="letronix logo" className="w-8 h-8 md:w-20 md:h-14" />
             </Link>
           </div>
 
