@@ -168,10 +168,10 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/cart">
+            <ActiveLink href="/buy?category=new-arrivals">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <Truck size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap"> Cart</span>
+                <span className="text-xs md:text-sm font-semibold whitespace-nowrap"> New Arrivals</span>
               </div>
             </ActiveLink>
 

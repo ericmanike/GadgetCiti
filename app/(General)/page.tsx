@@ -1,5 +1,4 @@
 'use client'
-
 import { ProductCard } from '@/components/ProductCard';
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
@@ -29,7 +28,7 @@ export default function Home() {
       <div className="relative z-10 px-4 md:px-10 space-y-24">
 
         {/* Shop by Category - Carousel */}
-        <section className="w-full bg-white p-6 md:p-12 rounded-3xl md:rounded-[3.5rem] shadow-lg shadow-slate-100/50 border border-slate-50">
+        <section className="w-full bg-white p-3 md:p-10 rounded-[10px] md:rounded-[15px] shadow-lg shadow-slate-100/50 border border-slate-50">
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 h-[400px] md:h-[600px]">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
