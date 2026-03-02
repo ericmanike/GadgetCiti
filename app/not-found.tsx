@@ -44,7 +44,7 @@ const NotFound: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-t from-green-300 to-blue-300 flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-t from-orange-300 to-blue-300 flex items-center justify-center relative overflow-hidden">
       {/* Floating circles background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(8)].map((_, i) => (
@@ -78,7 +78,7 @@ const NotFound: React.FC = () => {
       <div className="relative z-10 text-center px-6">
         {/* Animated 404 */}
         <div className="mb-8">
-          <h1 
+          <h1
             className="text-6xl md:text-8xl font-bold text-black mb-4 inline-block"
             style={{
               animation: 'bounce 2s ease-in-out infinite',
@@ -119,15 +119,15 @@ const NotFound: React.FC = () => {
           }}
         >
           <Link href="/">
-          <button
-            className="px-8 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-          >
-            Go Home
-          </button>
+            <button
+              className="px-8 py-3 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+            >
+              Go Home
+            </button>
           </Link>
           <button
             onClick={handleGoBack}
-            className="px-8 py-3 border-2 border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-600 hover:text-white transition-all duration-300 transform hover:scale-105"
+            className="px-8 py-3 border-2 border-orange-600 text-orange-600 rounded-lg font-medium hover:bg-orange-600 hover:text-white transition-all duration-300 transform hover:scale-105"
           >
             Go Back
           </button>
