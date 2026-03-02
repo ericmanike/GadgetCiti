@@ -4,13 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Zap, ShieldCheck, Truck } from 'lucide-react';
 
 export const FirstVisitPopup: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Use versioned key so the new popup always shows once
+    // Use versioned key so the new popup shows only on first visit
     const hasVisited = localStorage.getItem('electronicsmart_visited_v2');
     if (!hasVisited) {
-      setTimeout(() => setIsVisible(true), 500);
+      const timer = setTimeout(() => setIsVisible(true), 500);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -30,7 +31,7 @@ export const FirstVisitPopup: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
-            onClick={handleClose}
+          // onClick={handleClose}
           />
 
           {/* Popup */}
@@ -52,7 +53,7 @@ export const FirstVisitPopup: React.FC = () => {
                 >
                   <X size={16} />
                 </button>
-                <div className="text-4xl mb-3">🛒</div>
+                <div className="text-4xl mb-3">🛒  💻 🎧</div>
                 <h2 className="text-2xl font-black text-white leading-tight">
                   Welcome to<br />Electronics Mart!
                 </h2>
@@ -103,9 +104,9 @@ export const FirstVisitPopup: React.FC = () => {
               <div className="px-6 pb-6">
                 <button
                   onClick={handleClose}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-blue-200 active:scale-95"
                 >
-                  Start Shopping 🚀
+                  Start Shopping
                 </button>
               </div>
             </div>
