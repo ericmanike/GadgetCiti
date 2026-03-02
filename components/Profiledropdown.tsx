@@ -42,9 +42,9 @@ export default function DropdownProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className=" w-6 h-6 md:w-8 md:h-8 bg-orange-500 rounded-full 
+        <button className=" w-6 h-6 md:w-8 md:h-8 bg-blue-500 rounded-full 
        flex items-center justify-center
-           text-white font-bold text-[9px] md:text-[12px] hover:bg-orange-600 transition cursor-pointer">
+           text-white font-bold text-[9px] md:text-[12px] hover:bg-blue-600 transition cursor-pointer">
           {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
         </button>
       </DropdownMenuTrigger>

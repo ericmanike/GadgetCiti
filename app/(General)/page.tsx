@@ -28,9 +28,9 @@ export default function Home() {
       <div className="relative z-10 px-4 md:px-10 space-y-24">
 
         {/* Shop by Category - Carousel */}
-        <section className="w-full bg-white p-3 md:p-10 rounded-[10px] md:rounded-[15px] shadow-lg shadow-slate-100/50 border border-slate-50">
+        <section className="w-full bg-white py-6 md:p-10 rounded-[15px] md:rounded-[15px] shadow-lg shadow-slate-100/50 border border-slate-50">
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 h-[400px] md:h-[600px]">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 h-[400px] md:h-[600px]">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
             <div className="col-span-2 lg:col-span-3 row-span-1 lg:row-span-2 relative group overflow-hidden rounded-3xl">
               <FeaturedCarousel items={COMPUTER_SLIDES} linkHref="/buy?category=laptops" />
