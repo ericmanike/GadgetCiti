@@ -1,9 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, Truck, CreditCard, MapPin, User, Phone, Mail, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Truck, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
+
+
 
 const ORDER_ITEMS = [
     { id: '1', name: 'iPhone 15 Pro Max', price: 1199.99, quantity: 1, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80' },
@@ -15,6 +17,7 @@ const STEPS = ['Delivery', 'Payment', 'Review'];
 export default function CheckoutPage() {
     const [step, setStep] = useState(0);
     const [placed, setPlaced] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<'card' | 'mt'>('card');
 
     const [form, setForm] = useState({
         fullName: '', email: '', phone: '',
@@ -27,6 +30,39 @@ export default function CheckoutPage() {
     const total = subtotal + shipping;
 
     const update = (field: string, val: string) => setForm(f => ({ ...f, [field]: val }));
+
+    // Paystack MoMo handler — loaded dynamically to avoid SSR 'window is not defined'
+    const payWithMoMo = async () => {
+        const { default: PaystackPop } = await import('@paystack/inline-js');
+        const popup = new PaystackPop();
+        popup.newTransaction({
+            key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
+            email: form.email || 'customer@letronix.com',
+            amount: Math.round(total * 100), // Paystack uses pesewas (kobo)
+            currency: 'GHS',
+            channels: ['mobile_money'],
+            metadata: {
+                custom_fields: [
+                    { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
+                    { display_name: 'Phone', variable_name: 'phone', value: form.phone },
+                ],
+            },
+            onSuccess: () => {
+                setPlaced(true);
+            },
+            onCancel: () => {
+                // User closed the popup — stay on review page
+            },
+        });
+    };
+
+    const handlePlaceOrder = () => {
+        if (paymentMethod === 'mt') {
+            payWithMoMo();
+        } else {
+            setPlaced(true);
+        }
+    };
 
     if (placed) {
         return (
@@ -61,7 +97,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-28 md:pt-32 pb-16 px-4 md:px-8">
+        <div className="min-h-screen bg-gray-50 mt-20 pt-28 md:pt-32 pb-16 px-4 md:px-8">
             <div className="max-w-5xl mx-auto">
 
                 {/* Header */}
@@ -94,15 +130,15 @@ export default function CheckoutPage() {
                             {/* Step 0 — Delivery */}
                             {step === 0 && (
                                 <motion.div key="delivery" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
-                                    <h2 className="text-base font-black text-gray-900 flex items-center gap-2"><MapPin size={18} className="text-orange-500" /> Delivery Information</h2>
+                                    <h2 className="text-base font-black text-gray-900">Delivery Information</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {[
-                                            { field: 'fullName', label: 'Full Name', icon: User, placeholder: 'John Doe', col: 2 },
-                                            { field: 'email', label: 'Email Address', icon: Mail, placeholder: 'john@example.com', col: 1 },
-                                            { field: 'phone', label: 'Phone Number', icon: Phone, placeholder: '+233 XX XXX XXXX', col: 1 },
-                                            { field: 'address', label: 'Street Address', icon: MapPin, placeholder: '123 Main Street', col: 2 },
-                                            { field: 'city', label: 'City', icon: null, placeholder: 'Accra', col: 1 },
-                                            { field: 'region', label: 'Region', icon: null, placeholder: 'Greater Accra', col: 1 },
+                                            { field: 'fullName', label: 'Full Name', placeholder: 'John Doe', col: 2 },
+                                            { field: 'email', label: 'Email Address', placeholder: 'john@example.com', col: 1 },
+                                            { field: 'phone', label: 'Phone Number', placeholder: '+233 XX XXX XXXX', col: 1 },
+                                            { field: 'address', label: 'Street Address', placeholder: '123 Main Street', col: 2 },
+                                            { field: 'city', label: 'City', placeholder: 'Accra', col: 1 },
+                                            { field: 'region', label: 'Region', placeholder: 'Greater Accra', col: 1 },
                                         ].map(({ field, label, placeholder, col }) => (
                                             <div key={field} className={col === 2 ? 'sm:col-span-2' : ''}>
                                                 <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
@@ -124,25 +160,59 @@ export default function CheckoutPage() {
                             {/* Step 1 — Payment */}
                             {step === 1 && (
                                 <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
-                                    <h2 className="text-base font-black text-gray-900 flex items-center gap-2"><CreditCard size={18} className="text-orange-500" /> Payment Details</h2>
-                                    <div className="grid grid-cols-1 gap-4">
-                                        {[
-                                            { field: 'cardName', label: 'Name on Card', placeholder: 'John Doe', col: 2 },
-                                            { field: 'cardNumber', label: 'Card Number', placeholder: '1234 5678 9012 3456', col: 2 },
-                                            { field: 'expiry', label: 'Expiry', placeholder: 'MM/YY', col: 1 },
-                                            { field: 'cvv', label: 'CVV', placeholder: '•••', col: 1 },
-                                        ].map(({ field, label, placeholder }) => (
-                                            <div key={field}>
-                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
-                                                <input
-                                                    value={(form as any)[field]}
-                                                    onChange={e => update(field, e.target.value)}
-                                                    placeholder={placeholder}
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
-                                                />
-                                            </div>
-                                        ))}
+                                    <h2 className="text-base font-black text-gray-900">Payment Method</h2>
+
+                                    {/* Payment method tabs */}
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => setPaymentMethod('card')}
+                                            className={`flex-1 flex items-center justify-center py-3 rounded-xl border-2 font-bold text-sm transition-all ${paymentMethod === 'card'
+                                                ? 'border-orange-500 bg-orange-50 text-orange-600'
+                                                : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                                }`}
+                                        >
+                                            Card
+                                        </button>
+                                        <button
+                                            onClick={() => setPaymentMethod('mt')}
+                                            className={`flex-1 flex items-center justify-center py-3 rounded-xl border-2 font-bold text-sm transition-all ${paymentMethod === 'mt'
+                                                ? 'border-orange-500 bg-orange-50 text-orange-600'
+                                                : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                                }`}
+                                        >
+                                            Mobile Transfer
+                                        </button>
                                     </div>
+
+                                    <AnimatePresence mode="wait">
+                                        {paymentMethod === 'card' ? (
+                                            <motion.div key="card-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="grid grid-cols-1 gap-4">
+                                                {[
+                                                    { field: 'cardName', label: 'Name on Card', placeholder: 'John Doe' },
+                                                    { field: 'cardNumber', label: 'Card Number', placeholder: '1234 5678 9012 3456' },
+                                                    { field: 'expiry', label: 'Expiry', placeholder: 'MM/YY' },
+                                                    { field: 'cvv', label: 'CVV', placeholder: '•••' },
+                                                ].map(({ field, label, placeholder }) => (
+                                                    <div key={field}>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+                                                        <input
+                                                            value={(form as any)[field]}
+                                                            onChange={e => update(field, e.target.value)}
+                                                            placeholder={placeholder}
+                                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div key="mt-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+                                                <div className="p-4 bg-green-50 border border-green-100 rounded-xl">
+                                                    <p className="text-sm text-green-700 font-medium">Payments are securely processed by <span className="font-black">Paystack</span>. You'll be prompted to complete your MoMo payment when you place your order.</p>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+
                                     <div className="flex gap-3 mt-2">
                                         <button onClick={() => setStep(0)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
                                         <button onClick={() => setStep(2)} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2">
@@ -171,11 +241,20 @@ export default function CheckoutPage() {
                                     <div className="p-4 bg-gray-50 rounded-xl space-y-1 text-sm">
                                         <p className="font-bold text-gray-700">📍 {form.address || 'N/A'}, {form.city || 'N/A'}</p>
                                         <p className="text-gray-500">{form.fullName} · {form.phone}</p>
+                                        <p className="text-gray-500">
+                                            {paymentMethod === 'mt'
+                                                ? 'Mobile Money (Paystack)'
+                                                : `Card ending in ${form.cardNumber.slice(-4) || '****'}`
+                                            }
+                                        </p>
                                     </div>
                                     <div className="flex gap-3 mt-2">
                                         <button onClick={() => setStep(1)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
-                                        <button onClick={() => setPlaced(true)} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all">
-                                            Place Order 🚀
+                                        <button
+                                            onClick={handlePlaceOrder}
+                                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all"
+                                        >
+                                            {paymentMethod === 'mt' ? 'Pay with MoMo' : 'Place Order 🚀'}
                                         </button>
                                     </div>
                                 </motion.div>
