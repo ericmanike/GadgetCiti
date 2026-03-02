@@ -1,77 +1,117 @@
+'use client';
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Zap, ShieldCheck, Truck } from 'lucide-react';
 
 export const FirstVisitPopup: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisitedBefore');
+    // Use versioned key so the new popup always shows once
+    const hasVisited = localStorage.getItem('electronicsmart_visited_v2');
     if (!hasVisited) {
-        setTimeout(() => {
-            setIsVisible(true);
-        }, 6000); 
-     
+      setTimeout(() => setIsVisible(true), 500);
     }
   }, []);
 
-  const handleOkClick = () => {
-    localStorage.setItem('hasVisitedBefore', 'true');
+  const handleClose = () => {
+    localStorage.setItem('electronicsmart_visited_v2', 'true');
     setIsVisible(false);
   };
 
-  if (!isVisible) return null;
-
   return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 bg-[#0000006d] bg-opacity-50 z-40" />
-      
-      {/* Popup */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-fade-in">
-          <div className="flex items-start mb-4">
-            <svg className="w-6 h-6 text-green-600 mr-3 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Important Notice
-              </h2>
-              <p className="text-gray-700 text-sm leading-relaxed">
-                Recyco Platform is currently in beta. Some features may not work as expected, 
-                and we are actively working to improve your experience.
-              </p>
-            </div>
-          </div>
-          <div className="bg-green-50 border-l-4 border-green-600 p-4 mb-6">
-            <p className="text-sm text-gray-700">
-              We appreciate your patience as we continue to improve the platform. 
-              Come back soon for updates.
-            </p>
-          </div>
-          <button
-            onClick={handleOkClick}
-            className="cursor-pointer w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-          >
-            I Understand, Continue
-          </button>
-        </div>
-      </div>
+    <AnimatePresence>
+      {isVisible && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
+            onClick={handleClose}
+          />
 
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out;
-        }
-      `}</style>
-    </>
+          {/* Popup */}
+          <motion.div
+            key="popup"
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="fixed inset-0 flex items-center justify-center z-[70] p-4 pointer-events-none"
+          >
+            <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden pointer-events-auto">
+
+              {/* Header banner */}
+              <div className="bg-gradient-to-r from-orange-500 to-orange-400 px-6 pt-8 pb-10 relative">
+                <button
+                  onClick={handleClose}
+                  className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-full transition-colors"
+                >
+                  <X size={16} />
+                </button>
+                <div className="text-4xl mb-3">🛒</div>
+                <h2 className="text-2xl font-black text-white leading-tight">
+                  Welcome to<br />Electronics Mart!
+                </h2>
+                <p className="text-orange-100 text-sm mt-1 font-medium">
+                  Your one-stop shop for premium gadgets
+                </p>
+              </div>
+
+              {/* Wave divider */}
+              <div className="bg-gradient-to-r from-orange-500 to-orange-400 h-4 relative">
+                <div className="absolute bottom-0 left-0 right-0 h-4 bg-white rounded-t-[2rem]" />
+              </div>
+
+              {/* Perks */}
+              <div className="px-6 py-5 space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                    <Zap size={18} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Exclusive Deals Daily</p>
+                    <p className="text-xs text-gray-500">Flash sales and limited offers every day on top brands.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                    <Truck size={18} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Fast & Reliable Delivery</p>
+                    <p className="text-xs text-gray-500">Get your gadgets delivered right to your doorstep.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                    <ShieldCheck size={18} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Verified & Secure</p>
+                    <p className="text-xs text-gray-500">All products are verified and backed by our warranty.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="px-6 pb-6">
+                <button
+                  onClick={handleClose}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg shadow-orange-200 active:scale-95"
+                >
+                  Start Shopping 🚀
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };

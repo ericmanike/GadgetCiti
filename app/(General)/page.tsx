@@ -1,7 +1,6 @@
 'use client'
-import { FirstVisitPopup } from '@/components/FirstVisitAlert';
+
 import { ProductCard } from '@/components/ProductCard';
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
@@ -87,7 +86,7 @@ export default function Home() {
 
       </div>
 
-      <FirstVisitPopup />
+      
     </main>
   );
 }

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/Auth_Context";
 import { ToastProvider } from "@/components/toastProvider";
-
+import { FirstVisitPopup } from "@/components/FirstVisitAlert";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -65,6 +65,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             {children}
+            <FirstVisitPopup />
           </ToastProvider>
         </AuthProvider>
       </body>

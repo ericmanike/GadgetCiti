@@ -76,7 +76,7 @@ const Navbar = () => {
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
             <Link href="/" className="flex items-center gap-2">
-              <img src="/emart.png" alt="letronix logo" className="w-12 h-12 md:w-20 md:h-14 object-contain" />
+              <img src="/emart.png" alt="electronics mart logo" className="w-12 h-12 md:w-20 md:h-14 object-contain" />
             </Link>
           </div>
 
@@ -164,14 +164,14 @@ const Navbar = () => {
             <ActiveLink href="/sell">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingCart size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Sell Gadgets</span>
+                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Start Selling </span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/cart">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <Truck size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Order Tracking</span>
+                <span className="text-xs md:text-sm font-semibold whitespace-nowrap"> Cart</span>
               </div>
             </ActiveLink>
 

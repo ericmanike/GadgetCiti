@@ -72,12 +72,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         )}
                     </motion.div>
 
-                    <div className="flex gap-3 h-fit overflow-x-auto pb-2 no-scrollbar">
+                    <div className="flex gap-3 h-fit overflow-x-auto p-2 no-scrollbar">
                         {images.map((img, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setActiveImage(idx)}
-                                className={`relative w-18 h-18 rounded-full overflow-hidden border-2 transition-all shrink-0 ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
+                                className={`relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all shrink-0 ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
                                     }`}
                             >
                                 <Image src={img} alt={`${product.name} thumbnail ${idx}`} fill className="object-cover p-1 rounded-full" />
@@ -109,7 +109,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             {product.name}
                         </h1>
                         <div className="flex items-center gap-4 mt-1">
-                            <div className="flex items-center bg-orange-50 px-2 py-0.5 rounded-lg">
+                            <div className="flex items-center  px-2 py-0.5 rounded-lg">
                                 <Star size={16} className="fill-orange-400 text-orange-400" />
                                 <span className="ml-1 text-sm font-black text-orange-600">{product.rating.toFixed(1)}</span>
                             </div>
@@ -126,11 +126,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 {product.oldPrice && (
                                     <span className="text-2xl text-gray-400 line-through">{formatCurrency(product.oldPrice)}</span>
                                 )}
-                                {product.oldPrice && (
-                                    <span className="bg-blue-100 text-blue-700 text-xs font-black px-2 py-1 rounded-md uppercase">
-                                        -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
-                                    </span>
-                                )}
+
                             </div>
 
                         </div>
@@ -163,7 +159,6 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 className="bg-orange-600 hover:bg-orange-700 text-white font-black py-2 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg  disabled:bg-gray-300"
                                 disabled={!product.inStock}
                             >
-                                <ShoppingCart size={10} />
                                 ADD TO CART
                             </button>
                             <button
@@ -195,7 +190,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
                 {/* Right: Shipping & Seller Sidebar */}
                 <div className="lg:col-span-3 flex flex-col gap-6">
-                    <div className="p-6 rounded-3xl bg-white hover:shadow-lg flex flex-col gap-6">
+                    <div className="p-6 rounded-3xl bg-white shadow-lg flex flex-col gap-6">
                         <div>
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Delivery & Returns</h3>
                             <div className="flex flex-col gap-5">
@@ -247,21 +242,22 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     <span className="text-xs font-black text-gray-900">4.9</span>
                                     <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Store Rating</span>
                                 </div>
-                                <Link href="#" className="p-2 bg-blue-50 text-blue-600 rounded-lg group hover:bg-blue-600 hover:text-white transition-colors">
+                                <Link href="#" className="p-2 bg-blue-50 text-blue-600 rounded-lg group flex gap-2 items-center  justify-center  transition-colors">
                                     <MessageSquare />
+                                    <span className="text-[10px] font-bold text-gray-900">Chat</span>
                                 </Link>
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 rounded-3xl bg-blue-600 text-white flex flex-col gap-4 relative overflow-hidden group">
+                    {/* <div className="p-6 rounded-3xl bg-blue-600 text-white flex flex-col gap-4 relative overflow-hidden group">
                         <div className="z-10 relative">
                             <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">PROMO DEALS</p>
                             <h4 className="text-lg font-black mt-1">Buy 2, Get 1 Free on all accessories!</h4>
                             <button className="mt-4 bg-white text-blue-600 px-4 py-2 rounded-xl font-black text-xs uppercase hover:bg-blue-50 transition-colors">Claim Now</button>
                         </div>
                         <ShoppingCart className="absolute -bottom-4 -right-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform duration-700" />
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -270,22 +266,22 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 <div className="flex gap-8 border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab("overview")}
-                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-blue-600" : "text-gray-400"
+                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
                             }`}
                     >
                         Product Overview
                         {activeTab === "overview" && (
-                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 rounded-t-full" />
+                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
                     </button>
                     <button
                         onClick={() => setActiveTab("specs")}
-                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "specs" ? "text-blue-600" : "text-gray-400"
+                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "specs" ? "text-slate-900" : "text-gray-400"
                             }`}
                     >
                         Specifications
                         {activeTab === "specs" && (
-                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600 rounded-t-full" />
+                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
                     </button>
                 </div>
