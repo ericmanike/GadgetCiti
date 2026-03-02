@@ -184,9 +184,9 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98] mb-4">
+                <Link href="/cart/checkout" className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98] mb-4 text-center">
                   PROCEED TO CHECKOUT
-                </button>
+                </Link>
 
                 <div className="flex items-center justify-center gap-2 text-gray-400 text-xs text-center">
                   <ShieldCheck size={16} className="text-emerald-500" />
