@@ -132,7 +132,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     </span>
                                 )}
                             </div>
-                            
+
                         </div>
 
                         <div className="flex flex-col gap-3 pt-4 border-t border-gray-50">
@@ -198,7 +198,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     <div className="p-6 rounded-3xl bg-white hover:shadow-lg flex flex-col gap-6">
                         <div>
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Delivery & Returns</h3>
-                            <div className="flex flex-col gap-5">   
+                            <div className="flex flex-col gap-5">
                                 <div className="flex gap-3">
                                     <div className="shrink-0 w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
                                         <Truck size={18} className="text-gray-600" />
@@ -227,28 +227,28 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     <span className="text-xs font-black text-blue-600 uppercase">Letronix Official Store</span>
                                     <span className="text-[10px] text-gray-500 font-medium">98% Positive Feedback</span>
                                 </div>
-                              
+
                             </div>
 
-                           <div className="flex justify-around items-center gap-3 mb-4">
+                            <div className="flex justify-around items-center gap-3 mb-4">
                                 <div className="bg-gray-50 p-2 rounded-xl flex flex-col items-center">
                                     <span className="text-xs font-black text-gray-900">10k+</span>
                                     <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Followers</span>
                                 </div>
-                           <button className="flex items-center gap-2 text-xs font-bold text-gray-900 border border-gray-300 rounded-full px-3 py-1 hover:bg-gray-100 transition-colors"> 
-                               <Plus className="text-red-500" />
-                               <span>Follow</span>
-                           </button>
-                           </div>
+                                <button className="flex items-center gap-2 text-xs font-bold text-gray-900 border border-gray-300 rounded-full px-3 py-1 hover:bg-gray-100 transition-colors">
+                                    <Plus className="text-red-500" />
+                                    <span>Follow</span>
+                                </button>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-2">
-                                
+
                                 <div className="bg-gray-50 p-2 rounded-xl flex flex-col items-center">
                                     <span className="text-xs font-black text-gray-900">4.9</span>
                                     <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Store Rating</span>
                                 </div>
-                                 <Link href="#" className="p-2 bg-blue-50 text-blue-600 rounded-lg group hover:bg-blue-600 hover:text-white transition-colors">
-                                    <MessageSquare  />
+                                <Link href="#" className="p-2 bg-blue-50 text-blue-600 rounded-lg group hover:bg-blue-600 hover:text-white transition-colors">
+                                    <MessageSquare />
                                 </Link>
                             </div>
                         </div>
@@ -347,7 +347,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <section className="flex flex-col gap-8">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl md:text-3xl font-black text-gray-900 uppercase">You May Also Like</h2>
-                    <Link href="/buy" className="text-blue-600 font-black text-xs uppercase hover:underline">Explore More</Link>
+                    <Link href="/buy" className="text-orange-500 font-black text-xs uppercase hover:underline">Explore More</Link>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                     {relatedProducts.map((p) => (

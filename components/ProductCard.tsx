@@ -61,21 +61,15 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="flex flex-1 flex-col gap-2 p-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+            <p className="text-xs font-black uppercase tracking-widest text-orange-500">
               {product.brand}
             </p>
             <Link
               href={`/products/${product.slug}`}
-              className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-blue-600 transition-colors"
+              className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-orange-500 transition-colors"
             >
               {product.name}
             </Link>
-          </div>
-          <div className="text-right text-xs text-red-500">
-            ★ {product.rating.toFixed(1)}
-            <span className="ml-1 text-[10px] text-gray-500">
-              ({product.ratingCount})
-            </span>
           </div>
         </div>
         <p className="line-clamp-2 text-xs text-gray-600">
@@ -95,7 +89,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!product.inStock}
-            className="w-full sm:w-auto rounded-full bg-white px-2 py-2 md:px-4 md:py-2 text-[10px] md:text-xs font-bold text-gray-900 hover:text-white border border-gray-900 shadow-md transition-all hover:bg-blue-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 text-center whitespace-nowrap"
+            className="w-full sm:w-auto rounded-full bg-white px-2 py-2 md:px-4 md:py-2 text-[10px] md:text-xs font-bold text-gray-900 hover:text-white border border-gray-900 shadow-md transition-all hover:bg-orange-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 text-center whitespace-nowrap"
           >
             {product.inStock ? "Add to cart" : "Notify me"}
           </button>

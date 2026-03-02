@@ -1,33 +1,66 @@
 'use client';
 import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, PhoneCall, Megaphone, Search, Zap, Home } from 'lucide-react';
-import logo from '../public/Wastocash0.png';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
 import MoreDropdown from './Dropdown';
 import Sidebar from './Sidebar';
 import ActiveLink from './ActiveLink';
 import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
-import { motion, scale } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Marquee from './marquee';
 import { useAuth } from './Auth_Context';
 import { Suspense } from 'react';
+import SearchDropdown from './SearchDropdown';
+import { ALL_PRODUCTS, Product } from '@/lib/products';
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const { user, loading } = useAuth();
   const router = useRouter();
 
+  // Filter products on query change
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const q = searchQuery.toLowerCase();
+    const filtered = ALL_PRODUCTS.filter(
+      p =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+    );
+    setSearchResults(filtered);
+  }, [searchQuery]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
-
-
-
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchOpen(false);
+      router.push(`/buy?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <>
@@ -47,19 +80,49 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Amazon-style Search Bar */}
+          {/* Search Bar */}
           <div className="w-full order-last mt-2 md:order-none md:flex-1 md:w-auto md:mt-0 max-w-2xl px-0 md:px-2">
-            <div className="flex w-full group">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Search Letronix..."
-                  className="w-full h-8 md:h-10 px-3 md:px-4 py-1.5 md:py-2 rounded-l-md border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-xs md:text-base"
-                />
-              </div>
-              <button className="h-8 md:h-10 px-3 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-md flex items-center justify-center transition-colors">
-                <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
-              </button>
+            <div className="relative" ref={searchRef}>
+              <form onSubmit={handleSearchSubmit} className="flex w-full">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => {
+                      setSearchQuery(e.target.value);
+                      setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                    placeholder="Search Letronix..."
+                    className="w-full h-8 md:h-10 px-3 md:px-4 py-1.5 md:py-2 pr-8 rounded-l-md border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-xs md:text-base"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => { setSearchQuery(''); setSearchResults([]); setIsSearchOpen(false); }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                    >
+                      <Search size={0} className="hidden" />
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="h-8 md:h-10 px-3 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-md flex items-center justify-center transition-colors"
+                >
+                  <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
+                </button>
+              </form>
+
+              {/* Search Dropdown */}
+              <SearchDropdown
+                query={searchQuery}
+                results={searchResults}
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                onClear={() => { setSearchQuery(''); setSearchResults([]); }}
+              />
             </div>
           </div>
 
@@ -68,15 +131,15 @@ const Navbar = () => {
             <DropdownProfile />
 
             <Link href="/cart" className="relative p-1 md:p-2 hover:bg-gray-100 rounded-lg transition">
-              <ShoppingCart size={18} className="text-black md:size-[24px]" strokeWidth={2} />
+              <ShoppingCart size={22} className="text-black md:size-[26px]" strokeWidth={2} />
               <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-orange-500 text-white text-[7px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
                 2
               </span>
             </Link>
 
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition relative hidden sm:block" onClick={() => setIsNotificationsOpen(true)}>
-              <Bell size={22} className="text-black" strokeWidth={2} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+            <button className="p-1 md:p-2 hover:bg-gray-100 rounded-lg transition relative" onClick={() => setIsNotificationsOpen(true)}>
+              <Bell size={22} className="text-black md:size-[26px]" strokeWidth={2} />
+              <span className="absolute top-1 right-1.5 md:top-2 md:right-2 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
           </div>
         </div>

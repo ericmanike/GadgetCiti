@@ -4,18 +4,31 @@ import styled from 'styled-components';
 const Loader = () => {
   return (
     <StyledWrapper>
-      <div className="loading">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
+      <div className="loader-wrapper">
+        <div className="loading">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
       </div>
     </StyledWrapper>
   );
 }
 
 const StyledWrapper = styled.div`
+  .loader-wrapper {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+  }
+
   .loading {
    --speed-of-animation: 0.9s;
    --gap: 6px;

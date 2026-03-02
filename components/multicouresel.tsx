@@ -87,12 +87,12 @@ export default function FramerMultiSlideCarousel<T>({
                 <div className="flex items-center justify-between mb-6 md:mb-8">
                     {title && (
                         <h2 className="text-xl md:text-3xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
-                            <span className="w-1.5 md:w-2 h-6 md:h-8 bg-blue-500 rounded-full"></span>
+                            <span className="w-1.5 md:w-2 h-6 md:h-8 bg-orange-500 rounded-full"></span>
                             {title}
                         </h2>
                     )}
                     {viewAllLink && (
-                        <Link href={viewAllLink} className="text-blue-500 font-bold text-xs md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+                        <Link href={viewAllLink} className="text-orange-500 font-bold text-xs md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
                             Explore More <ChevronRight size={14} className="md:size-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     )}

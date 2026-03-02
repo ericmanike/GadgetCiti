@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 interface CartItem {
   id: string;
   name: string;
+  slug: string;
   price: number;
   image: string;
   quantity: number;
@@ -17,6 +18,7 @@ const initialItems: CartItem[] = [
   {
     id: '1',
     name: 'iPhone 15 Pro Max',
+    slug: 'iphone-15-pro-max',
     price: 1199.99,
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop',
     quantity: 1,
@@ -24,6 +26,7 @@ const initialItems: CartItem[] = [
   {
     id: '2',
     name: 'AirPods Pro (2nd Generation)',
+    slug: 'bose-qc-ultra',
     price: 249.00,
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop',
     quantity: 2,
@@ -83,18 +86,20 @@ export default function CartPage() {
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 flex gap-4 items-center animate-in fade-in slide-in-from-left-4 duration-300">
-                  <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                  <Link href={`/products/${item.slug}`} className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100 hover:opacity-90 transition-opacity">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
-                  </div>
+                  </Link>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base md:text-lg font-bold text-slate-900 truncate">
-                      {item.name}
-                    </h3>
+                    <Link href={`/products/${item.slug}`}>
+                      <h3 className="text-base md:text-lg font-bold text-slate-900 truncate hover:text-orange-500 transition-colors">
+                        {item.name}
+                      </h3>
+                    </Link>
                     <p className="text-orange-500 font-bold mt-1">
                       {formatCurrency(item.price)}
                     </p>
@@ -117,22 +122,23 @@ export default function CartPage() {
                           <Plus size={16} />
                         </button>
                       </div>
-
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors p-2"
-                        title="Remove item"
-                      >
-                        <Trash2 size={20} />
-                      </button>
                     </div>
                   </div>
 
-                  <div className="hidden md:block text-right pr-4">
-                    <p className="text-sm text-gray-400 mb-1 font-medium italic">Subtotal</p>
-                    <p className="text-lg font-bold text-slate-900 ">
-                      {formatCurrency(item.price * item.quantity)}
-                    </p>
+                  <div className="flex flex-col items-end justify-between pr-2 self-stretch">
+                    <button
+                      onClick={() => removeItem(item.id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      title="Remove item"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-400 mb-0.5 font-medium italic">Subtotal</p>
+                      <p className="text-base md:text-lg font-bold text-slate-900">
+                        {formatCurrency(item.price * item.quantity)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

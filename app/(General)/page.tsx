@@ -72,7 +72,6 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={SPONSORED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Sponsored Gadgets"
             viewAllLink="/buy"
           />
         </section>
@@ -82,7 +81,6 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={RECOMMENDED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Trending Now"
             viewAllLink="/buy"
           />
         </section>
