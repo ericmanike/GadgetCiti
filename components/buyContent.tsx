@@ -133,7 +133,10 @@ export default function BuyPage() {
                     setFilteredProducts(prev => ({ ...prev, priceRange: e.target.value }));
                     priceRangeFilter(e.target.value);
                   }}
-                  className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  style={{
+                    background: `linear-gradient(to right, #f97316 0%, #f97316 ${((Number(filteredProducts.priceRange || 5000) / 5000) * 100)}%, #e5e7eb ${((Number(filteredProducts.priceRange || 5000) / 5000) * 100)}%, #e5e7eb 100%)`
+                  }}
+                  className="w-full h-1.5 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-orange-500 [&::-moz-range-thumb]:border-none"
                 />
                 <div className="flex justify-between mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   <span>0 GHS</span>
@@ -225,7 +228,7 @@ export default function BuyPage() {
           {/* Horizontal Category Carousel */}
           <div className="mb-8 md:mb-10 w-full overflow-hidden">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm md:text-base font-bold text-gray-900">Browse Categories</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900">Based on Functionality</h3>
               <p className="text-[10px] md:text-xs text-blue-500 font-bold uppercase tracking-wider">Swipe to view more</p>
             </div>
 

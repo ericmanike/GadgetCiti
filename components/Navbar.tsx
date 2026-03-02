@@ -127,7 +127,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Section: Profile, Cart, Notifications */}
-          <div className="flex items-center gap-3 md:gap-4 shrink-0">
+          <div className="flex items-center gap-1 md:gap-3 shrink-0">
             <DropdownProfile />
 
             <Link href="/cart" className="relative p-1 md:p-2 hover:bg-gray-100 rounded-lg transition">
@@ -187,10 +187,10 @@ const Navbar = () => {
               <span className="text-xs md:text-sm font-semibold">More</span>
             </div>
 
-            <ActiveLink href="/blog">
+            <ActiveLink href="/news">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group md:hidden">
                 <Megaphone size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs font-semibold">Blog</span>
+                <span className="text-xs font-semibold">News</span>
               </div>
             </ActiveLink>
           </div>
