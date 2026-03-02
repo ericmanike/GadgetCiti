@@ -127,10 +127,10 @@ const Navbar = () => {
           </div>
 
           {/* Right Section: Profile, Cart, Notifications */}
-          <div className="flex items-center gap-1 md:gap-3 shrink-0">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <DropdownProfile />
 
-            <Link href="/cart" className="relative p-1 md:p-2 hover:bg-gray-100 rounded-lg transition">
+            <Link href="/cart" className="relative p-2 admd:p-2 hover:bg-gray-100 rounded-lg transition">
               <ShoppingCart size={22} className="text-black md:size-[26px]" strokeWidth={2} />
               <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-orange-500 text-white text-[7px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
                 2
