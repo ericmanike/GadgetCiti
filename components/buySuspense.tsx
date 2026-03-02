@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
 import BuyPage from './buyContent';
+import Loader from '@/app/loading';
 
 export default function BuySuspense() {
   return (
-    <Suspense fallback={<div className='h-screen flex justify-center items-center'>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <BuyPage />
     </Suspense>
   );
