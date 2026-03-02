@@ -72,7 +72,7 @@ export default function BuyPage() {
             <span className="font-bold text-sm">Filters</span>
           </button>
 
-          <div className={`md:block ${isFilterOpen ? 'block' : 'hidden'} bg-white border border-gray-100 space-y-8 text-gray-900 p-6 m-3 rounded-[2rem] shadow-sm z-40 transition-all duration-300`}>
+          <div className={`md:block ${isFilterOpen ? 'block' : 'hidden'} bg-white space-y-8 text-gray-900 p-6 m-3 rounded-[2rem] shadow-lg z-40 transition-all duration-300`}>
             <h2 className="text-xl font-bold mb-4 flex justify-between w-full ">
               <span>Filters</span><button className="text-red-500 text-xs font-bold hover:underline cursor-pointer"
                 onClick={() => {

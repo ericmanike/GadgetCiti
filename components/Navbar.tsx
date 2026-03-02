@@ -93,8 +93,8 @@ const Navbar = () => {
                       setIsSearchOpen(true);
                     }}
                     onFocus={() => setIsSearchOpen(true)}
-                    placeholder="Search Letronix..."
-                    className="w-full h-8 md:h-10 px-3 md:px-4 py-1.5 md:py-2 pr-8 rounded-l-md border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-xs md:text-base"
+                    placeholder="Search Electronics Mart..."
+                    className="w-full h-10 md:h-12 px-3 md:px-4 py-1.5 md:py-2 pr-8 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (
                     <button
@@ -109,7 +109,7 @@ const Navbar = () => {
                 </div>
                 <button
                   type="submit"
-                  className="h-8 md:h-10 px-3 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-md flex items-center justify-center transition-colors"
+                  className="h-10 md:h-12 px-3 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-full flex items-center justify-center transition-colors"
                 >
                   <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
                 </button>
@@ -127,7 +127,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Section: Profile, Cart, Notifications */}
-          <div className="flex items-center gap-1 md:gap-3 shrink-0">
+          <div className="flex items-center gap-3 md:gap-4 shrink-0">
             <DropdownProfile />
 
             <Link href="/cart" className="relative p-1 md:p-2 hover:bg-gray-100 rounded-lg transition">
@@ -187,10 +187,10 @@ const Navbar = () => {
               <span className="text-xs md:text-sm font-semibold">More</span>
             </div>
 
-            <ActiveLink href="/news">
+            <ActiveLink href="/blog">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group md:hidden">
                 <Megaphone size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs font-semibold">News</span>
+                <span className="text-xs font-semibold">Blog</span>
               </div>
             </ActiveLink>
           </div>
