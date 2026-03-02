@@ -87,7 +87,6 @@ export default function FramerMultiSlideCarousel<T>({
                 <div className="flex items-center justify-between mb-6 md:mb-8">
                     {title && (
                         <h2 className="text-xl md:text-3xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
-                            <span className="w-1.5 md:w-2 h-6 md:h-8 bg-orange-500 rounded-full"></span>
                             {title}
                         </h2>
                     )}
