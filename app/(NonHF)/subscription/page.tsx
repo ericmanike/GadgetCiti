@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Check, Sparkles, BadgeCheck, ArrowBigLeft } from 'lucide-react';
+import { Check, Sparkles, BadgeCheck } from 'lucide-react';
 import { useToast } from '@/components/toastProvider';
 import Script from 'next/script';
-import { useAuth } from '@/components/Auth_Context';
+import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 
@@ -16,11 +16,17 @@ declare global {
 
 
 export default function RecycloSubscriptions() {
-
-
+  const { user, loading } = useAuth();
   const { showToast } = useToast();
-  const { user } = useAuth();
   const router = useRouter();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-300 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   const verifyPayment = async (reference: string) => {
     try {

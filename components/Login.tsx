@@ -6,9 +6,12 @@ import * as Yup from 'yup'
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useToast } from './toastProvider'
 import { useRouter } from 'next/navigation'
-import { useAuth } from './Auth_Context'
+
 import { motion } from 'framer-motion'
 import Spinner from './loadingComponent'
+
+import { supabase } from '@/lib/supabase'
+import { useAuth } from './AuthContext'
 
 const GoogleButton = ({ isProcessing, onClick, label }: { isProcessing: boolean, onClick: () => void, label: string }) => (
   <div className="w-full flex flex-col gap-2">
@@ -52,20 +55,23 @@ const signupValidationSchema = Yup.object().shape({
 
 })
 
-export default function AuthForm() {
+interface AuthFormProps {
+  mode: 'login' | 'signup'
+}
+
+export default function AuthForm({ mode }: AuthFormProps) {
   const { showToast } = useToast()
-  const [loggingIn, setLoggingIn] = useState(false)
-
-
-  //ui
-  const [isLoginMode, setIsLoginMode] = useState(false)
-
-  const { user, setUser } = useAuth();
-
-  // Router for navigation
+  const [isProcessing, setIsProcessing] = useState(false)
+  const { user, loading } = useAuth()
   const router = useRouter()
 
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/buy')
+    }
+  }, [user, loading, router])
 
+  if (loading) return null;
 
   const [signUpData, setSignUpData] = useState({})
   const [loginData, setLoginData] = useState({
@@ -78,91 +84,98 @@ export default function AuthForm() {
   const [showSignupPassword, setShowSignupPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const handleGoogleAuth = () => {
-
+  const handleGoogleAuth = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/buy`
+        }
+      })
+      if (error) throw error
+    } catch (error: any) {
+      showToast(error.message || 'Google Auth failed', 'error')
+    }
   }
 
   //signUp function
   const signUp = async (signUpData: any) => {
-    setIsLoginMode(true)
+    setIsProcessing(true)
     if (!signUpData) return;
     try {
-      const res = await fetch('https://api.recyco.me/auth/signUp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signUpData),
-      })
-      if (!res.ok) {
-        const Errordata = await res.json()
-        if (res.status == 409) {
-          console.log(Errordata)
+      const { data, error } = await supabase.auth.signUp({
+        email: signUpData.email,
+        password: signUpData.password,
+        options: {
+          data: {
+            full_name: signUpData.fullName,
+            phone: signUpData.phone,
+          }
         }
-        showToast('Signup failed', 'error')
-        throw new Error('Signup failed')
+      })
+
+      if (error) throw error
+
+      // 2. Sync with 'USERS' table (using upsert to avoid duplicate errors)
+      if (data.user) {
+        const { error: dbError } = await supabase
+          .from('USERS')
+          .upsert({
+            id: data.user.id,
+            full_name: signUpData.fullName,
+            email: signUpData.email,
+            phone: signUpData.phone,
+            role: 'Buyer/Seller',
+          })
+
+        if (dbError) {
+          console.error('Database Sync Error:', dbError)
+        }
       }
-      const data = await res.json()
-      showToast('You have created your account successfully', 'success')
-      console.log('Signup successful:', data)
-    } catch (error) {
-      showToast('Signup failed', 'error')
+
+      // 3. Check if user is automatically logged in (meaning email confirmation is OFF)
+      if (data.session) {
+        showToast('Account created and logged in!', 'success')
+        window.location.href = '/buy'
+        return
+      }
+
+      showToast('Account created! Please check your email for verification.', 'success')
+      router.push('/auth/login')
+    } catch (error: any) {
+      showToast(error.message || 'Signup failed', 'error')
       console.log('Signup error:', error)
     } finally {
-      setIsLoginMode(false)
-      setLoggingIn(false)
+      setIsProcessing(false)
     }
-    console.log(isLoginMode)
   }
 
   //Login Function
   const login = async (loginData: { email: string; password: string }) => {
-    setIsLoginMode(true)
+    setIsProcessing(true)
     try {
-      const res = await fetch('https://api.recyco.me/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          'username': loginData.email,
-          'password': loginData.password
-        }),
-        credentials: "include"
-
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginData.email,
+        password: loginData.password,
       })
 
-      if (!res.ok) {
-        const Errordata = await res.json()
-        if (res.status == 409) {
-          console.log(Errordata)
-        }
-        showToast('Login failed', 'error')
-        throw new Error('Login failed')
-      }
-      const data = await res.json()
-      setUser(data);
+      if (error) throw error
 
-      window.location.href = '/buy';
+
       showToast('Welcome back', 'success')
-
-      console.log('Login successful:', data)
-    } catch (error) {
-
+      window.location.href = '/buy';
+    } catch (error: any) {
+      showToast(error.message || 'Login failed', 'error')
       console.log('Login error:', error)
     } finally {
-      setIsLoginMode(false)
+      setIsProcessing(false)
     }
   }
-
-
-
-
 
   return (
     <div className="min-h-screen w-full flex justify-center
      items-center bg-gray-300 p-10">
-      {isLoginMode && <Spinner />}
+      {isProcessing && <Spinner />}
       <motion.button
         whileHover={{ x: -5 }}
         whileTap={{ scale: 0.95 }}
@@ -171,11 +184,11 @@ export default function AuthForm() {
          items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer
            rounded-full shadow-lg py-2 px-4"
       >
-        <ArrowLeft size={18}  />
+        <ArrowLeft size={18} />
         <span>Back</span>
       </motion.button>
 
-      {!loggingIn ? (
+      {mode === 'login' ? (
         <Formik
           key="login"
           initialValues={{ email: '', password: '' }}
@@ -192,7 +205,7 @@ export default function AuthForm() {
               <h2 className="text-center font-bold text-3xl text-gray-900 mb-2">Welcome Back</h2>
 
               <GoogleButton
-                isProcessing={isLoginMode}
+                isProcessing={isProcessing}
                 onClick={handleGoogleAuth}
                 label="Continue with Google"
               />
@@ -247,7 +260,7 @@ export default function AuthForm() {
                 whileTap={{ scale: 0.95 }}
                 type="submit" disabled={!isValid || isSubmitting || !dirty} className={` ${!dirty || !isValid ? 'bg-gray-600  cursor-not-allowed ' :
                   'bg-orange-500 cursor-pointer '}  text-white p-2 rounded transition-colors`}>
-                {isLoginMode ? 'Processing...' : 'Login'}
+                {isProcessing ? 'Processing...' : 'Login'}
               </motion.button>
 
               <div className="flex justify-between items-center">
@@ -256,7 +269,7 @@ export default function AuthForm() {
                   <span
                     className="text-orange-500 cursor-pointer hover:text-orange-600"
                     onClick={() => {
-                      setLoggingIn(true)
+                      router.push('/auth/signup')
                     }}
                   >
                     Sign Up
@@ -293,7 +306,7 @@ export default function AuthForm() {
               <h2 className="text-center font-bold md:text-3xl text-1xl text-gray-900 mb-2">Create an Account</h2>
 
               <GoogleButton
-                isProcessing={isLoginMode}
+                isProcessing={isProcessing}
                 onClick={handleGoogleAuth}
                 label="Sign up with Google"
               />
@@ -379,7 +392,7 @@ export default function AuthForm() {
                 whileHover={{ scale: 0.95 }}
                 whileTap={{ scale: 1 }} type="submit" disabled={!isValid || isSubmitting || !dirty} className={` ${!dirty || !isValid ? 'bg-gray-600  cursor-not-allowed ' :
                   'bg-orange-500 cursor-pointer '}  text-white p-2 rounded transition-colors`}>
-                {isLoginMode ? 'Creating your account...' : 'Sign Up'}
+                {isProcessing ? 'Creating your account...' : 'Sign Up'}
               </ motion.button>
 
               <div className="flex justify-between items-center">
@@ -388,7 +401,7 @@ export default function AuthForm() {
                   <span
                     className="text-orange-500 font-bold cursor-pointer hover:text-orange-600"
                     onClick={() => {
-                      setLoggingIn(false)
+                      router.push('/auth/login')
                     }}
                   >
                     Login

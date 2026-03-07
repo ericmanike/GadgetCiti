@@ -1,13 +1,12 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera, Calendar, Mail, MapPin, Award, Save, X, Edit2, User } from 'lucide-react';
+import { Camera, Calendar, Mail, MapPin, Award, Save, X, Edit2, User, ArrowLeft } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useAuth } from './Auth_Context';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-
+import { supabase } from '@/lib/supabase';
+import { useAuth } from './AuthContext';
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string()
@@ -30,15 +29,16 @@ const ProfileSchema = Yup.object().shape({
 });
 
 export default function RecycoProfile() {
+  const { user, loading } = useAuth();
   const [profile, setProfile] = useState({
-    name: 'Sarah Chen',
+    name: '',
     role: 'Buyer/Seller',
-    email: 'sarah.chen@recyco.app',
-    location: 'San Francisco, CA',
-    startDate: '2024-03-15',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+    email: '',
+    location: 'Ghana',
+    startDate: new Date().toISOString().split('T')[0],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=User',
     coverImage: '',
-    about: 'Passionate about creating a sustainable future through recycling and environmental awareness. Active member of the Recyco community, committed to reducing waste and inspiring others to make eco-friendly choices.'
+    about: 'No about information provided.'
   });
 
   const [editMode, setEditMode] = useState(false);
@@ -46,7 +46,25 @@ export default function RecycoProfile() {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const { user, setUser } = useAuth();
+  useEffect(() => {
+    if (loading) return;
+
+    if (user) {
+      setProfile({
+        name: user.user_metadata?.full_name || 'Anonymous User',
+        role: user.user_metadata?.role || 'Buyer/Seller',
+        email: user.email || '',
+        location: user.user_metadata?.location || 'Ghana',
+        startDate: user.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+        avatar: user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
+        coverImage: user.user_metadata?.cover_image || '',
+        about: user.user_metadata?.about || 'No about information provided.'
+      });
+    } else {
+      router.push('/auth/login');
+    }
+  }, [user, loading, router]);
+
   const formik = useFormik({
     initialValues: {
       name: profile.name,
@@ -59,24 +77,38 @@ export default function RecycoProfile() {
       coverImage: profile.coverImage
     },
     validationSchema: ProfileSchema,
-    onSubmit: (values) => {
-      setProfile(values);
-      setEditMode(false);
-      console.log('Profile updated:', values);
+    onSubmit: async (values) => {
+      try {
+        const { data, error } = await supabase.auth.updateUser({
+          data: {
+            full_name: values.name,
+            role: values.role,
+            location: values.location,
+            about: values.about,
+            avatar_url: values.avatar,
+            cover_image: values.coverImage
+          }
+        });
+
+        if (error) throw error;
+
+        setProfile(values);
+        setEditMode(false);
+        alert('Profile updated successfully!');
+      } catch (error: any) {
+        alert(error.message || 'Failed to update profile');
+      }
     },
     enableReinitialize: true
   });
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  };
-
-  const calculateDaysActive = (startDate: string) => {
-    const start = new Date(startDate);
-    const today = new Date();
-    const diff = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    return diff;
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+      return dateString;
+    }
   };
 
   const handleEdit = () => {
@@ -123,6 +155,14 @@ export default function RecycoProfile() {
 
   const currentData = editMode ? formik.values : profile;
 
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-gray-300 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-300 p-4 md:p-8">
       <motion.button
@@ -131,7 +171,7 @@ export default function RecycoProfile() {
         onClick={() => router.replace('/')}
         className="absolute top-4 md:top-8 left-4 md:left-8 flex
          items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer
-           py-2 rounded-full shadow-lg py-2 px-4"
+           py-2 rounded-full shadow-lg px-4"
       >
         <ArrowLeft size={18} />
         <span>Back</span>
@@ -261,8 +301,8 @@ export default function RecycoProfile() {
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-2xl font-semibold text-gray-900">{user?.fullName}</h1>
-                    <p className="text-gray-600 mt-1">{user?.role}</p>
+                    <h1 className="text-2xl font-semibold text-gray-900">{profile.name}</h1>
+                    <p className="text-gray-600 mt-1">{profile.role}</p>
                   </>
                 )}
               </div>
@@ -277,17 +317,12 @@ export default function RecycoProfile() {
                         type="email"
                         name="email"
                         value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.email && formik.errors.email ? 'border-red-500' : 'border-gray-300'
-                          }`}
+                        readOnly
+                        className="border-b focus:border-emerald-500 outline-none bg-transparent border-gray-300 text-gray-400 cursor-not-allowed"
                       />
-                      {formik.touched.email && formik.errors.email && (
-                        <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
-                      )}
                     </div>
                   ) : (
-                    <span>{user?.email}</span>
+                    <span>{profile.email}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -308,7 +343,7 @@ export default function RecycoProfile() {
                       )}
                     </div>
                   ) : (
-                    <span>{user?.location || 'Ghana'}</span>
+                    <span>{profile.location}</span>
                   )}
                 </div>
               </div>
@@ -323,17 +358,12 @@ export default function RecycoProfile() {
                       type="date"
                       name="startDate"
                       value={formik.values.startDate}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className={`font-medium text-gray-900 border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.startDate && formik.errors.startDate ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                      readOnly
+                      className="font-medium text-gray-900 border-b focus:border-emerald-500 outline-none bg-transparent border-gray-300 opacity-50 cursor-not-allowed"
                     />
-                    {formik.touched.startDate && formik.errors.startDate && (
-                      <p className="text-red-500 text-xs mt-1">{formik.errors.startDate}</p>
-                    )}
                   </div>
                 ) : (
-                  <span className="font-medium text-gray-900">{formatDate(currentData.startDate)}</span>
+                  <span className="font-medium text-gray-900">{formatDate(profile.startDate)}</span>
                 )}
               </div>
             </div>
@@ -359,7 +389,7 @@ export default function RecycoProfile() {
               </div>
             ) : (
               <p className="text-gray-700 leading-relaxed">
-                {user?.about || 'No about information provided.'}
+                {profile.about}
               </p>
             )}
           </div>

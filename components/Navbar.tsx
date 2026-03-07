@@ -10,7 +10,7 @@ import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Marquee from './marquee';
-import { useAuth } from './Auth_Context';
+
 import { Suspense } from 'react';
 import SearchDropdown from './SearchDropdown';
 import { ALL_PRODUCTS, Product } from '@/lib/products';
@@ -24,7 +24,7 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const { user, loading } = useAuth();
+
   const router = useRouter();
 
   // Filter products on query change
