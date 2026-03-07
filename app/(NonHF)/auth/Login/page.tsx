@@ -1,6 +1,5 @@
-
 import React from 'react'
-import AuthForm from '@/components/Login'
+import Login from '@/components/Login'
 
 export const metadata = {
   title: "Login - Letronix",
@@ -10,7 +9,7 @@ export const metadata = {
 function page() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <AuthForm mode="login" />
+      <Login />
     </div>
   )
 }

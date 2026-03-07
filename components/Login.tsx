@@ -45,21 +45,7 @@ const loginValidationSchema = Yup.object().shape({
   password: Yup.string().min(6, 'Too short').required('Password is required')
 })
 
-const signupValidationSchema = Yup.object().shape({
-  fullName: Yup.string().min(2, 'Too short').required('Name is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  password: Yup.string().min(6, 'Too short').required('Password is required'),
-  confirmpassword: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match').required('Confirm password is required'),
-  phone: Yup.string().min(10, 'Too short').required('Phone number is required'),
-
-
-})
-
-interface AuthFormProps {
-  mode: 'login' | 'signup'
-}
-
-export default function AuthForm({ mode }: AuthFormProps) {
+export default function Login() {
   const { showToast } = useToast()
   const [isProcessing, setIsProcessing] = useState(false)
   const { user, loading } = useAuth()
@@ -71,18 +57,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }, [user, loading, router])
 
-  if (loading) return null;
-
-  const [signUpData, setSignUpData] = useState({})
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  })
-
-  // Show password states
   const [showLoginPassword, setShowLoginPassword] = useState(false)
-  const [showSignupPassword, setShowSignupPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  if (loading) return null;
 
   const handleGoogleAuth = async () => {
     try {
@@ -98,59 +75,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   }
 
-  //signUp function
-  const signUp = async (signUpData: any) => {
-    setIsProcessing(true)
-    if (!signUpData) return;
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: signUpData.email,
-        password: signUpData.password,
-        options: {
-          data: {
-            full_name: signUpData.fullName,
-            phone: signUpData.phone,
-          }
-        }
-      })
-
-      if (error) throw error
-
-      // 2. Sync with 'USERS' table (using upsert to avoid duplicate errors)
-      if (data.user) {
-        const { error: dbError } = await supabase
-          .from('USERS')
-          .upsert({
-            id: data.user.id,
-            full_name: signUpData.fullName,
-            email: signUpData.email,
-            phone: signUpData.phone,
-            role: 'Buyer/Seller',
-          })
-
-        if (dbError) {
-          console.error('Database Sync Error:', dbError)
-        }
-      }
-
-      // 3. Check if user is automatically logged in (meaning email confirmation is OFF)
-      if (data.session) {
-        showToast('Account created and logged in!', 'success')
-        window.location.href = '/buy'
-        return
-      }
-
-      showToast('Account created! Please check your email for verification.', 'success')
-      router.push('/auth/login')
-    } catch (error: any) {
-      showToast(error.message || 'Signup failed', 'error')
-      console.log('Signup error:', error)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
-
-  //Login Function
   const login = async (loginData: { email: string; password: string }) => {
     setIsProcessing(true)
     try {
@@ -172,251 +96,98 @@ export default function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <div className="min-h-screen w-full flex justify-center
-     items-center bg-gray-300 p-10">
+    <div className="min-h-screen w-full flex justify-center items-center bg-gray-300 p-10">
       {isProcessing && <Spinner />}
       <motion.button
         whileHover={{ x: -5 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => router.replace('/')}
-        className="absolute top-4 md:top-8 left-4 md:left-8 flex
-         items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer
-           rounded-full shadow-lg py-2 px-4"
+        className="absolute top-4 md:top-8 left-4 md:left-8 flex items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer rounded-full shadow-lg py-2 px-4"
       >
         <ArrowLeft size={18} />
         <span>Back</span>
       </motion.button>
 
-      {mode === 'login' ? (
-        <Formik
-          key="login"
-          initialValues={{ email: '', password: '' }}
-          validationSchema={loginValidationSchema}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Login', values)
-            setLoginData(values)
-            login(values)
-            resetForm()
-          }}
-        >
-          {({ dirty, isValid, isSubmitting }) => (
-            <Form className="md:w-[500px] w-full h-fit flex flex-col gap-4 bg-white shadow-lg p-8 md:p-10 rounded-[20px] ">
-              <h2 className="text-center font-bold text-3xl text-gray-900 mb-2">Welcome Back</h2>
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={loginValidationSchema}
+        onSubmit={(values, { resetForm }) => {
+          login(values)
+          resetForm()
+        }}
+      >
+        {({ dirty, isValid, isSubmitting }) => (
+          <Form className="md:w-[500px] w-full h-fit flex flex-col gap-4 bg-white shadow-lg p-8 md:p-10 rounded-[20px] ">
+            <h2 className="text-center font-bold text-3xl text-gray-900 mb-2">Welcome Back</h2>
 
-              <GoogleButton
-                isProcessing={isProcessing}
-                onClick={handleGoogleAuth}
-                label="Continue with Google"
+            <GoogleButton
+              isProcessing={isProcessing}
+              onClick={handleGoogleAuth}
+              label="Continue with Google"
+            />
+
+            <div className="w-full">
+              <label className="text-gray-700">Email <span className="text-red-500">*</span></label>
+              <Field
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1"
               />
+              <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+            </div>
 
-
-
-              <div className="w-full">
-                <label className="text-gray-700">Email <span className="text-red-500">*</span></label>
+            <div className="w-full">
+              <div className="w-full flex justify-between items-end">
+                <label className="text-sm font-semibold text-gray-700">Password <span className="text-red-500">*</span></label>
+                <button
+                  type="button"
+                  className='cursor-pointer text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors'
+                  onClick={() => router.push('/auth/forgotPassword')}
+                >
+                  Forgot password?
+                </button>
+              </div>
+              <div className="relative">
                 <Field
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1"
+                  type={showLoginPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1 pr-10"
                 />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPassword(!showLoginPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer hover:text-gray-700 mt-1"
+                >
+                  {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+              <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
+            </div>
 
-              <div className="w-full">
-                <div className="w-full flex justify-between items-end">
-                  <label className="text-sm font-semibold text-gray-700">Password <span className="text-red-500">*</span></label>
-                  <button
-                    type="button"
-                    className='cursor-pointer text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors'
-                    onClick={() => router.push('/auth/forgotPassword')}
-                  >
-                    Forgot password?
-                  </button>
-                </div>
-                <div className="relative">
-                  <Field
-                    type={showLoginPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    className="w-full border  border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowLoginPassword(!showLoginPassword)}
-                    className="absolute right-2 top-1/2 
-                    -translate-y-1/2 text-gray-500
-                     cursor-pointer
-                     hover:text-gray-700 mt-1"
-                  >
-                    {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
-              </div>
+            <motion.button
+              whileHover={{ scale: 1 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit" disabled={!isValid || isSubmitting || !dirty} className={` ${!dirty || !isValid ? 'bg-gray-600  cursor-not-allowed ' :
+                'bg-orange-500 cursor-pointer '}  text-white p-2 rounded transition-colors`}>
+              {isProcessing ? 'Processing...' : 'Login'}
+            </motion.button>
 
-              <motion.button
-                whileHover={{ scale: 1 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit" disabled={!isValid || isSubmitting || !dirty} className={` ${!dirty || !isValid ? 'bg-gray-600  cursor-not-allowed ' :
-                  'bg-orange-500 cursor-pointer '}  text-white p-2 rounded transition-colors`}>
-                {isProcessing ? 'Processing...' : 'Login'}
-              </motion.button>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">
-                  Don't have an account?{' '}
-                  <span
-                    className="text-orange-500 cursor-pointer hover:text-orange-600"
-                    onClick={() => {
-                      router.push('/auth/signup')
-                    }}
-                  >
-                    Sign Up
-                  </span>
+            <div className="flex justify-between items-center text-gray-600">
+              <span>
+                Don't have an account?{' '}
+                <span
+                  className="text-orange-500 cursor-pointer hover:text-orange-600"
+                  onClick={() => router.push('/auth/signup')}
+                >
+                  Sign Up
                 </span>
-
-
-              </div>
-
-
-
-
-
-
-            </Form>
-          )}
-        </Formik>
-      ) : (
-        <Formik
-          key="signup"
-          initialValues={{ fullName: '', email: '', password: '', phone: '', confirmpassword: '', role: '' }}
-          validationSchema={signupValidationSchema}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Signup', values)
-            const { confirmpassword, ...data } = values;
-            setSignUpData(data)
-            signUp(data)
-            resetForm()
-
-          }}
-        >
-          {({ isSubmitting, dirty, isValid }) => (
-            <Form className="w-full  md:w-[550px]  h-fit  flex flex-col gap-4 bg-white shadow-lg  rounded-3xl p-5 md:p-10">
-              <h2 className="text-center font-bold md:text-3xl text-1xl text-gray-900 mb-2">Create an Account</h2>
-
-              <GoogleButton
-                isProcessing={isProcessing}
-                onClick={handleGoogleAuth}
-                label="Sign up with Google"
-              />
-
-              <div className="w-full">
-                <label className="text-gray-700">Full Name <span className="text-red-500">*</span></label>
-                <Field
-                  type="text"
-                  name="fullName"
-                  placeholder="Full Name"
-                  className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1"
-                />
-                <ErrorMessage name="fullName" component="div" className="text-red-500 text-sm md:mt-1" />
-              </div>
-
-              <div className="w-full">
-                <label className="text-gray-700">Email <span className="text-red-500">*</span></label>
-                <Field
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1"
-                />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-sm md:mt-1" />
-              </div>
-
-              <div className="w-full">
-                <label className="text-gray-700">Phone Number <span className="text-red-500">*</span></label>
-                <Field
-                  type="text"
-                  name="phone"
-                  placeholder="Phone Number"
-                  className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1"
-                />
-                <ErrorMessage name="phone" component="div" className="text-red-500 text-sm md:mt-1" />
-              </div>
-
-              <div className="w-full">
-                <label className="text-gray-700">Password <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <Field
-                    type={showSignupPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowSignupPassword(!showSignupPassword)}
-                    className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-1"
-                  >
-                    {showSignupPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
-              </div>
-
-              <div className="w-full">
-                <label className="text-gray-700">Confirm Password <span className="text-red-500">*</span></label>
-                <div className="relative">
-                  <Field
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmpassword"
-                    placeholder="Confirm Password"
-                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 mt-1 pr-10"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 0.95 }}
-                    whileTap={{ scale: 1 }}
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 mt-1"
-                  >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </motion.button>
-                </div>
-                <ErrorMessage name="confirmpassword" component="div" className="text-red-500 text-sm mt-1" />
-              </div>
-
-
-
-              <motion.button
-                whileHover={{ scale: 0.95 }}
-                whileTap={{ scale: 1 }} type="submit" disabled={!isValid || isSubmitting || !dirty} className={` ${!dirty || !isValid ? 'bg-gray-600  cursor-not-allowed ' :
-                  'bg-orange-500 cursor-pointer '}  text-white p-2 rounded transition-colors`}>
-                {isProcessing ? 'Creating your account...' : 'Sign Up'}
-              </ motion.button>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">
-                  Already have an account?{' '}
-                  <span
-                    className="text-orange-500 font-bold cursor-pointer hover:text-orange-600"
-                    onClick={() => {
-                      router.push('/auth/login')
-                    }}
-                  >
-                    Login
-                  </span>
-                </span>
-
-              </div>
-
-
-
-
-
-            </Form>
-          )}
-        </Formik>
-      )}
+              </span>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   )
 }

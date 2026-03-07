@@ -1,6 +1,6 @@
 
 
-import AuthForm from '@/components/Login'
+import Signup from '@/components/Signup'
 
 export const metadata = {
     title: "Sign Up - Letronix",
@@ -10,7 +10,7 @@ export const metadata = {
 function page() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <AuthForm mode="signup" />
+            <Signup />
         </div>
     )
 }
