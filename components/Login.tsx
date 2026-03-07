@@ -161,7 +161,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
       if (error) throw error
 
-
       showToast('Welcome back', 'success')
       window.location.href = '/buy';
     } catch (error: any) {
