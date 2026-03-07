@@ -26,7 +26,7 @@ export default function DropdownProfile() {
     }
   };
 
-  if (loading) return null;
+  if (loading) return  null;
 
   if (!user) {
     return (
@@ -44,6 +44,7 @@ export default function DropdownProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
+         
         <button className=" w-6 h-6 md:w-8 md:h-8 bg-blue-500 rounded-full 
        flex items-center justify-center
            text-white font-bold text-[9px] md:text-[12px] hover:bg-blue-600 transition cursor-pointer">
