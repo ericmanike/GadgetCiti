@@ -24,7 +24,7 @@ const StyledWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(4px);
     z-index: 9999;
   }
