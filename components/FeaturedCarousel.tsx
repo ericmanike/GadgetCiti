@@ -31,10 +31,11 @@ export default function FeaturedCarousel({ items, linkHref, autoSlide = true, sh
             animate(x, targetX, {
                 type: 'spring',
                 stiffness: 300,
-                damping: 30,
+                damping: 35,
+                mass: 0.8
             });
         }
-    }, [index, x]);
+    }, [index]);
 
     // Handle auto-slide
     useEffect(() => {
@@ -53,26 +54,36 @@ export default function FeaturedCarousel({ items, linkHref, autoSlide = true, sh
                 className='flex h-full cursor-grab active:cursor-grabbing'
                 style={{ x }}
                 drag="x"
-                dragConstraints={containerRef}
+                dragConstraints={{ left: -(items.length - 1) * (containerRef.current?.offsetWidth || 0), right: 0 }}
+                dragElastic={0.1}
+                dragMomentum={false}
                 onDragEnd={(_, info) => {
                     const containerWidth = containerRef.current?.offsetWidth || 1;
                     const dragOffset = info.offset.x;
                     const dragVelocity = info.velocity.x;
 
                     let newIndex = index;
-
                     if (Math.abs(dragVelocity) > 500) {
-                        if (dragVelocity > 0) {
-                            newIndex = Math.max(0, index - 1);
-                        } else {
-                            newIndex = Math.min(items.length - 1, index + 1);
-                        }
+                        newIndex = dragVelocity > 0 ? index - 1 : index + 1;
                     } else {
                         const movedSlides = -dragOffset / containerWidth;
-                        newIndex = Math.max(0, Math.min(items.length - 1, Math.round(index + movedSlides)));
+                        newIndex = index + Math.round(movedSlides);
                     }
 
-                    setIndex(newIndex);
+                    newIndex = Math.max(0, Math.min(newIndex, items.length - 1));
+
+                    if (newIndex !== index) {
+                        setIndex(newIndex);
+                    } else {
+                        // Explicitly snap back if index didn't change
+                        const targetX = -index * containerWidth;
+                        animate(x, targetX, {
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 35,
+                            mass: 0.8
+                        });
+                    }
                 }}
             >
                 {items.map((item) => (

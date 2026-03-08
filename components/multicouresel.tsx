@@ -60,16 +60,19 @@ export default function FramerMultiSlideCarousel<T>({
     useEffect(() => {
         if (containerRef.current) {
             const containerWidth = containerRef.current.offsetWidth || 1;
-            const slideWidth = containerWidth / slidesToShow;
+            // The step size is (containerWidth + gap) / slidesToShow
+            // because there are (slidesToShow - 1) gaps in one container width.
+            const slideWidth = (containerWidth + gap) / slidesToShow;
             const targetX = -index * slideWidth;
 
             animate(x, targetX, {
                 type: 'spring',
                 stiffness: 300,
-                damping: 30,
+                damping: 35,
+                mass: 0.8
             });
         }
-    }, [index, slidesToShow, items.length]);
+    }, [index, slidesToShow, items.length, gap]);
 
     // Reset index if it exceeds max when resizing
     useEffect(() => {
@@ -104,30 +107,37 @@ export default function FramerMultiSlideCarousel<T>({
                         className='flex cursor-grab active:cursor-grabbing'
                         style={{ x, gap: `${gap}px` }}
                         drag="x"
-                        dragConstraints={containerRef}
+                        dragConstraints={{ left: -maxIndex * ((containerRef.current?.offsetWidth || 0) + gap) / slidesToShow, right: 0 }}
+                        dragElastic={0.1}
+                        dragMomentum={false}
                         onDragEnd={(_, info) => {
                             const containerWidth = containerRef.current?.offsetWidth || 1;
-                            const slideWidth = containerWidth / slidesToShow;
+                            const slideWidth = (containerWidth + gap) / slidesToShow;
                             const dragOffset = info.offset.x;
                             const dragVelocity = info.velocity.x;
 
-                            // Calculate how many slides to move
-                            // If velocity is high, move at least one slide in that direction
-                            // Otherwise, snap to the nearest slide
                             let newIndex = index;
-
                             if (Math.abs(dragVelocity) > 500) {
-                                if (dragVelocity > 0) {
-                                    newIndex = Math.max(0, index - 1);
-                                } else {
-                                    newIndex = Math.min(maxIndex, index + 1);
-                                }
+                                newIndex = dragVelocity > 0 ? index - 1 : index + 1;
                             } else {
                                 const movedSlides = -dragOffset / slideWidth;
-                                newIndex = Math.max(0, Math.min(maxIndex, Math.round(index + movedSlides)));
+                                newIndex = index + Math.round(movedSlides);
                             }
 
-                            setIndex(newIndex);
+                            newIndex = Math.max(0, Math.min(newIndex, maxIndex));
+
+                            if (newIndex !== index) {
+                                setIndex(newIndex);
+                            } else {
+                                // Explicitly snap back if index didn't change
+                                const targetX = -index * slideWidth;
+                                animate(x, targetX, {
+                                    type: 'spring',
+                                    stiffness: 300,
+                                    damping: 35,
+                                    mass: 0.8
+                                });
+                            }
                         }}
                     >
                         {items.map((item, idx) => (
