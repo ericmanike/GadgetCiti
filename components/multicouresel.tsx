@@ -100,7 +100,36 @@ export default function FramerMultiSlideCarousel<T>({
 
             <div className='flex flex-col gap-3'>
                 <div className='relative overflow-hidden rounded-xl p-2' ref={containerRef}>
-                    <motion.div className='flex' style={{ x, gap: `${gap}px` }}>
+                    <motion.div
+                        className='flex cursor-grab active:cursor-grabbing'
+                        style={{ x, gap: `${gap}px` }}
+                        drag="x"
+                        dragConstraints={containerRef}
+                        onDragEnd={(_, info) => {
+                            const containerWidth = containerRef.current?.offsetWidth || 1;
+                            const slideWidth = containerWidth / slidesToShow;
+                            const dragOffset = info.offset.x;
+                            const dragVelocity = info.velocity.x;
+
+                            // Calculate how many slides to move
+                            // If velocity is high, move at least one slide in that direction
+                            // Otherwise, snap to the nearest slide
+                            let newIndex = index;
+
+                            if (Math.abs(dragVelocity) > 500) {
+                                if (dragVelocity > 0) {
+                                    newIndex = Math.max(0, index - 1);
+                                } else {
+                                    newIndex = Math.min(maxIndex, index + 1);
+                                }
+                            } else {
+                                const movedSlides = -dragOffset / slideWidth;
+                                newIndex = Math.max(0, Math.min(maxIndex, Math.round(index + movedSlides)));
+                            }
+
+                            setIndex(newIndex);
+                        }}
+                    >
                         {items.map((item, idx) => (
                             <div
                                 key={idx}

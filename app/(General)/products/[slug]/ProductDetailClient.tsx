@@ -72,12 +72,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         )}
                     </motion.div>
 
-                    <div className="flex gap-3 h-fit overflow-x-auto p-2 no-scrollbar">
+                    <div className="flex gap-3 h-fit overflow-x-auto p-2 no-scrollbar snap-x snap-mandatory">
                         {images.map((img, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setActiveImage(idx)}
-                                className={`relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all shrink-0 ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
+                                className={`relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all shrink-0 snap-center ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
                                     }`}
                             >
                                 <Image src={img} alt={`${product.name} thumbnail ${idx}`} fill className="object-cover p-1 rounded-full" />

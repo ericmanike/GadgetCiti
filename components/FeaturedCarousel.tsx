@@ -49,7 +49,32 @@ export default function FeaturedCarousel({ items, linkHref, autoSlide = true, sh
 
     return (
         <div className='relative w-full h-full overflow-hidden' ref={containerRef}>
-            <motion.div className='flex h-full' style={{ x }}>
+            <motion.div
+                className='flex h-full cursor-grab active:cursor-grabbing'
+                style={{ x }}
+                drag="x"
+                dragConstraints={containerRef}
+                onDragEnd={(_, info) => {
+                    const containerWidth = containerRef.current?.offsetWidth || 1;
+                    const dragOffset = info.offset.x;
+                    const dragVelocity = info.velocity.x;
+
+                    let newIndex = index;
+
+                    if (Math.abs(dragVelocity) > 500) {
+                        if (dragVelocity > 0) {
+                            newIndex = Math.max(0, index - 1);
+                        } else {
+                            newIndex = Math.min(items.length - 1, index + 1);
+                        }
+                    } else {
+                        const movedSlides = -dragOffset / containerWidth;
+                        newIndex = Math.max(0, Math.min(items.length - 1, Math.round(index + movedSlides)));
+                    }
+
+                    setIndex(newIndex);
+                }}
+            >
                 {items.map((item) => (
                     <div key={item.id} className='shrink-0 w-full h-full relative'>
                         <img
