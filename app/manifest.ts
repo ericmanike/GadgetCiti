@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Recyco',
-    short_name: 'Recyco',
-    description: 'A smart waste management platform ',
+    name: 'Electronix Mart',
+    short_name: 'Letronix',
+    description: 'A market for all your electronic needs',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
