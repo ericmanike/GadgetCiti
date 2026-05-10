@@ -4,51 +4,11 @@ import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, ShieldCheck } from 'lucid
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatCurrency } from '@/lib/utils';
-
-interface CartItem {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
-const initialItems: CartItem[] = [
-  {
-    id: '1',
-    name: 'iPhone 15 Pro Max',
-    slug: 'iphone-15-pro-max',
-    price: 1199.99,
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop',
-    quantity: 1,
-  },
-  {
-    id: '2',
-    name: 'AirPods Pro (2nd Generation)',
-    slug: 'bose-qc-ultra',
-    price: 249.00,
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop',
-    quantity: 2,
-  },
-];
+import { useCart } from '@/components/CartContext';
 
 export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>(initialItems);
+  const { cart: items, updateQuantity, removeFromCart: removeItem, clearCart, totalItems, totalPrice: subtotal } = useCart();
 
-  const updateQuantity = (id: string, delta: number) => {
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
-  };
-
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = items.length > 0 ? 15.00 : 0;
   const total = subtotal + shipping;
 
@@ -61,7 +21,7 @@ export default function CartPage() {
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 flex items-center gap-2">
 
-            Your Shopping Cart ({items.length})
+            Your Shopping Cart ({totalItems})
           </h1>
         </div>
 
@@ -85,29 +45,30 @@ export default function CartPage() {
             {/* Cart Items List */}
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
-                <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 flex gap-4 items-center animate-in fade-in slide-in-from-left-4 duration-300">
-                  <Link href={`/products/${item.slug}`} className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100 hover:opacity-90 transition-opacity">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
+                <div key={item.product.id} className="bg-white rounded-xl shadow-sm p-4 flex gap-4 items-center animate-in fade-in slide-in-from-left-4 duration-300">
+                  <Link href={`/products/${item.product.slug}`} className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100 hover:opacity-90 transition-opacity">
+                    <Image
+                      src={item.product.images[0] || '/next.svg'}
+                      alt={item.product.name}
+                      fill
+                      className="object-cover"
                     />
                   </Link>
 
                   <div className="flex-1 min-w-0">
-                    <Link href={`/products/${item.slug}`}>
+                    <Link href={`/products/${item.product.slug}`}>
                       <h3 className="text-base md:text-lg font-bold text-slate-900 truncate hover:text-orange-500 transition-colors">
-                        {item.name}
+                        {item.product.name}
                       </h3>
                     </Link>
                     <p className="text-orange-500 font-bold mt-1">
-                      {formatCurrency(item.price)}
+                      {formatCurrency(item.product.price)}
                     </p>
 
                     <div className="flex items-center gap-4 mt-3">
                       <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
+                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                           className="p-2 hover:bg-white transition-colors text-slate-600"
                         >
                           <Minus size={16} />
@@ -116,7 +77,7 @@ export default function CartPage() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, 1)}
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                           className="p-2 hover:bg-white transition-colors text-slate-600"
                         >
                           <Plus size={16} />
@@ -127,7 +88,7 @@ export default function CartPage() {
 
                   <div className="flex flex-col items-end justify-between pr-2 self-stretch">
                     <button
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItem(item.product.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors p-1"
                       title="Remove item"
                     >
@@ -136,7 +97,7 @@ export default function CartPage() {
                     <div className="text-right">
                       <p className="text-xs text-gray-400 mb-0.5 font-medium italic">Subtotal</p>
                       <p className="text-base md:text-lg font-bold text-slate-900">
-                        {formatCurrency(item.price * item.quantity)}
+                        {formatCurrency(item.product.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -149,7 +110,7 @@ export default function CartPage() {
                   Back to Shopping
                 </Link>
                 <button
-                  onClick={() => setItems([])}
+                  onClick={() => clearCart()}
                   className="text-gray-400 hover:text-red-500 flex items-center gap-2 text-sm font-medium transition-colors"
                 >
                   <Trash2 size={16} />

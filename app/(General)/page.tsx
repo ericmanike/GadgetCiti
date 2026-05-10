@@ -1,14 +1,11 @@
-'use client'
+'use client';
 import { ProductCard } from '@/components/ProductCard';
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 
-import { ALL_PRODUCTS } from '@/lib/products';
-
-const SPONSORED_GADGETS = ALL_PRODUCTS.filter(p => ["s1", "s2", "s3", "s4", "s5", "s6"].includes(p.id));
-const LATEST_GADGETS = ALL_PRODUCTS.filter(p => ["l1", "l2", "l3", "l4"].includes(p.id));
-const RECOMMENDED_GADGETS = ALL_PRODUCTS.filter(p => ["r1", "r2", "r3", "r4", "r5", "r6"].includes(p.id));
+import { fetchAllProducts, Product } from '@/lib/products';
+import { useEffect, useState } from 'react';
 
 const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
@@ -16,13 +13,20 @@ const COMPUTER_SLIDES = [
   { id: 3, url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80', title: 'IT Lab Gear', description: 'Reliable networking and server infrastructure.' },
 ];
 
-const ACCESSORY_SLIDES = [
-  { id: 1, url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80', title: 'Premium Audio', description: 'Crystal clear sound for your daily grind.' },
-  { id: 2, url: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800&q=80', title: 'Ergonomic Gear', description: 'Comfort meets style in your workspace.' },
-  { id: 3, url: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80', title: 'Smart Wearables', description: 'Stay connected on the move.' },
-];
+
 
 export default function Home() {
+  const [ALL_PRODUCTS, setAllProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetchAllProducts().then(setAllProducts);
+  }, []);
+
+  // Basic slice partitioning for demo since ID is now dynamic from DB
+  const SPONSORED_GADGETS = ALL_PRODUCTS.slice(0, 6);
+  const LATEST_GADGETS = ALL_PRODUCTS.length > 6 ? ALL_PRODUCTS.slice(6, 10) : ALL_PRODUCTS.slice(0, 4);
+  const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
+
   return (
     <main className="w-full bg-slate-50 min-h-screen pt-32 pb-20 overflow-x-hidden">
       <div className="relative z-10 px-4 md:px-10 space-y-24">
@@ -30,37 +34,39 @@ export default function Home() {
         {/* Shop by Category - Carousel */}
         <section className="w-full bg-white py-6 md:p-10 rounded-[15px] md:rounded-[15px] shadow-lg shadow-slate-100/50 border border-slate-50">
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 h-[400px] md:h-[600px]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
-            <div className="col-span-2 lg:col-span-3 row-span-1 lg:row-span-2 relative group overflow-hidden rounded-3xl">
-              <FeaturedCarousel items={COMPUTER_SLIDES} linkHref="/buy?category=laptops" />
+            <div className="col-span-full h-[200px] md:h-[380px] relative group overflow-hidden rounded-[9px] shadow-lg">
+              <FeaturedCarousel items={COMPUTER_SLIDES} linkHref="/buy?category=laptops" showArrowBg={false} />
             </div>
-
-            {/* Smartphones */}
-            <Link
-              href="/buy?category=phones"
-              className="col-span-1 lg:col-span-2 relative group overflow-hidden rounded-3xl"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80"
-                alt="Smartphones"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors p-4 md:p-8 flex flex-col justify-end">
-                <h3 className="text-white text-lg md:text-3xl font-black uppercase mb-1">Smartphones</h3>
-                <p className="text-white/80 text-[10px] md:text-sm font-medium">Newest mobile flagship tech</p>
-              </div>
-            </Link>
-
-            {/* Accessories - Interactive Carousel (Manual Only) */}
-            <div className="col-span-1 relative group overflow-hidden rounded-3xl">
-              <FeaturedCarousel
-                items={ACCESSORY_SLIDES}
-                linkHref="/buy?category=accessories"
-                autoSlide={false}
-                showArrowBg={false}
-              />
-            </div>
+            
+            {/* Small Category Cards */}
+            {[
+              { title: 'Laptops', url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80', query: 'laptops' },
+              { title: 'Printers', url: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&q=80', query: 'printers' },
+              { title: 'iPhones', url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&q=80', query: 'iphones' },
+              { title: 'Samsung', url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&q=80', query: 'samsung' },
+              { title: 'Tablets', url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80', query: 'tablets' },
+              { title: 'Accessories', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80', query: 'accessories' },
+            ].map((cat, idx) => (
+              <Link 
+                key={idx}
+                href={`/buy?category=${cat.query}`}
+                className="relative h-[90px] md:h-[110px] rounded-[10px] overflow-hidden group shadow-sm border border-slate-100 block bg-slate-100"
+              >
+                <img 
+                  src={cat.url} 
+                  alt={cat.title} 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                <div className="absolute inset-0 flex items-center justify-center p-2">
+                  <span className="text-white font-bold text-sm md:text-base tracking-wide drop-shadow-md text-center">
+                    {cat.title}
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
 
         </section>
@@ -86,8 +92,6 @@ export default function Home() {
         </section>
 
       </div>
-
-
     </main>
   );
 }

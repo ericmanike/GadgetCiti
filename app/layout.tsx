@@ -5,6 +5,8 @@ import "./globals.css";
 import { ToastProvider } from "@/components/toastProvider";
 import { AuthProvider } from "@/components/AuthContext";
 import { FirstVisitPopup } from "@/components/FirstVisitAlert";
+import { CartProvider } from "@/components/CartContext";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -62,10 +64,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} font-sans bg-gray-300`}>
         <AuthProvider>
-          <ToastProvider>
-            {children}
-            <FirstVisitPopup />
-          </ToastProvider>
+          <CartProvider>
+            <ToastProvider>
+              {children}
+              <FirstVisitPopup />
+            </ToastProvider>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

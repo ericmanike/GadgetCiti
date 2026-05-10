@@ -24,6 +24,7 @@ import {
 import { Product } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
 import { ProductCard } from "@/components/ProductCard";
+import { useCart } from "@/components/CartContext";
 
 interface ProductDetailClientProps {
     product: Product;
@@ -35,6 +36,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const [quantity, setQuantity] = useState(1);
     const [isSaved, setIsSaved] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
+    const { addToCart } = useCart();
 
     const images = product.images.length > 0 ? product.images : ["/next.svg"];
 
@@ -158,6 +160,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <button
                                 className="bg-orange-600 hover:bg-orange-700 text-white font-black py-2 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg  disabled:bg-gray-300"
                                 disabled={!product.inStock}
+                                onClick={() => addToCart(product, quantity)}
                             >
                                 ADD TO CART
                             </button>

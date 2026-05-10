@@ -1,5 +1,5 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, PhoneCall, Megaphone, Search, Zap, Home } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, Megaphone, Search, Zap, Home, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
@@ -13,7 +13,8 @@ import Marquee from './marquee';
 
 import { Suspense } from 'react';
 import SearchDropdown from './SearchDropdown';
-import { ALL_PRODUCTS, Product } from '@/lib/products';
+import { fetchAllProducts, Product } from '@/lib/products';
+import { useCart } from '@/components/CartContext';
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,11 +22,17 @@ const Navbar = () => {
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-
+  const { totalItems } = useCart();
 
   const router = useRouter();
+
+  // Load products on mount
+  useEffect(() => {
+    fetchAllProducts().then(setAllProducts);
+  }, []);
 
   // Filter products on query change
   useEffect(() => {
@@ -34,14 +41,14 @@ const Navbar = () => {
       return;
     }
     const q = searchQuery.toLowerCase();
-    const filtered = ALL_PRODUCTS.filter(
+    const filtered = allProducts.filter(
       p =>
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q)
     );
     setSearchResults(filtered);
-  }, [searchQuery]);
+  }, [searchQuery, allProducts]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -76,7 +83,7 @@ const Navbar = () => {
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
             <Link href="/" className="flex items-center gap-2">
-              <img src="/emart.png" alt="electronics mart logo" className="w-12 h-12 md:w-20 md:h-14 object-contain" />
+                    SWAPPI
             </Link>
           </div>
 
@@ -128,19 +135,19 @@ const Navbar = () => {
 
           {/* Right Section: Profile, Cart, Notifications */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          
             <DropdownProfile />
 
             <Link href="/cart" className="relative p-2 admd:p-2 hover:bg-gray-100 rounded-lg transition">
               <ShoppingCart size={22} className="text-black md:size-[26px]" strokeWidth={2} />
-              <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-orange-500 text-white text-[7px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
-                2
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-orange-500 text-white text-[7px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
 
-            <button className="p-1 md:p-2 hover:bg-gray-100 rounded-lg transition relative" onClick={() => setIsNotificationsOpen(true)}>
-              <Bell size={22} className="text-black md:size-[26px]" strokeWidth={2} />
-              <span className="absolute top-1 right-1.5 md:top-2 md:right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+
           </div>
         </div>
 
@@ -182,10 +189,6 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <div className="hidden md:flex items-center gap-1 hover:text-orange-500 transition cursor-pointer py-1" onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}>
-              <MoreDropdown />
-              <span className="text-xs md:text-sm font-semibold">More</span>
-            </div>
 
             <ActiveLink href="/news">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group md:hidden">
@@ -196,6 +199,16 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      {/* Floating Notification Button */}
+      <button 
+        className="fixed bottom-6 right-6 z-50 p-3.5 bg-white border border-gray-200 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer flex items-center justify-center"
+        onClick={() => setIsNotificationsOpen(true)}
+      >
+        <Bell size={24} className="text-gray-800" strokeWidth={2.5} />
+        <span className="absolute top-0 right-0 mt-0 mr-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full"></span>
+      </button>
+
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <Suspense fallback={null}>
         <NotificationsPanel isOpen={isNotificationsOpen} setIsOpen={setIsNotificationsOpen} />

@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { useCart } from "@/components/CartContext";
+import { Product } from "@/lib/products";
 
 interface ProductCardProps {
   product: {
@@ -24,10 +26,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const [isSaved, setIsSaved] = useState(false);
-
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-
+    addToCart(product as Product);
   };
 
   return (

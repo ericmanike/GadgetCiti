@@ -7,10 +7,11 @@ import { ProductCard } from "./ProductCard";
 import FramerMultiSlideCarousel from "./multicouresel";
 import { formatCurrency } from "@/lib/utils";
 
-import { ALL_PRODUCTS } from "@/lib/products";
+import { fetchAllProducts, Product } from "@/lib/products";
 
 export default function BuyPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState({
     category: '',
     priceRange: '',
@@ -54,6 +55,10 @@ export default function BuyPage() {
   useEffect(() => {
     console.log("Filters updated:", { category, priceRange });
   }, [category, priceRange]);
+
+  useEffect(() => {
+    fetchAllProducts().then(setAllProducts);
+  }, []);
 
 
 
@@ -225,56 +230,9 @@ export default function BuyPage() {
 
         </div >
         <div className="flex-1 p-2 md:p-4 overflow-hidden">
-          {/* Horizontal Category Carousel */}
-          <div className="mb-8 md:mb-10 w-full overflow-hidden">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm md:text-base font-bold text-gray-900">Based on Functionality</h3>
-              <p className="text-[10px] md:text-xs text-blue-500 font-bold uppercase tracking-wider">Swipe to view more</p>
-            </div>
-
-            <FramerMultiSlideCarousel
-              items={[
-                { id: 'all', label: 'All', value: '' },
-                { id: 'phones', label: 'Phones', value: 'phones' },
-                { id: 'laptops', label: 'Laptops', value: 'laptops' },
-                { id: 'tablets', label: 'Tablets', value: 'tablets' },
-                { id: 'accessories', label: 'Accessories', value: 'accessories' },
-                { id: 'electronics', label: 'Electronics', value: 'electronics' },
-                { id: 'gaming', label: 'Gaming', value: 'gaming' },
-                { id: 'watches', label: 'Watches', value: 'watches' },
-              ]}
-              renderItem={(cat: { id: string, label: string, value: string }) => (
-                <button
-                  onClick={() => {
-                    setFilteredProducts(prev => ({ ...prev, category: cat.value }));
-                    categoryFilter(cat.value);
-                  }}
-                  className={`relative w-full flex flex-col items-center justify-center py-2 px-1 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap group
-                    ${filteredProducts.category === cat.value
-                      ? 'text-blue-600'
-                      : 'text-gray-500 hover:text-blue-500'
-                    }`}
-                >
-                  <span className="truncate pb-1">{cat.label}</span>
-                  <motion.div
-                    className={`h-0.5 w-full bg-blue-600 rounded-full transition-all duration-300
-                      ${filteredProducts.category === cat.value ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0 group-hover:opacity-40 group-hover:scale-x-50'}
-                    `}
-                  />
-                </button>
-              )}
-              breakpoints={{
-                0: { slidesToShow: 3 },
-                480: { slidesToShow: 4 },
-                768: { slidesToShow: 5 },
-                1024: { slidesToShow: 5 },
-              }}
-              gap={12}
-            />
-          </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
-            {ALL_PRODUCTS.map((product) => (
+            {allProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
