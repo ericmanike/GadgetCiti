@@ -3,6 +3,7 @@ import { ProductCard } from '@/components/ProductCard';
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
+import HeroSlider from '@/components/HeroSlider';
 
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
@@ -11,7 +12,7 @@ const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
   { id: 2, url: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1200&q=80', title: 'Gaming Beasts', description: 'Experience pure performance with top-tier hardware.' },
   { id: 3, url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80', title: 'IT Lab Gear', description: 'Reliable networking and server infrastructure.' },
-];
+];  
 
 
 
@@ -28,7 +29,7 @@ export default function Home() {
   const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
 
   return (
-    <main className="w-full bg-slate-50 min-h-screen pt-32 pb-20 overflow-x-hidden">
+    <main className="w-full bg-slate-50 min-h-screen pt-24 pb-20 overflow-x-hidden">
       <div className="relative z-10 px-4 md:px-10 space-y-24">
 
         {/* Shop by Category - Carousel */}
@@ -36,8 +37,22 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
-            <div className="col-span-full h-[200px] md:h-[380px] relative group overflow-hidden rounded-[9px] shadow-lg">
-              <FeaturedCarousel items={COMPUTER_SLIDES} linkHref="/buy?category=laptops" showArrowBg={false} />
+            <div className="col-span-full h-[fit-content] relative group  rounded-[9px] shadow-lg">
+              <HeroSlider
+              slides={
+                COMPUTER_SLIDES.map((slide)=>({
+                id: slide.id,
+                title: slide.title,
+                backgroundImage: slide.url,
+                description: slide.description, 
+                ctaLink: "/buy",
+                ctaText: "Shop Now",
+
+                
+              }))}
+              autoplay={true}
+              autoplayInterval={3000}
+              /> 
             </div>
             
             {/* Small Category Cards */}
@@ -52,14 +67,14 @@ export default function Home() {
               <Link 
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="relative h-[90px] md:h-[110px] rounded-[10px] overflow-hidden group shadow-sm border border-slate-100 block bg-slate-100"
+                className="relative h-[90px] md:h-[150px] rounded-[8px] overflow-hidden group shadow-sm border border-slate-100  bg-slate-100 md:col-span-2"
               >
                 <img 
                   src={cat.url} 
                   alt={cat.title} 
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex items-center justify-center p-2">
                   <span className="text-white font-bold text-sm md:text-base tracking-wide drop-shadow-md text-center">
                     {cat.title}

@@ -7,7 +7,7 @@ export function proxy(req: NextRequest) {
   console.log('-------------------------')
   console.log("Middleware token is:", token);
 
-  const protectedRoutes = ["/sell", "/buy", "/profile", "/gifts", "/orderPickup"];
+  const protectedRoutes = ["/sell", "/buy", "/profile", "/gifts"];
 
   const isProtected = protectedRoutes.some((route) =>
     req.nextUrl.pathname.startsWith(route)

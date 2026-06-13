@@ -10,7 +10,7 @@ export function formatCurrency(amount: number) {
     currency: 'GHS',
   }).format(amount);
 }
-
+ 
 
 import { createClient } from '@supabase/supabase-js';
 

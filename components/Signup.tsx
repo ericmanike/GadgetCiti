@@ -95,13 +95,12 @@ export default function Signup() {
 
             if (data.user) {
                 const { error: dbError } = await supabase
-                    .from('USERS')
+                    .from('users')
                     .upsert({
                         id: data.user.id,
-                        full_name: signUpData.fullName,
+                        name: signUpData.fullName,
                         email: signUpData.email,
                         phone: signUpData.phone,
-                        role: 'Buyer/Seller',
                     })
 
                 if (dbError) {

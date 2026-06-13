@@ -1,0 +1,344 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { 
+  Tag, Search, Plus, Trash2, Loader2, AlertCircle, CheckCircle, Sparkles 
+} from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+
+interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  productCount: number;
+}
+
+export default function AdminCategoriesPage() {
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Quick Add State
+  const [newCatName, setNewCatName] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  // Delete State
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [cannotDeleteMsg, setCannotDeleteMsg] = useState<string | null>(null);
+
+  async function loadCategories() {
+    try {
+      setLoading(true);
+      
+      // 1. Fetch categories
+      const { data: dbCats, error: catError } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+        .order('name');
+      
+      if (catError) throw catError;
+
+      // 2. Fetch all products to count occurrences in memory
+      const { data: dbProducts } = await supabase
+        .from('products')
+        .select('category_id');
+
+      const countsMap: Record<string, number> = {};
+      dbProducts?.forEach((p: any) => {
+        if (p.category_id) {
+          const cid = p.category_id.toString();
+          countsMap[cid] = (countsMap[cid] || 0) + 1;
+        }
+      });
+
+      const mappedCats: CategoryItem[] = dbCats?.map((cat: any) => ({
+        id: cat.id.toString(),
+        name: cat.name || "Unnamed",
+        slug: cat.slug || "",
+        productCount: countsMap[cat.id.toString()] || 0
+      })) || [];
+
+      setCategories(mappedCats);
+
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  // Handle Add Category
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) return;
+
+    setSubmitting(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const slug = newCatName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      // Check duplicate locally first
+      const duplicate = categories.find(c => c.name.toLowerCase() === newCatName.trim().toLowerCase() || c.slug === slug);
+      if (duplicate) {
+        setErrorMsg('A category with this name or slug already exists.');
+        setSubmitting(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('categories')
+        .insert({
+          name: newCatName.trim(),
+          slug
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+
+      setSuccessMsg(`Category "${newCatName.trim()}" created successfully!`);
+      setNewCatName('');
+      await loadCategories();
+      
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err: any) {
+      console.error("Failed to add category:", err);
+      setErrorMsg(err.message || 'Failed to create category.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Check and trigger Delete
+  const checkDeleteCategory = (cat: CategoryItem) => {
+    if (cat.productCount > 0) {
+      setCannotDeleteMsg(`Category "${cat.name}" cannot be deleted because it is currently linked to ${cat.productCount} active product listings. Please re-assign those products first.`);
+    } else {
+      setDeletingId(cat.id);
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setCategories(categories.filter(c => c.id !== id));
+      setDeletingId(null);
+    } catch (err) {
+      console.error("Error deleting category:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const filteredCategories = categories.filter(cat => 
+    cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cat.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
+      
+      {/* Page Header */}
+      <div className="border-b border-slate-850 pb-5">
+        <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          Categories Inventory <Sparkles className="text-orange-500 w-5 h-5" />
+        </h1>
+        <p className="text-slate-400 text-sm mt-0.5">
+          Configure product classification nodes, search slugs, and monitor active catalog stock distribution.
+        </p>
+      </div>
+
+      {/* Main Grid: Add Panel (Left/Top) & Categories Grid (Right/Bottom) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Create Category Panel */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 h-fit space-y-6 shadow-xl">
+          <div>
+            <h2 className="text-lg font-black text-white tracking-tight">Create Category</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Add a new catalog routing node to the shop</p>
+          </div>
+
+          <form onSubmit={handleAddCategory} className="space-y-4">
+            <div>
+              <label htmlFor="catName" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                Category Name *
+              </label>
+              <input
+                type="text"
+                id="catName"
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                placeholder="e.g. Smart Home"
+                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-orange-500 transition"
+                required
+              />
+              <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+                Auto-generates routing slugs: <strong>smart-home</strong>
+              </span>
+            </div>
+
+            {errorMsg && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs flex items-center gap-2">
+                <AlertCircle size={14} className="shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {successMsg && (
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center gap-2">
+                <CheckCircle size={14} className="shrink-0" />
+                <span>{successMsg}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting || !newCatName.trim()}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-orange-500/20 text-sm cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {submitting ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+              <span>Add Category</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Categories Directory Grid */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Lookup Input */}
+          <div className="relative">
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input 
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search active categories by label name or slug..."
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-slate-200 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500 transition shadow-md"
+            />
+          </div>
+
+          {/* Grid listing */}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 bg-slate-900 border border-slate-800 rounded-3xl">
+              <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+              <p className="text-slate-400 font-semibold">Updating categorization nodes...</p>
+            </div>
+          ) : filteredCategories.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 bg-slate-900 border border-slate-800 rounded-3xl text-center space-y-3">
+              <div className="w-12 h-12 bg-slate-950 border border-slate-850 rounded-full flex items-center justify-center text-slate-600">
+                <Tag size={20} />
+              </div>
+              <div>
+                <p className="text-slate-400 font-semibold text-sm">No Categories Found</p>
+                <p className="text-slate-500 text-xs mt-1">There are no categories matching your filter.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredCategories.map((cat) => (
+                <div 
+                  key={cat.id} 
+                  className="bg-slate-900 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 hover:bg-slate-850/20 transition-all duration-200 flex justify-between items-start gap-4 group"
+                >
+                  <div className="space-y-2 truncate">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0">
+                        <Tag size={14} />
+                      </div>
+                      <h3 className="font-bold text-slate-200 text-sm md:text-base leading-tight truncate group-hover:text-orange-400 transition-colors">
+                        {cat.name}
+                      </h3>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono text-slate-550 truncate">slug: {cat.slug}</p>
+                      <span className="inline-block text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold mt-1.5">
+                        {cat.productCount} {cat.productCount === 1 ? 'listed gadget' : 'listed gadgets'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => checkDeleteCategory(cat)}
+                    className="p-2 bg-slate-800 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 rounded-lg transition cursor-pointer border border-transparent hover:border-rose-500/10 shrink-0"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+        </div>
+
+      </div>
+
+      {/* Cannot Delete Modal Alert */}
+      {cannotDeleteMsg && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center space-x-2 text-rose-400">
+              <AlertCircle size={24} />
+              <h3 className="text-lg font-black text-white">Integrity Guard Lock</h3>
+            </div>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              {cannotDeleteMsg}
+            </p>
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setCannotDeleteMsg(null)}
+                className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition cursor-pointer shadow-lg shadow-orange-500/20"
+              >
+                Understood
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingId && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <h3 className="text-lg font-bold text-white">Delete Category</h3>
+            <p className="text-slate-400 text-sm">
+              Are you sure you want to permanently delete this category? This will remove it from the classification filters list.
+            </p>
+            <div className="flex gap-3 justify-end pt-2">
+              <button
+                disabled={submitting}
+                onClick={() => setDeletingId(null)}
+                className="px-4 py-2 border border-slate-700 text-slate-300 bg-slate-850 hover:bg-slate-800 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={submitting}
+                onClick={() => deletingId && handleDeleteCategory(deletingId)}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {submitting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
