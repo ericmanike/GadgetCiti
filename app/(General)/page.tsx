@@ -57,12 +57,12 @@ export default function Home() {
             
             {/* Small Category Cards */}
             {[
-              { title: 'Laptops', url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80', query: 'laptops' },
+              { title: 'Laptops', url: '/L1.jpg', query: 'laptops' },
               { title: 'Printers', url: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&q=80', query: 'printers' },
-              { title: 'iPhones', url: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&q=80', query: 'iphones' },
-              { title: 'Samsung', url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&q=80', query: 'samsung' },
-              { title: 'Tablets', url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80', query: 'tablets' },
-              { title: 'Accessories', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80', query: 'accessories' },
+              { title: 'Flashy iPhones', url: '/p2.jpg', query: 'iphones' },
+              { title: 'hardware & IT infrastructure', url: 'hardware.jpg', query: 'hardware & IT infrastructure' },
+              { title: 'Tablets', url: 'tb1.jpg', query: 'tablets' },
+              { title: 'Accessories', url: '/access.jpg', query: 'accessories' },
             ].map((cat, idx) => (
               <Link 
                 key={idx}
@@ -72,7 +72,7 @@ export default function Home() {
                 <img 
                   src={cat.url} 
                   alt={cat.title} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full  object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex items-center justify-center p-2">

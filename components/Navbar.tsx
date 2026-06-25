@@ -8,7 +8,7 @@ import Sidebar from './Sidebar';
 import ActiveLink from './ActiveLink';
 import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+
 import Marquee from './marquee';
 
 import { Suspense } from 'react';
@@ -82,8 +82,11 @@ const Navbar = () => {
             <button className="p-2 hover:bg-gray-100 rounded-lg transition" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
-            <Link href="/" className="flex items-center gap-2">
-                    SWAPPI
+            <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
+           
+              <span className="font-outfit font-black text-xl md:text-2xl tracking-tight text-gray-900 group-hover:text-gray-800 transition-colors">
+                Gaddget<span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Citi</span>
+              </span>
             </Link>
           </div>
 

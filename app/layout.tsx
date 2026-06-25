@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 
 import { ToastProvider } from "@/components/toastProvider";
@@ -9,6 +9,11 @@ import { CartProvider } from "@/components/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -62,7 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} font-sans bg-gray-300`}>
+      <body className={`${geistSans.variable} ${outfit.variable} font-sans bg-gray-300`}>
         <AuthProvider>
           <CartProvider>
             <ToastProvider>

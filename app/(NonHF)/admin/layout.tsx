@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 1. Loading State
   if (authLoading || dbLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
+      <div className="min-h-screen bg-zinc-100 flex flex-col items-center justify-center text-black">
         <Loader2 className="animate-spin text-orange-500 w-12 h-12 mb-4" />
         <p className="text-slate-400 font-semibold animate-pulse">Securing connection to SWAPPI ADMIN...</p>
       </div>
@@ -84,7 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 2. Not logged in state
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 max-w-md w-full shadow-2xl text-center space-y-6">
           <div className="w-16 h-16 bg-orange-500/10 border border-orange-500/20 rounded-full flex items-center justify-center mx-auto text-orange-500">
             <KeyRound size={32} />
@@ -109,7 +109,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 3. Logged in but not an Admin
   if (isAdmin === false) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-lg w-full shadow-2xl space-y-6 text-center">
           <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500 animate-bounce">
             <ShieldAlert size={40} />
@@ -152,7 +152,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // 4. Authorized Admin View
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-zinc-100 text-slate-950 flex flex-col md:flex-row font-sans">
       
       {/* Desktop Sidebar Sidebar - Always Visible on md+ */}
       <aside className="hidden md:flex md:w-64 bg-slate-900 border-r border-slate-800 flex-col p-6 space-y-8 min-h-screen shadow-xl shrink-0">
