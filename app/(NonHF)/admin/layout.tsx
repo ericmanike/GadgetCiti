@@ -161,7 +161,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             S
           </div>
           <span className="font-black text-xl text-white tracking-widest uppercase">
-            Swappi <span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
+            Gaddets<span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
           </span>
         </div>
 
