@@ -271,9 +271,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
                 </div>
               </div>
-              <button 
+              <button  
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 text-slate-400 font-semibold py-2 rounded-xl text-sm transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2
+                 bg-slate-800 hover:bg-red-500/10 hover:text-red-400
+                  text-slate-400 font-semibold py-2 rounded-xl text-sm 
+                  transition-colors cursor-pointer"
               >
                 <LogOut size={16} />
                 <span>Logout</span>

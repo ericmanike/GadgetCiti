@@ -4,6 +4,7 @@ import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 import HeroSlider from '@/components/HeroSlider';
+import Image from 'next/image';
 
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
@@ -58,10 +59,10 @@ export default function Home() {
             {/* Small Category Cards */}
             {[
               { title: 'Laptops', url: '/L1.jpg', query: 'laptops' },
-              { title: 'Printers', url: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&q=80', query: 'printers' },
+              { title: 'Printers', url: '/printers', query: 'printers' },
               { title: 'Flashy iPhones', url: '/p2.jpg', query: 'iphones' },
-              { title: 'hardware & IT infrastructure', url: 'hardware.jpg', query: 'hardware & IT infrastructure' },
-              { title: 'Tablets', url: 'tb1.jpg', query: 'tablets' },
+              { title: 'hardware & IT infrastructure', url: '/hardware.jpg', query: 'hardware & IT infrastructure' },
+              { title: 'Tablets', url: '/tb1.jpg', query: 'tablets' },
               { title: 'Accessories', url: '/access.jpg', query: 'accessories' },
             ].map((cat, idx) => (
               <Link 
@@ -69,10 +70,14 @@ export default function Home() {
                 href={`/buy?category=${cat.query}`}
                 className="relative h-[90px] md:h-[150px] rounded-[8px] overflow-hidden group shadow-sm border border-slate-100  bg-slate-100 md:col-span-2"
               >
-                <img 
+                <Image
                   src={cat.url} 
                   alt={cat.title} 
+                  fill
+                  placeholder='blur'
+                   blurDataURL="data:image/jpeg;base64"
                   className="absolute inset-0 w-full h-full  object-cover transition-transform duration-500 group-hover:scale-110"
+                 
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex items-center justify-center p-2">

@@ -8,6 +8,8 @@ import Sidebar from './Sidebar';
 import ActiveLink from './ActiveLink';
 import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
+import logo from '@/public/logo.png';
+import Image from 'next/image';
 
 import Marquee from './marquee';
 
@@ -84,9 +86,7 @@ const Navbar = () => {
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
            
-              <span className="font-outfit font-black text-xl md:text-2xl tracking-tight text-gray-900 group-hover:text-gray-800 transition-colors">
-                Gaddget<span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Citi</span>
-              </span>
+             <Image src={logo} alt="logo" width={90} height={60} className=" w-12 h-10" />
             </Link>
           </div>
 
