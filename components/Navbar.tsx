@@ -86,7 +86,7 @@ const Navbar = () => {
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
            
-             <Image src={logo} alt="logo" width={90} height={60} className=" w-12 h-10" />
+             <Image src={logo} alt="logo" width={90} height={60} className=" w-10 h-8  md:w-12  md:h-10" />
             </Link>
           </div>
 

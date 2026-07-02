@@ -74,6 +74,7 @@ export default function Home() {
                   src={cat.url} 
                   alt={cat.title} 
                   fill
+                  priority={true}
                   placeholder='blur'
                    blurDataURL="data:image/jpeg;base64"
                   className="absolute inset-0 w-full h-full  object-cover transition-transform duration-500 group-hover:scale-110"
@@ -96,7 +97,7 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={SPONSORED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Sponsored Gadgets"
+            title="Sponsored Products"
             viewAllLink="/buy"
           />
         </section>

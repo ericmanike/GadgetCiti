@@ -151,14 +151,14 @@ export default function AdminCategoriesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-slate-800">
       
       {/* Page Header */}
-      <div className="border-b border-slate-850 pb-5">
-        <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+      <div className="border-b border-slate-200 pb-5">
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
           Categories Inventory <Sparkles className="text-orange-500 w-5 h-5" />
         </h1>
-        <p className="text-slate-400 text-sm mt-0.5">
+        <p className="text-slate-550 text-sm mt-0.5 font-medium">
           Configure product classification nodes, search slugs, and monitor active catalog stock distribution.
         </p>
       </div>
@@ -167,15 +167,15 @@ export default function AdminCategoriesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Create Category Panel */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 h-fit space-y-6 shadow-xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 h-fit space-y-6 shadow-sm">
           <div>
-            <h2 className="text-lg font-black text-white tracking-tight">Create Category</h2>
-            <p className="text-xs text-slate-500 mt-0.5">Add a new catalog routing node to the shop</p>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">Create Category</h2>
+            <p className="text-xs text-slate-550 mt-0.5">Add a new catalog routing node to the shop</p>
           </div>
 
           <form onSubmit={handleAddCategory} className="space-y-4">
             <div>
-              <label htmlFor="catName" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+              <label htmlFor="catName" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                 Category Name *
               </label>
               <input
@@ -184,23 +184,23 @@ export default function AdminCategoriesPage() {
                 value={newCatName}
                 onChange={(e) => setNewCatName(e.target.value)}
                 placeholder="e.g. Smart Home"
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-orange-500 transition"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                 required
               />
-              <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+              <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal font-semibold">
                 Auto-generates routing slugs: <strong>smart-home</strong>
               </span>
             </div>
 
             {errorMsg && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
                 <AlertCircle size={14} className="shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             {successMsg && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3 bg-emerald-550/10 border border-emerald-200 text-emerald-700 rounded-xl text-xs flex items-center gap-2">
                 <CheckCircle size={14} className="shrink-0" />
                 <span>{successMsg}</span>
               </div>
@@ -222,29 +222,29 @@ export default function AdminCategoriesPage() {
           
           {/* Lookup Input */}
           <div className="relative">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input 
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search active categories by label name or slug..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-slate-200 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500 transition shadow-md"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-slate-850 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 transition shadow-sm"
             />
           </div>
 
           {/* Grid listing */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-slate-900 border border-slate-800 rounded-3xl">
+            <div className="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
               <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
-              <p className="text-slate-400 font-semibold">Updating categorization nodes...</p>
+              <p className="text-slate-500 font-semibold">Updating categorization nodes...</p>
             </div>
           ) : filteredCategories.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 bg-slate-900 border border-slate-800 rounded-3xl text-center space-y-3">
-              <div className="w-12 h-12 bg-slate-950 border border-slate-850 rounded-full flex items-center justify-center text-slate-600">
+            <div className="flex flex-col items-center justify-center py-16 bg-white border border-slate-200 rounded-3xl text-center space-y-3 shadow-sm">
+              <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded-full flex items-center justify-center text-slate-400">
                 <Tag size={20} />
               </div>
               <div>
-                <p className="text-slate-400 font-semibold text-sm">No Categories Found</p>
+                <p className="text-slate-800 font-semibold text-sm">No Categories Found</p>
                 <p className="text-slate-500 text-xs mt-1">There are no categories matching your filter.</p>
               </div>
             </div>
@@ -253,20 +253,20 @@ export default function AdminCategoriesPage() {
               {filteredCategories.map((cat) => (
                 <div 
                   key={cat.id} 
-                  className="bg-slate-900 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 hover:bg-slate-850/20 transition-all duration-200 flex justify-between items-start gap-4 group"
+                  className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-slate-350 hover:bg-slate-50/10 transition-all duration-200 flex justify-between items-start gap-4 group shadow-sm animate-in fade-in"
                 >
                   <div className="space-y-2 truncate">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center shrink-0 shadow-xs">
                         <Tag size={14} />
                       </div>
-                      <h3 className="font-bold text-slate-200 text-sm md:text-base leading-tight truncate group-hover:text-orange-400 transition-colors">
+                      <h3 className="font-bold text-slate-900 text-sm md:text-base leading-tight truncate group-hover:text-orange-500 transition-colors">
                         {cat.name}
                       </h3>
                     </div>
                     <div>
-                      <p className="text-[10px] font-mono text-slate-550 truncate">slug: {cat.slug}</p>
-                      <span className="inline-block text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold mt-1.5">
+                      <p className="text-[10px] font-mono text-slate-450 truncate">slug: {cat.slug}</p>
+                      <span className="inline-block text-[10px] bg-slate-100 border border-slate-200 text-slate-650 px-2 py-0.5 rounded-full font-bold mt-1.5">
                         {cat.productCount} {cat.productCount === 1 ? 'listed gadget' : 'listed gadgets'}
                       </span>
                     </div>
@@ -274,7 +274,7 @@ export default function AdminCategoriesPage() {
 
                   <button
                     onClick={() => checkDeleteCategory(cat)}
-                    className="p-2 bg-slate-800 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 rounded-lg transition cursor-pointer border border-transparent hover:border-rose-500/10 shrink-0"
+                    className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 hover:border-rose-100 rounded-lg transition cursor-pointer shrink-0"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -290,12 +290,12 @@ export default function AdminCategoriesPage() {
       {/* Cannot Delete Modal Alert */}
       {cannotDeleteMsg && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <div className="flex items-center space-x-2 text-rose-400">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center space-x-2 text-rose-650">
               <AlertCircle size={24} />
-              <h3 className="text-lg font-black text-white">Integrity Guard Lock</h3>
+              <h3 className="text-lg font-black text-slate-900">Integrity Guard Lock</h3>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-600 text-sm leading-relaxed font-medium">
               {cannotDeleteMsg}
             </p>
             <div className="flex justify-end pt-2">
@@ -313,23 +313,23 @@ export default function AdminCategoriesPage() {
       {/* Delete Confirmation Modal */}
       {deletingId && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white">Delete Category</h3>
-            <p className="text-slate-400 text-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <h3 className="text-lg font-bold text-slate-900">Delete Category</h3>
+            <p className="text-slate-550 text-sm leading-relaxed">
               Are you sure you want to permanently delete this category? This will remove it from the classification filters list.
             </p>
             <div className="flex gap-3 justify-end pt-2">
               <button
                 disabled={submitting}
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 border border-slate-700 text-slate-300 bg-slate-850 hover:bg-slate-800 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 disabled={submitting}
                 onClick={() => deletingId && handleDeleteCategory(deletingId)}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
+                className="px-4 py-2 bg-red-500 hover:bg-red-650 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
               >
                 {submitting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                 Delete

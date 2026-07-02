@@ -87,6 +87,8 @@ export default function HeroSlider({
                   alt={slide.imageAlt || slide.title}
                   fill
                   priority={index === 0}
+                  placeholder='blur'
+                  blurDataURL="data:image/jpeg;base64"
                   className="object-cover object-center w-full h-full"
                   sizes="100vw"
                 />

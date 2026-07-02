@@ -253,15 +253,15 @@ export default function AdminProductsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-slate-800">
       
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-850 pb-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Products Directory <Sparkles className="text-orange-500 w-5 h-5" />
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
+          <p className="text-slate-550 text-sm mt-0.5 font-medium">
             Manage your electronic gadgets directory, catalog pricing, and inventory levels.
           </p>
         </div>
@@ -275,26 +275,26 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center shadow-xs">
         {/* Search */}
         <div className="relative w-full md:flex-1">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input 
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search products by title, name, or brand..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500 transition"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
           />
         </div>
 
         {/* Category Filter */}
         <div className="relative w-full md:w-64 shrink-0">
-          <Filter size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Filter size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-300 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer appearance-none"
+            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer appearance-none animate-in"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -306,94 +306,94 @@ export default function AdminProductsPage() {
 
       {/* Grid Listing / Table */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 bg-slate-900 border border-slate-800 rounded-3xl">
+        <div className="flex flex-col items-center justify-center py-24 bg-white border border-slate-200 rounded-3xl shadow-sm">
           <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
-          <p className="text-slate-400 font-semibold">Updating catalog directory...</p>
+          <p className="text-slate-500 font-semibold">Updating catalog directory...</p>
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-900 border border-slate-800 rounded-3xl text-center space-y-4">
-          <div className="w-16 h-16 bg-slate-950 border border-slate-850 rounded-full flex items-center justify-center text-slate-600">
+        <div className="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl text-center space-y-4 shadow-sm">
+          <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-full flex items-center justify-center text-slate-450">
             <ShoppingBag size={28} />
           </div>
           <div>
-            <h3 className="text-white font-bold text-lg">No Products Found</h3>
-            <p className="text-slate-500 text-sm max-w-sm mx-auto mt-1">
+            <h3 className="text-slate-800 font-bold text-lg">No Products Found</h3>
+            <p className="text-slate-500 text-sm max-w-sm mx-auto mt-1 leading-relaxed">
               There are no products matching your search query. Try broadening your criteria or list a new product.
             </p>
           </div>
           <button
             onClick={() => setIsAddDrawerOpen(true)}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-4 py-2 rounded-xl text-sm transition cursor-pointer"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2 rounded-xl text-sm transition cursor-pointer"
           >
             Add Product
           </button>
         </div>
       ) : (
-        <div className="bg-slate-900 border border-slate-850 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm animate-in fade-in">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/50 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-500 text-xs font-bold uppercase tracking-wider">
                   <th className="py-4 px-6">Product Details</th>
-                  <th className="py-4 px-6 cursor-pointer hover:text-slate-200 transition" onClick={() => handleSort('name')}>
+                  <th className="py-4 px-6 cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort('name')}>
                     <span className="flex items-center gap-1">Brand & Name <ArrowUpDown size={12} /></span>
                   </th>
                   <th className="py-4 px-6">Category</th>
-                  <th className="py-4 px-6 cursor-pointer hover:text-slate-200 transition" onClick={() => handleSort('price')}>
+                  <th className="py-4 px-6 cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort('price')}>
                     <span className="flex items-center gap-1">Price <ArrowUpDown size={12} /></span>
                   </th>
-                  <th className="py-4 px-6 cursor-pointer hover:text-slate-200 transition" onClick={() => handleSort('stock')}>
+                  <th className="py-4 px-6 cursor-pointer hover:text-slate-800 transition" onClick={() => handleSort('stock')}>
                     <span className="flex items-center gap-1">Inventory <ArrowUpDown size={12} /></span>
                   </th>
                   <th className="py-4 px-6 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-850 text-sm text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
                 {filteredProducts.map((prod) => (
-                  <tr key={prod.id} className="hover:bg-slate-850/40 transition duration-150">
+                  <tr key={prod.id} className="hover:bg-slate-50/50 border-b border-slate-100 transition duration-150">
                     <td className="py-4 px-6 whitespace-nowrap">
                       <img 
                         src={prod.imageUrl} 
                         alt={prod.name} 
-                        className="w-12 h-12 rounded-xl object-cover border border-slate-800 shadow-md"
+                        className="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-xs"
                       />
                     </td>
                     <td className="py-4 px-6">
                       <div>
-                        <span className="text-[10px] text-slate-500 font-black uppercase tracking-wider block">{prod.brand}</span>
-                        <span className="font-bold text-slate-200 block text-sm leading-snug">{prod.name}</span>
+                        <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider block">{prod.brand}</span>
+                        <span className="font-bold text-slate-900 block text-sm leading-snug">{prod.name}</span>
                       </div>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <span className="text-xs bg-slate-800/80 text-slate-400 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
+                      <span className="text-xs bg-slate-100 border border-slate-200 text-slate-650 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
                         {prod.category}
                       </span>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <span className="font-black text-slate-100">GHS {prod.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                      <span className="font-bold text-slate-900">GHS {prod.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
                         prod.stock > 10 
-                          ? 'bg-emerald-500/10 text-emerald-400' 
+                          ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
                           : prod.stock > 0 
-                            ? 'bg-amber-500/10 text-amber-400' 
-                            : 'bg-rose-500/10 text-rose-400'
+                            ? 'bg-amber-50 border-amber-100 text-amber-700' 
+                            : 'bg-rose-50 border-rose-100 text-rose-700'
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
-                          prod.stock > 10 ? 'bg-emerald-400' : prod.stock > 0 ? 'bg-amber-400' : 'bg-rose-400'
+                          prod.stock > 10 ? 'bg-emerald-500' : prod.stock > 0 ? 'bg-amber-500' : 'bg-rose-500'
                         }`} />
                         {prod.stock > 0 ? `${prod.stock} units` : 'Out of stock'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-center whitespace-nowrap">
                       <div className="flex justify-center items-center gap-2">
-                        <a href={`/products/${prod.id}`} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition cursor-pointer">
+                        <a href={`/products/${prod.id}`} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg transition cursor-pointer">
                           <Eye size={14} />
                         </a>
                         <button 
                           onClick={() => setDeletingId(prod.id)}
-                          className="p-2 bg-slate-800 hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 rounded-lg transition cursor-pointer border border-transparent hover:border-rose-500/10"
+                          className="p-2 bg-slate-50 hover:bg-rose-550/10 hover:bg-rose-50 hover:text-rose-600 text-slate-500 rounded-lg border border-slate-200 hover:border-rose-100 transition cursor-pointer"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -410,23 +410,23 @@ export default function AdminProductsPage() {
       {/* Delete Confirmation Modal */}
       {deletingId && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white">Delete Product</h3>
-            <p className="text-slate-400 text-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-lg font-bold text-slate-900">Delete Product</h3>
+            <p className="text-slate-550 text-sm leading-relaxed">
               Are you sure you want to permanently delete this product? This action removes all dynamic catalogs and linked image listings.
             </p>
             <div className="flex gap-3 justify-end pt-2">
               <button
                 disabled={submitting}
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2 border border-slate-700 text-slate-300 bg-slate-850 hover:bg-slate-800 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 disabled={submitting}
                 onClick={() => deletingId && handleDeleteProduct(deletingId)}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
+                className="px-4 py-2 bg-red-500 hover:bg-red-650 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
               >
                 {submitting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                 Delete
@@ -439,24 +439,24 @@ export default function AdminProductsPage() {
       {/* Add Product Side Drawer Modal */}
       {isAddDrawerOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex justify-end">
-          <div className="w-full max-w-lg bg-slate-900 border-l border-slate-800 h-full overflow-y-auto p-6 md:p-8 flex flex-col space-y-6 shadow-2xl animate-in slide-in-from-right duration-350">
+          <div className="w-full max-w-lg bg-white border-l border-slate-200 h-full overflow-y-auto p-6 md:p-8 flex flex-col space-y-6 shadow-2xl animate-in slide-in-from-right duration-350">
             
             {/* Header */}
-            <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div className="flex justify-between items-center border-b border-slate-250 pb-4">
               <div>
-                <h3 className="text-xl font-black text-white">Publish New Gadget</h3>
+                <h3 className="text-xl font-black text-slate-900">Publish New Gadget</h3>
                 <p className="text-xs text-slate-500">List an electronic gadget for sale on Swappi</p>
               </div>
               <button 
                 onClick={() => setIsAddDrawerOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition cursor-pointer"
+                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition cursor-pointer border border-slate-200"
               >
                 <X size={20} />
               </button>
             </div>
 
             {successMsg && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm font-semibold text-center">
+              <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-700 text-sm font-semibold text-center animate-pulse">
                 {successMsg}
               </div>
             )}
@@ -467,7 +467,7 @@ export default function AdminProductsPage() {
                 <div className="space-y-4">
                   {/* Product Name */}
                   <div>
-                    <label htmlFor="name" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="name" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                       Product Name *
                     </label>
                     <Field
@@ -475,10 +475,10 @@ export default function AdminProductsPage() {
                       id="name"
                       name="name"
                       placeholder="e.g. iPhone 15 Pro Max"
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                     />
                     {formik.touched.name && formik.errors.name && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                         <AlertCircle size={12} /> {formik.errors.name}
                       </p>
                     )}
@@ -487,7 +487,7 @@ export default function AdminProductsPage() {
                   {/* Brand & Category row */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="brand" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="brand" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Brand *
                       </label>
                       <Field
@@ -495,24 +495,24 @@ export default function AdminProductsPage() {
                         id="brand"
                         name="brand"
                         placeholder="e.g. Apple"
-                        className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.brand && formik.errors.brand && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                           <AlertCircle size={12} /> {formik.errors.brand}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label htmlFor="category" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="category" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Category *
                       </label>
                       <Field
                         as="select"
                         id="category"
                         name="category"
-                        className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-300 text-sm focus:outline-none focus:border-orange-500 transition cursor-pointer"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer"
                       >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
@@ -521,7 +521,7 @@ export default function AdminProductsPage() {
                         <option value="Other Electronics">Other Electronics</option>
                       </Field>
                       {formik.touched.category && formik.errors.category && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                           <AlertCircle size={12} /> {formik.errors.category}
                         </p>
                       )}
@@ -531,7 +531,7 @@ export default function AdminProductsPage() {
                   {/* Price & Stock row */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="price" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="price" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Price (GHS) *
                       </label>
                       <Field
@@ -540,17 +540,17 @@ export default function AdminProductsPage() {
                         name="price"
                         step="0.01"
                         placeholder="1200.00"
-                        className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.price && formik.errors.price && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                           <AlertCircle size={12} /> {formik.errors.price}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label htmlFor="stock" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="stock" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Initial Stock *
                       </label>
                       <Field
@@ -558,10 +558,10 @@ export default function AdminProductsPage() {
                         id="stock"
                         name="stock"
                         placeholder="5"
-                        className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.stock && formik.errors.stock && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                           <AlertCircle size={12} /> {formik.errors.stock}
                         </p>
                       )}
@@ -570,7 +570,7 @@ export default function AdminProductsPage() {
 
                   {/* Image URL */}
                   <div>
-                    <label htmlFor="imageUrl" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="imageUrl" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                       Product Image URL
                     </label>
                     <Field
@@ -578,10 +578,10 @@ export default function AdminProductsPage() {
                       id="imageUrl"
                       name="imageUrl"
                       placeholder="e.g. https://images.unsplash.com/photo-..."
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                     />
                     {formik.touched.imageUrl && formik.errors.imageUrl && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                         <AlertCircle size={12} /> {formik.errors.imageUrl}
                       </p>
                     )}
@@ -589,7 +589,7 @@ export default function AdminProductsPage() {
 
                   {/* Overview summary */}
                   <div>
-                    <label htmlFor="overview" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="overview" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                       Overview Summary *
                     </label>
                     <Field
@@ -597,10 +597,10 @@ export default function AdminProductsPage() {
                       id="overview"
                       name="overview"
                       placeholder="e.g. Excellent flagship smartphone with pristine dynamic displays."
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                     />
                     {formik.touched.overview && formik.errors.overview && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                         <AlertCircle size={12} /> {formik.errors.overview}
                       </p>
                     )}
@@ -608,7 +608,7 @@ export default function AdminProductsPage() {
 
                   {/* Description */}
                   <div>
-                    <label htmlFor="description" className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="description" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                       Specifications & Details *
                     </label>
                     <Field
@@ -617,10 +617,10 @@ export default function AdminProductsPage() {
                       name="description"
                       rows={3}
                       placeholder="Explain features, specs, size, and package components in detail..."
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-650 text-sm focus:outline-none focus:border-orange-500 transition resize-none"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition resize-none text-slate-800"
                     />
                     {formik.touched.description && formik.errors.description && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
                         <AlertCircle size={12} /> {formik.errors.description}
                       </p>
                     )}
@@ -628,14 +628,14 @@ export default function AdminProductsPage() {
                 </div>
 
                 {/* Actions Footer */}
-                <div className="flex gap-4 pt-6 border-t border-slate-800 mt-6">
+                <div className="flex gap-4 pt-6 border-t border-slate-200 mt-6">
                   <button
                     type="button"
                     onClick={() => {
                       formik.resetForm();
                       setIsAddDrawerOpen(false);
                     }}
-                    className="flex-1 py-3 px-6 border border-slate-700 bg-slate-850 hover:bg-slate-800 text-slate-300 font-bold rounded-xl transition text-sm cursor-pointer"
+                    className="flex-1 py-3 px-6 border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition text-sm cursor-pointer"
                   >
                     Discard
                   </button>

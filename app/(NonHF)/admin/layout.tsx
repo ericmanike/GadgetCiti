@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Menu, X, LayoutDashboard, ShoppingBag, Tag, Users, LogOut, ShieldAlert, KeyRound, Loader2 
+  Menu, X, LayoutDashboard, ShoppingBag, Tag, Users, LogOut, ShieldAlert, KeyRound, Loader2, ClipboardList
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -30,6 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Products', href: '/admin/products', icon: ShoppingBag },
     { name: 'Categories', href: '/admin/categories', icon: Tag },
     { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Orders', href: '/admin/orders', icon: ClipboardList },
   ];
 
   useEffect(() => {

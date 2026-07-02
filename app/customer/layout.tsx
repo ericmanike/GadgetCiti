@@ -1,17 +1,103 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from "@/components/Navbar";
 import CustomerSidebar from "@/components/CustomerSidebar";
 
-export default function layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+    const pathname = usePathname();
+
+    // Close mobile sidebar when route changes
+    useEffect(() => {
+        setIsMobileSidebarOpen(false);
+    }, [pathname]);
+
+    // Prevent body scrolling when mobile sidebar is open
+    useEffect(() => {
+        if (isMobileSidebarOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isMobileSidebarOpen]);
+
     return (
         <div className="min-h-screen bg-gray-300 relative">
             <Navbar />
-            <div className="max-w-7xl mx-auto px-1 md:px-4 pt-36 md:pt-44 pb-8 grid grid-cols-[115px_1fr] md:grid-cols-[264px_1fr] gap-2 md:gap-6">
-                <aside className="mt-2">
-                    <CustomerSidebar />
-                </aside>
-                <main className="overflow-hidden relative">
-                    {children}
-                </main>
+            
+            <div className="max-w-7xl mx-auto px-4 pt-36 md:pt-44 pb-8">
+                {/* Mobile Top Navigation Bar */}
+                <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 rounded-lg shadow-sm mb-4 border border-gray-200">
+                    <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                        <span className="font-bold text-slate-800 text-sm tracking-wide">Customer Dashboard</span>
+                    </div>
+                    <button
+                        onClick={() => setIsMobileSidebarOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
+                    >
+                        <Menu size={16} />
+                        Menu
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-[264px_1fr] gap-4 md:gap-6">
+                    {/* Desktop Sidebar (Always visible on large screens, hidden on mobile) */}
+                    <aside className="hidden md:block">
+                        <CustomerSidebar />
+                    </aside>
+
+                    {/* Mobile Drawer Sidebar */}
+                    <AnimatePresence>
+                        {isMobileSidebarOpen && (
+                            <div className="fixed inset-0 z-[100] md:hidden flex">
+                                {/* Backdrop overlay */}
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+                                    onClick={() => setIsMobileSidebarOpen(false)}
+                                />
+                                
+                                {/* Drawer Panel */}
+                                <motion.div 
+                                    initial={{ x: '-100%' }}
+                                    animate={{ x: 0 }}
+                                    exit={{ x: '-100%' }}
+                                    transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+                                    className="relative flex flex-col w-[280px] max-w-[85%] h-full bg-white shadow-2xl z-10 overflow-y-auto"
+                                >
+                                    <div className="flex justify-between items-center p-4 border-b border-gray-150 bg-gray-50">
+                                        <span className="font-bold text-slate-800 text-sm">Dashboard Menu</span>
+                                        <button 
+                                            onClick={() => setIsMobileSidebarOpen(false)}
+                                            className="p-1 rounded-md text-slate-500 hover:bg-gray-100 transition-colors cursor-pointer"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                    </div>
+                                    <div className="flex-1 p-2" onClick={() => setIsMobileSidebarOpen(false)}>
+                                        <CustomerSidebar />
+                                    </div>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Main Content Area */}
+                    <main className="overflow-hidden relative">
+                        {children}
+                    </main>
+                </div>
             </div>
         </div>
     );
