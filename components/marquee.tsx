@@ -10,8 +10,8 @@ const Marquee = () => {
   if (!visible) return null; // hide when closed
 
   return (
-    <div className=" hidden md:block relative bg-gray-800 text-white    p-2 overflow-hidden border-b border-yellow-400 ">
-      {/* Close button */}
+    <div className="block relative bg-gray-800 text-white    p-2 overflow-hidden border-b border-yellow-400 ">
+      {/* Close button
       <motion.button
       whileHover={{ scale: 1.5, color:'red'}}
       whileTap={{scale:1}}
@@ -21,17 +21,33 @@ const Marquee = () => {
         aria-label="Close "
       >
         x
-      </motion.button>
+      </motion.button> */}
 
       {/* Marquee text */}
       <Link href="/gifts" >
-      <div className="whitespace-nowrap animate-marquee m-auto text-center w-full cursor-pointer">
+      <div className="whitespace-nowrap animate-marquee m-auto text-center font-bold h-10 w-full cursor-pointer">
      
-        Welcome Bonus 🎁 Sign up and  claim  now
+        Welcome to  Gadgets Citi ,Your number one Destination for all electronic gadgets 🛍️🎉
         
-      </div>
+      </div> 
     </Link>
         <style jsx>{`
+
+        /* marquee */
+        @keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
+        
        
 
         `}</style>

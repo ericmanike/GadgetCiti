@@ -32,7 +32,7 @@ export default function DropdownProfile() {
     return (
       <button
         onClick={() => router.push('/auth/login')}
-        className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm font-bold hover:bg-orange-600 transition"
+        className="px-4 py-2  md:py-2 bg-orange-500 text-white rounded-lg cursor-pointer text-[10px] md:text-sm font-bold hover:bg-orange-600 transition"
       >
         Sign In
       </button>
