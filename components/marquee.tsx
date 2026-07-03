@@ -25,9 +25,9 @@ const Marquee = () => {
 
       {/* Marquee text */}
       <Link href="/gifts" >
-      <div className="whitespace-nowrap animate-marquee m-auto text-center font-bold h-10 w-full cursor-pointer">
+      <div className="whitespace-nowrap animate-marquee m-auto text-center font-bold h-10 w-full cursor-pointer tracking-wider">
      
-        Welcome to  Gadgets Citi ,Your number one Destination for all electronic gadgets 🛍️🎉
+        Welcome to <span className="text-orange-500">GADGETS CITI</span>, Your number one Destination for all electronic gadgets 🛍️🎉
         
       </div> 
     </Link>
