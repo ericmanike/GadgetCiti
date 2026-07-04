@@ -165,17 +165,7 @@ export default function RecycoProfile() {
 
   return (
     <div className="min-h-screen bg-gray-300 p-4 md:p-8">
-      <motion.button
-        whileHover={{ x: -5 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => router.replace('/')}
-        className="absolute top-4 md:top-8 left-4 md:left-8 flex
-         items-center gap-2 text-orange-500 hover:text-orange-600 font-bold transition-all cursor-pointer
-           py-2 rounded-full shadow-lg px-4"
-      >
-        <ArrowLeft size={18} />
-        <span>Back</span>
-      </motion.button>
+    
       <div className="max-w-5xl mx-auto">
         <form onSubmit={formik.handleSubmit}>
           {/* Main Profile Card */}

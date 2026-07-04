@@ -19,6 +19,13 @@ export default function CheckoutPage() {
     const [placed, setPlaced] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'mt'>('card');
 
+    const [momoNetwork, setMomoNetwork] = useState('13'); // '13' = MTN, '6' = Telecel, '7' = AT
+    const [momoNumber, setMomoNumber] = useState('');
+    const [paymentStatus, setPaymentStatus] = useState<'idle' | 'initiating' | 'otp_required' | 'pending' | 'success' | 'failed' | 'timeout'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [otpRef, setOtpRef] = useState('');
+    const [otpCode, setOtpCode] = useState('');
+
     const [form, setForm] = useState({
         fullName: '', email: '', phone: '',
         address: '', city: '', region: '', zip: '',
@@ -31,29 +38,84 @@ export default function CheckoutPage() {
 
     const update = (field: string, val: string) => setForm(f => ({ ...f, [field]: val }));
 
-    // Paystack MoMo handler — loaded dynamically to avoid SSR 'window is not defined'
-    const payWithMoMo = async () => {
-        const { default: PaystackPop } = await import('@paystack/inline-js');
-        const popup = new PaystackPop();
-        popup.newTransaction({
-            key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!,
-            email: form.email || 'customer@letronix.com',
-            amount: Math.round(total * 100), // Paystack uses pesewas (kobo)
-            currency: 'GHS',
-            channels: ['mobile_money'],
-            metadata: {
-                custom_fields: [
-                    { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
-                    { display_name: 'Phone', variable_name: 'phone', value: form.phone },
-                ],
-            },
-            onSuccess: () => {
-                setPlaced(true);
-            },
-            onCancel: () => {
-                // User closed the popup — stay on review page
-            },
-        });
+    // Poll payment status
+    const pollPaymentStatus = async (ref: string, attempt = 1) => {
+        if (attempt > 20) {
+            setPaymentStatus('timeout');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/payments/moolre', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'status', externalref: ref }),
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                if (result.status === 'success') {
+                    setPaymentStatus('success');
+                    setPlaced(true);
+                } else if (result.status === 'failed') {
+                    setPaymentStatus('failed');
+                    setErrorMessage(result.error || 'Transaction failed');
+                } else {
+                    // Still pending, check again in 3 seconds
+                    setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
+                }
+            } else {
+                setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
+            }
+        } catch (err) {
+            setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
+        }
+    };
+
+    // Moolre MoMo handler
+    const payWithMoMo = async (otp?: string, customRef?: string) => {
+        setPaymentStatus('initiating');
+        setErrorMessage('');
+        
+        const ref = customRef || `letronix-${Date.now()}`;
+        const numberToCharge = momoNumber || form.phone;
+
+        try {
+            const res = await fetch('/api/payments/moolre', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'initiate',
+                    channel: momoNetwork,
+                    payer: numberToCharge,
+                    amount: total.toFixed(2),
+                    externalref: ref,
+                    ...(otp ? { otpcode: otp } : {}),
+                }),
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                if (result.code === 'TP14') {
+                    setPaymentStatus('otp_required');
+                    setOtpRef(ref);
+                } else {
+                    setPaymentStatus('pending');
+                    pollPaymentStatus(ref);
+                }
+            } else {
+                if (result.code === 'TP14') {
+                    setPaymentStatus('otp_required');
+                    setOtpRef(ref);
+                } else {
+                    setPaymentStatus('failed');
+                    setErrorMessage(result.error || 'Failed to initiate payment.');
+                }
+            }
+        } catch (err: any) {
+            setPaymentStatus('failed');
+            setErrorMessage(err.message || 'An error occurred during payment.');
+        }
     };
 
     const handlePlaceOrder = () => {
@@ -205,9 +267,34 @@ export default function CheckoutPage() {
                                                 ))}
                                             </motion.div>
                                         ) : (
-                                            <motion.div key="mt-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                                                <div className="p-4 bg-green-50 border border-green-100 rounded-xl">
-                                                    <p className="text-sm text-green-700 font-medium">Payments are securely processed by <span className="font-black">Paystack</span>. You'll be prompted to complete your MoMo payment when you place your order.</p>
+                                            <motion.div key="mt-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-4">
+                                                <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
+                                                    <p className="text-sm text-orange-850 font-medium">
+                                                        Payments are securely processed by <span className="font-bold">Moolre Mobile Money</span>. You'll receive a prompt on your device to enter your MoMo PIN.
+                                                    </p>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Network</label>
+                                                    <select
+                                                        value={momoNetwork}
+                                                        onChange={e => setMomoNetwork(e.target.value)}
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm cursor-pointer"
+                                                    >
+                                                        <option value="13">MTN Mobile Money</option>
+                                                        <option value="6">Telecel Cash</option>
+                                                        <option value="7">AT Money</option>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Number</label>
+                                                    <input
+                                                        value={momoNumber}
+                                                        onChange={e => setMomoNumber(e.target.value)}
+                                                        placeholder={form.phone || '+233 XX XXX XXXX'}
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
+                                                    />
                                                 </div>
                                             </motion.div>
                                         )}
@@ -243,7 +330,7 @@ export default function CheckoutPage() {
                                         <p className="text-gray-500">{form.fullName} · {form.phone}</p>
                                         <p className="text-gray-500">
                                             {paymentMethod === 'mt'
-                                                ? 'Mobile Money (Paystack)'
+                                                ? `Mobile Money (${momoNetwork === '13' ? 'MTN' : momoNetwork === '6' ? 'Telecel' : 'AT'}) - ${momoNumber || form.phone}`
                                                 : `Card ending in ${form.cardNumber.slice(-4) || '****'}`
                                             }
                                         </p>
@@ -301,6 +388,101 @@ export default function CheckoutPage() {
                     </div>
                 </div>
             </div>
+            {/* Moolre Payment Status Modal */}
+            <AnimatePresence>
+                {paymentStatus !== 'idle' && (
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-[999]">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center relative overflow-hidden"
+                        >
+                            {paymentStatus === 'initiating' && (
+                                <div className="py-6 space-y-4">
+                                    <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                    <h3 className="text-lg font-black text-gray-900">Initiating Payment</h3>
+                                    <p className="text-gray-500 text-sm">Connecting to Moolre Mobile Money gateway...</p>
+                                </div>
+                            )}
+
+                            {paymentStatus === 'pending' && (
+                                <div className="py-6 space-y-4">
+                                    <div className="relative w-16 h-16 mx-auto">
+                                        <div className="absolute inset-0 border-4 border-orange-200 rounded-full"></div>
+                                        <div className="absolute inset-0 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
+                                    <h3 className="text-lg font-black text-gray-900">USSD Prompt Sent! 📲</h3>
+                                    <p className="text-gray-600 text-sm font-semibold">
+                                        Please check your phone for a Mobile Money prompt.
+                                    </p>
+                                    <p className="text-gray-500 text-xs">
+                                        Authorize the payment of <span className="font-bold text-gray-800">{formatCurrency(total)}</span> by entering your MoMo PIN on your device. We are waiting for your approval...
+                                    </p>
+                                </div>
+                            )}
+
+                            {paymentStatus === 'otp_required' && (
+                                <div className="py-6 space-y-4 text-left">
+                                    <div className="text-center">
+                                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto text-orange-600 text-xl mb-2">🔑</div>
+                                        <h3 className="text-lg font-black text-gray-900">Verification Required</h3>
+                                        <p className="text-gray-500 text-sm mt-1">Please enter the validation OTP code sent to your phone via SMS.</p>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <input
+                                            value={otpCode}
+                                            onChange={e => setOtpCode(e.target.value)}
+                                            placeholder="Enter OTP Code"
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none text-center font-bold tracking-widest text-lg"
+                                        />
+                                        <button
+                                            onClick={() => payWithMoMo(otpCode, otpRef)}
+                                            className="w-full bg-orange-50 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
+                                        >
+                                            Verify OTP & Pay
+                                        </button>
+                                        <button
+                                            onClick={() => setPaymentStatus('idle')}
+                                            className="w-full text-center text-xs font-semibold text-gray-400 hover:text-gray-655 transition cursor-pointer"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {paymentStatus === 'failed' && (
+                                <div className="py-6 space-y-4">
+                                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 text-xl font-black">✕</div>
+                                    <h3 className="text-lg font-black text-gray-900">Payment Failed</h3>
+                                    <p className="text-red-500 text-sm">{errorMessage}</p>
+                                    <button
+                                        onClick={() => setPaymentStatus('idle')}
+                                        className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition"
+                                    >
+                                        Try Again
+                                    </button>
+                                </div>
+                            )}
+
+                            {paymentStatus === 'timeout' && (
+                                <div className="py-6 space-y-4">
+                                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto text-yellow-600 text-xl font-black">!</div>
+                                    <h3 className="text-lg font-black text-gray-900">Payment Timeout</h3>
+                                    <p className="text-gray-500 text-sm">We did not receive confirmation in time. Please check your phone or try again.</p>
+                                    <button
+                                        onClick={() => setPaymentStatus('idle')}
+                                        className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition"
+                                    >
+                                        Try Again
+                                    </button>
+                                </div>
+                            )}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

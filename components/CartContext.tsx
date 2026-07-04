@@ -29,20 +29,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
     const [isCartLoadedFromDB, setIsCartLoadedFromDB] = useState(false);
 
-    // Initial local storage load (only for guests)
+    // Initial local storage load
     useEffect(() => {
         setIsMounted(true);
-        if (!user) {
-            const savedCart = localStorage.getItem("letronix-cart");
-            if (savedCart) {
-                try {
-                    setCart(JSON.parse(savedCart));
-                } catch (e) {
-                    console.error("Failed to parse cart", e);
-                }
+        const savedCart = localStorage.getItem("letronix-cart");
+        if (savedCart) {
+            try {
+                setCart(JSON.parse(savedCart));
+            } catch (e) {
+                console.error("Failed to parse cart", e);
             }
         }
-    }, [user]);
+    }, []);
 
     // Retrieve from DB when user logs in
     useEffect(() => {
@@ -78,12 +76,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     }, [user]);
 
-    // Sync to local storage for guests
+    // Sync to local storage
     useEffect(() => {
-        if (isMounted && !user) {
+        if (isMounted) {
             localStorage.setItem("letronix-cart", JSON.stringify(cart));
         }
-    }, [cart, isMounted, user]);
+    }, [cart, isMounted]);
 
     const syncItemToSupabase = async (product: Product, quantity: number) => {
         if (!user) return;

@@ -2,7 +2,7 @@
 import { ProductCard } from '@/components/ProductCard';
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
-import FeaturedCarousel from '@/components/FeaturedCarousel';
+
 import HeroSlider from '@/components/HeroSlider';
 import Image from 'next/image';
 
@@ -13,7 +13,7 @@ const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
   { id: 2, url: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1200&q=80', title: 'Gaming Beasts', description: 'Experience pure performance with top-tier hardware.' },
   { id: 3, url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80', title: 'IT Lab Gear', description: 'Reliable networking and server infrastructure.' },
-];  
+];
 
 
 
@@ -38,24 +38,34 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
-            <div className="col-span-full h-[fit-content] relative group  rounded-[9px] shadow-lg">
+            <div className="col-span-full h-[fit-content] relative group  rounded-[9px] shadow-lg mt-15 md:mt-1">
               <HeroSlider
-              slides={
-                COMPUTER_SLIDES.map((slide)=>({
-                id: slide.id,
-                title: slide.title,
-                backgroundImage: slide.url,
-                description: slide.description, 
-                ctaLink: "/buy",
-                ctaText: "Shop Now",
+                slides={
+                  COMPUTER_SLIDES.map((slide) => ({
+                    id: slide.id,
+                    title: slide.title,
+                    backgroundImage: slide.url,
+                    description: slide.description,
+                    ctaLink: "/buy",
+                    ctaText: "Shop Now",
 
-                
-              }))}
-              autoplay={true}
-              autoplayInterval={3000}
-              /> 
+
+                  }))}
+                autoplay={true}
+                autoplayInterval={3000}
+              />
             </div>
-            
+
+            {/* Section Header Text */}
+            <div className="col-span-full mt-6 mb-2">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight uppercase">
+                Shop by Category
+              </h2>
+              <p className="text-sm text-slate-500">
+                Explore our curated selection of high-quality electronics and tech accessories.
+              </p>
+            </div>
+
             {/* Small Category Cards */}
             {[
               { title: 'Laptops', url: '/L1.jpg', query: 'laptops' },
@@ -65,20 +75,20 @@ export default function Home() {
               { title: 'Tablets', url: '/tb1.jpg', query: 'tablets' },
               { title: 'Accessories', url: '/access.jpg', query: 'accessories' },
             ].map((cat, idx) => (
-              <Link 
+              <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
                 className="relative h-[90px] md:h-[150px] rounded-[8px] overflow-hidden group shadow-sm border border-slate-100  bg-slate-100 md:col-span-2"
               >
                 <Image
-                  src={cat.url} 
-                  alt={cat.title} 
+                  src={cat.url}
+                  alt={cat.title}
                   fill
                   priority={true}
                   placeholder='blur'
-                   blurDataURL="data:image/jpeg;base64"
+                  blurDataURL="data:image/jpeg;base64"
                   className="absolute inset-0 w-full h-full  object-cover transition-transform duration-500 group-hover:scale-110"
-                 
+
                 />
                 <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex items-center justify-center p-2">
@@ -97,9 +107,9 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={SPONSORED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Sponsored Products"
+            title="Gadgets For You"
             viewAllLink="/buy"
-          />
+          /> 
         </section>
 
         {/* Trending Now - Carousel */}
@@ -107,7 +117,7 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={RECOMMENDED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Trending Now"
+            title="Most Popular"
             viewAllLink="/buy"
           />
         </section>

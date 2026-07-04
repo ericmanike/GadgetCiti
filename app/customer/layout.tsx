@@ -30,13 +30,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="min-h-screen bg-gray-300 relative">
-            <Navbar />
+         
             
-            <div className="max-w-7xl mx-auto px-4 pt-36 md:pt-44 pb-8">
+            <div className="w-full mx-auto  ">
                 {/* Mobile Top Navigation Bar */}
-                <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 rounded-lg shadow-sm mb-4 border border-gray-200">
+                <div className=" flex items-center justify-between bg-white px-4 py-3  shadow-lg mb-4  border border-gray-200">
                     <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500 "></span> 
                         <span className="font-bold text-slate-800 text-sm tracking-wide">Customer Dashboard</span>
                     </div>
                     <button
@@ -94,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </AnimatePresence>
 
                     {/* Main Content Area */}
-                    <main className="overflow-hidden relative">
+                    <main className="overflow-hidden  relative p-4">
                         {children}
                     </main>
                 </div>

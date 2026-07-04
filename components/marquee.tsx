@@ -24,13 +24,13 @@ const Marquee = () => {
       </motion.button> */}
 
       {/* Marquee text */}
-      <Link href="/gifts" >
+     
       <div className="whitespace-nowrap animate-marquee m-auto text-center font-bold h-10 w-full cursor-pointer tracking-wider">
      
-        Welcome to <span className="text-orange-500">GADGETS CITI</span>, Your number one Destination for all electronic gadgets 🛍️🎉
+        Welcome to <span className="text-orange-500 font-bold">GADGETS CITI</span>, Your number one destination for quality electronic gadgets 🛍️🎉
         
       </div> 
-    </Link>
+    
         <style jsx>{`
 
         /* marquee */
@@ -44,7 +44,7 @@ const Marquee = () => {
 }
 .animate-marquee {
   display: inline-block;
-  animation: marquee 20s linear infinite;
+  animation: marquee 30s linear infinite;
 }
 
         
