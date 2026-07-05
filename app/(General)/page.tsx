@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
+import Pattern from '@/components/ui/Pattern';
 
 const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
@@ -31,15 +32,16 @@ export default function Home() {
 
   return (
     <main className="w-full bg-slate-50 min-h-screen pt-24 pb-20 overflow-x-hidden">
-      <div className="relative z-10 px-4 md:px-10 space-y-24">
-
+      
+      <div className="relative  z-10 px-4 md:px-10 space-y-24">
+          <Pattern/>
         {/* Shop by Category - Carousel */}
-        <section className="w-full bg-white py-6 md:p-10 rounded-[15px] md:rounded-[15px] shadow-lg shadow-slate-100/50 border border-slate-50">
-
+        <section className="w-full  py-6 md:p-10 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
+       
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
             <div className="col-span-full h-[fit-content] relative group  rounded-[9px] shadow-lg mt-15 md:mt-1">
-              <HeroSlider
+              {/* <HeroSlider
                 slides={
                   COMPUTER_SLIDES.map((slide) => ({
                     id: slide.id,
@@ -53,7 +55,7 @@ export default function Home() {
                   }))}
                 autoplay={true}
                 autoplayInterval={3000}
-              />
+              /> */}
             </div>
 
             {/* Section Header Text */}
