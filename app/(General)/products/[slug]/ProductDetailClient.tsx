@@ -598,6 +598,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                             ))}
                                         </div>
                                     </div>
+                
                                 </div>
                             </motion.div>
                         )}
