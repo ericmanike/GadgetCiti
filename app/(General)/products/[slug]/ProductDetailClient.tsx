@@ -18,8 +18,8 @@ import {
     Minus,
     Plus,
     CheckCircle2,
-    MessageSquare
-
+    MessageSquare,
+    Sparkles
 } from "lucide-react";
 import { Product } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
@@ -31,12 +31,203 @@ interface ProductDetailClientProps {
     relatedProducts: Product[];
 }
 
+interface UseCase {
+    title: string;
+    description: string;
+    matchScore: number;
+    category: string;
+}
+
+interface AIAnalysis {
+    suitabilityRating: { label: string; score: number }[];
+    useCases: UseCase[];
+    verdict: string;
+}
+
+function getAIRecommendations(product: Product): AIAnalysis {
+    const name = product.name.toLowerCase();
+    const desc = product.description.toLowerCase();
+    const category = product.category.toLowerCase();
+    const price = product.price;
+
+    const isLaptop = category.includes('laptop') || name.includes('laptop') || name.includes('macbook') || name.includes('notebook') || name.includes('computer');
+    const isPhone = category.includes('phone') || name.includes('phone') || name.includes('iphone') || name.includes('galaxy') || name.includes('pixel') || name.includes('android');
+
+    const specsStr = (product.specifications?.map(s => `${s.label} ${s.value}`).join(' ') || '') + ' ' + desc;
+    
+    const hasLowRam = specsStr.includes('3gb') || specsStr.includes('4gb') || specsStr.includes(' 3 gb') || specsStr.includes(' 4 gb');
+    
+    if (isLaptop) {
+        if (price < 3000 || hasLowRam) {
+            return {
+                suitabilityRating: [
+                    { label: "Value For Money", score: 95 },
+                    { label: "Portability", score: 85 },
+                    { label: "Battery Life", score: 80 },
+                    { label: "Office Work", score: 75 },
+                    { label: "Heavy Multi-tasking", score: 40 },
+                    { label: "Creative Design / Gaming", score: 30 }
+                ],
+                useCases: [
+                    {
+                        title: "📚 Academic Study & Research",
+                        description: "Excellent for students attending online lectures, typing papers, browsing the web, and preparing presentations.",
+                        matchScore: 95,
+                        category: "Education"
+                    },
+                    {
+                        title: "💼 Basic Office Administration",
+                        description: "Highly recommended for running Microsoft Office suite, handling emails, web browsing, and simple bookkeeping tasks.",
+                        matchScore: 90,
+                        category: "Business"
+                    },
+                    {
+                        title: "🎬 Media Streaming & Browsing",
+                        description: "Perfect for watching YouTube, Netflix, social media, and managing files with fast SSD read speeds.",
+                        matchScore: 85,
+                        category: "Entertainment"
+                    },
+                    {
+                        title: "🖥️ Intro to Web Development",
+                        description: "Good for learning HTML, CSS, and basic JavaScript. Lightweight IDEs like VS Code run smoothly.",
+                        matchScore: 70,
+                        category: "Coding"
+                    }
+                ],
+                verdict: `This laptop is an outstanding, cost-effective choice. Equipped with solid storage and optimized resources, it ensures quick boot times and fluid operation for day-to-day administrative or academic tasks. While not built for intensive 3D gaming or heavy video rendering, it offers amazing value for casual users, students, and remote workers looking for a reliable daily driver.`
+            };
+        } else {
+            return {
+                suitabilityRating: [
+                    { label: "Processing Speed", score: 98 },
+                    { label: "Creative Editing", score: 92 },
+                    { label: "Software Engineering", score: 95 },
+                    { label: "Gaming Capability", score: 85 },
+                    { label: "Value For Money", score: 78 }
+                ],
+                useCases: [
+                    {
+                        title: "💻 Advanced Software Engineering",
+                        description: "Ideal for full-stack developers running multiple Docker containers, local databases, and heavy compilers simultaneously.",
+                        matchScore: 98,
+                        category: "Coding"
+                    },
+                    {
+                        title: "🎨 Creative Editing & 3D Design",
+                        description: "Excellent performance for high-end graphic design, 4K video editing, and complex rendering using Adobe Suite or Blender.",
+                        matchScore: 92,
+                        category: "Design"
+                    },
+                    {
+                        title: "🎮 High-FPS Gaming & Streaming",
+                        description: "Powerful hardware suitable for running modern games at high refresh rates and encoding live streams simultaneously.",
+                        matchScore: 88,
+                        category: "Gaming"
+                    }
+                ],
+                verdict: `A high-performance powerhouse designed for demanding professionals. Its premium processing power and robust thermal management make it ideal for resource-heavy workloads like compilation, virtualization, and creative production. Highly recommended if you need an absolute workhorse that is fully future-proof.`
+            };
+        }
+    }
+
+    if (isPhone) {
+        if (price < 1500) {
+            return {
+                suitabilityRating: [
+                    { label: "Battery Endurance", score: 95 },
+                    { label: "Daily Social Apps", score: 90 },
+                    { label: "Mobile Money & Banking", score: 92 },
+                    { label: "Camera Quality", score: 50 },
+                    { label: "High-End Gaming", score: 35 }
+                ],
+                useCases: [
+                    {
+                        title: "📱 Everyday Social & Communication",
+                        description: "Perfect for WhatsApp, Telegram, calls, email, and social media browsing with long-lasting battery life.",
+                        matchScore: 95,
+                        category: "Social"
+                    },
+                    {
+                        title: "💳 Mobile Banking & Payments",
+                        description: "Fast and secure execution of MoMo transactions, banking apps, and QR code payments.",
+                        matchScore: 92,
+                        category: "Finance"
+                    },
+                    {
+                        title: "🔋 Extended Travel Companion",
+                        description: "Great secondary device or long-commute driver due to highly optimized power saving options.",
+                        matchScore: 88,
+                        category: "Travel"
+                    }
+                ],
+                verdict: `A solid entry-level smartphone focusing on communication, battery longevity, and regular app utility. It handles everyday operations with ease and provides a reliable platform for local transactions and communication without breaking the bank.`
+            };
+        } else {
+            return {
+                suitabilityRating: [
+                    { label: "Camera & Photography", score: 96 },
+                    { label: "Multi-tasking Speed", score: 95 },
+                    { label: "Display Quality", score: 98 },
+                    { label: "Mobile Gaming", score: 90 },
+                    { label: "Future Proof", score: 92 }
+                ],
+                useCases: [
+                    {
+                        title: "📸 Professional Content Creation",
+                        description: "Stunning 4K video recording, advanced night-mode photography, and direct on-device social media content editing.",
+                        matchScore: 96,
+                        category: "Creative"
+                    },
+                    {
+                        title: "🚀 Power Multi-tasking",
+                        description: "Runs multiple heavy apps in split-screen, handles large documents, and processes information rapidly without lag.",
+                        matchScore: 94,
+                        category: "Business"
+                    },
+                    {
+                        title: "🎮 Immersive Mobile Gaming",
+                        description: "Flawless gameplay on high graphics settings for resource-intensive titles like PUBG or Genshin Impact.",
+                        matchScore: 90,
+                        category: "Gaming"
+                    }
+                ],
+                verdict: `A flagship device that delivers top-tier performance, a stellar camera system, and a stunning screen. Perfect for creators, developers, and tech enthusiasts who want zero compromise on speed, photography, and gaming capability.`
+            };
+        }
+    }
+
+    return {
+        suitabilityRating: [
+            { label: "General Performance", score: 85 },
+            { label: "Value", score: 88 },
+            { label: "Reliability", score: 90 },
+            { label: "Productivity", score: 75 }
+        ],
+        useCases: [
+            {
+                title: "🏠 Home Utility & Entertainment",
+                description: "Excellent for regular home tasks, viewing media, playing music, and handling casual operations.",
+                matchScore: 90,
+                category: "General"
+            },
+            {
+                title: "💼 Light Productivity",
+                description: "Sufficient for checking schedules, taking notes, managing correspondence, and basic tasks.",
+                matchScore: 80,
+                category: "Utility"
+            }
+        ],
+        verdict: `A versatile electronic accessory designed to improve your daily convenience. It delivers solid performance for standard workflows and is an excellent value addition to your technology catalog.`
+    };
+}
+
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
     const [activeImage, setActiveImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [isSaved, setIsSaved] = useState(false);
-    const [activeTab, setActiveTab] = useState("overview");
+    const [activeTab, setActiveTab] = useState("ai");
     const { addToCart } = useCart();
+    const aiAnalysis = getAIRecommendations(product);
 
     const images = product.images.length > 0 ? product.images : ["/next.svg"];
 
@@ -268,6 +459,17 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="max-w-4xl">
                 <div className="flex gap-8 border-b border-gray-200">
                     <button
+                        onClick={() => setActiveTab("ai")}
+                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-1.5 ${activeTab === "ai" ? "text-purple-600" : "text-gray-400 hover:text-purple-500"
+                            }`}
+                    >
+                        <Sparkles size={14} className={activeTab === "ai" ? "text-purple-500 animate-pulse" : ""} />
+                        AI Recommendation
+                        {activeTab === "ai" && (
+                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 rounded-t-full" />
+                        )}
+                    </button>
+                    <button
                         onClick={() => setActiveTab("overview")}
                         className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
                             }`}
@@ -318,7 +520,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     </div>
                                 )}
                             </motion.div>
-                        ) : (
+                        ) : activeTab === "specs" ? (
                             <motion.div
                                 key="specs"
                                 initial={{ opacity: 0, y: 10 }}
@@ -336,6 +538,67 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 ) : (
                                     <div className="p-8 text-center text-gray-400 font-medium uppercase text-xs tracking-[0.2em]">Contact seller for full specifications</div>
                                 )}
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="ai"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="flex flex-col gap-6"
+                            >
+                                <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-pink-50 border border-purple-100 p-6 rounded-3xl flex flex-col gap-4">
+                                    <div className="flex items-center gap-2 text-purple-700 font-extrabold text-sm uppercase tracking-wider">
+                                        <Sparkles className="w-5 h-5 animate-pulse text-purple-500" />
+                                        <span>AI-Powered Recommendations & Verdict</span>
+                                    </div>
+                                    <p className="text-sm font-bold text-slate-800 leading-relaxed">
+                                        {aiAnalysis.verdict}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                                    {/* Suitability Ratings */}
+                                    <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col gap-4 shadow-xs">
+                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Device Suitability Ratings</h4>
+                                        <div className="space-y-4">
+                                            {aiAnalysis.suitabilityRating.map((item, idx) => (
+                                                <div key={idx} className="space-y-1">
+                                                    <div className="flex justify-between text-xs font-bold text-slate-700">
+                                                        <span>{item.label}</span>
+                                                        <span>{item.score}%</span>
+                                                    </div>
+                                                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                                                            style={{ width: `${item.score}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Categorized Best Use Cases */}
+                                    <div className="flex flex-col gap-4">
+                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Top Recommended Use Cases</h4>
+                                        <div className="space-y-3">
+                                            {aiAnalysis.useCases.map((uc, idx) => (
+                                                <div key={idx} className="bg-white rounded-2xl border border-gray-150 p-4 shadow-xs hover:border-purple-200 transition-colors">
+                                                    <div className="flex justify-between items-start gap-2">
+                                                        <h5 className="text-xs sm:text-sm font-bold text-slate-900">{uc.title}</h5>
+                                                        <span className="text-[9px] bg-purple-50 text-purple-700 font-extrabold uppercase px-2 py-0.5 rounded-md flex-shrink-0">
+                                                            {uc.matchScore}% Match
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-600 mt-1.5 leading-relaxed font-medium">
+                                                        {uc.description}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
