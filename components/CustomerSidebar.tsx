@@ -14,7 +14,8 @@ import {
     Settings,
     LogOut,
     Ticket,
-    MailPlus
+    MailPlus,
+    Wallet
 } from 'lucide-react';
 
 const CustomerSidebar = () => {
@@ -27,6 +28,11 @@ const CustomerSidebar = () => {
             label: 'Orders',
             href: '/customer/orders',
             icon: ShoppingBag,
+        },
+        {
+            label: 'Pay Small Small',
+            href: '/customer/pay-small-small',
+            icon: Wallet,
         },
         {
             label: 'Inbox',
