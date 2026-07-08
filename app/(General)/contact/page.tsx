@@ -283,7 +283,7 @@ export default function ContactPage() {
               <Mail className="w-6 h-6 text-orange-600" />
             </div>
             <h3 className="font-bold text-gray-900 mb-2">Email</h3>
-            <p className="text-gray-600 text-sm">contact@letronix.com</p>
+            <p className="text-gray-600 text-sm">contact@gadgetciti.com</p>
             <p className="text-gray-600 text-sm">We'll reply within 24hrs</p>
           </div>
 

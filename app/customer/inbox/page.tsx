@@ -15,7 +15,7 @@ export default function InboxPage() {
                 </div>
                 <h2 className="text-lg font-bold text-slate-900 mb-2">You have no messages</h2>
                 <p className="text-gray-600 mb-6 max-w-xs">
-                    Here you will find all the communications from Letronix about your orders and account.
+                    Here you will find all the communications from Gadget CITi about your orders and account.
                 </p>
             </div>
         </div>

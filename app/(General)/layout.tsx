@@ -6,8 +6,8 @@ import { metadata } from '../layout'
 
 
 export const pageMetadata: Metadata = {
-  title: 'Letronix - Your Trusted Plug for Quality Gadgets',
-  description: 'Buy quality and trusted gadgets on Letronix - your trusted platform for all phones, laptop and accessories - gadgets.',
+  title: 'Gadget CITi - Your Trusted Plug for Quality Gadgets',
+  description: 'Buy quality and trusted gadgets on Gadget CITi - your trusted platform for all phones, laptop and accessories - gadgets.',
   ...metadata,
 }
 

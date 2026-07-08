@@ -77,7 +77,7 @@ export default function CheckoutPage() {
         setPaymentStatus('initiating');
         setErrorMessage('');
         
-        const ref = customRef || `letronix-${Date.now()}`;
+        const ref = customRef || `gadgetciti-${Date.now()}`;
         const numberToCharge = momoNumber || form.phone;
 
         try {

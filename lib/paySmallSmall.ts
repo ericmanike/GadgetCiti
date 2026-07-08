@@ -26,7 +26,7 @@ export interface PaySmallSmallPlan {
     payments: PaymentRecord[];
 }
 
-const LOCAL_STORAGE_PREFIX = 'letronix-pay-small-small-';
+const LOCAL_STORAGE_PREFIX = 'gadgetciti-pay-small-small-';
 
 // Local storage helpers
 function getLocalPlans(userId: string): PaySmallSmallPlan[] {

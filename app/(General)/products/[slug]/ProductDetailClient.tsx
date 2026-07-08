@@ -237,7 +237,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-500 font-medium">
                 <Link href="/" className="hover:text-blue-600">Home</Link>
                 <ChevronRight size={12} />
-                <Link href="/buy" className="hover:text-blue-600">Buy Gadgets</Link>
+                <Link href="/buy" className="hover:text-blue-600">Shop now</Link>
                 <ChevronRight size={12} />
                 <span className="text-gray-900 truncate">{product.name}</span>
             </nav>
@@ -413,7 +413,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-2">Seller Info</h3>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <span className="text-xs font-black text-blue-600 uppercase">Letronix Official Store</span>
+                                    <span className="text-xs font-black text-blue-600 uppercase">Gadget CITi Official Store</span>
                                     <span className="text-[10px] text-gray-500 font-medium">98% Positive Feedback</span>
                                 </div>
 

@@ -89,7 +89,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
             S
           </div>
           <span className="font-black text-xl text-slate-900 tracking-widest uppercase">
-            Letronix<span className="text-orange-500 text-xs font-bold block leading-none">SELLER PANEL</span>
+            Gadget CITi<span className="text-orange-500 text-xs font-bold block leading-none">SELLER PANEL</span>
           </span>
         </div>
 
@@ -139,7 +139,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-sm tracking-wider">
             S
           </div>
-          <span className="font-black text-md text-slate-900 tracking-widest">LETRONIX SELLER</span>
+          <span className="font-black text-md text-slate-900 tracking-widest">GADGET CITI SELLER</span>
         </div>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
@@ -160,7 +160,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 border-b border-gray-150">
-              <span className="font-black text-slate-900 tracking-wider">LETRONIX SELLER</span>
+              <span className="font-black text-slate-900 tracking-wider">GADGET CITI SELLER</span>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
                 className="text-gray-400 hover:text-gray-600"

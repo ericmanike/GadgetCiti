@@ -3,8 +3,8 @@ import { metadata } from '../../../layout'
 
 
 export const pageMetadata: Metadata = {         
-  title: 'Reset Password - Letronix',
-  description: 'Reset your Letronix account password securely and easily.',
+  title: 'Reset Password - Gadget CITi',
+  description: 'Reset your Gadget CITi account password securely and easily.',
   ...metadata, 
 }
 

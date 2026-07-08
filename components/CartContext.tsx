@@ -32,7 +32,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Initial local storage load
     useEffect(() => {
         setIsMounted(true);
-        const savedCart = localStorage.getItem("letronix-cart");
+        const savedCart = localStorage.getItem("gadgetciti-cart");
         if (savedCart) {
             try {
                 setCart(JSON.parse(savedCart));
@@ -79,7 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Sync to local storage
     useEffect(() => {
         if (isMounted) {
-            localStorage.setItem("letronix-cart", JSON.stringify(cart));
+            localStorage.setItem("gadgetciti-cart", JSON.stringify(cart));
         }
     }, [cart, isMounted]);
 

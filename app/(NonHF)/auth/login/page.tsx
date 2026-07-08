@@ -2,7 +2,7 @@ import React from 'react'
 import Login from '@/components/Login'
 
 export const metadata = {
-  title: "Login - Letronix",
+  title: "Login - Gadget CITi",
   description: "Authenticate to your account",
 };
 

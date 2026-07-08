@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 const MOOLRE_ENV = process.env.NEXT_PUBLIC_MOOLRE_ENVIRONMENT || 'sandbox';
 const MOOLRE_BASE_URL = MOOLRE_ENV === 'live' ? 'https://api.moolre.com' : 'https://sandbox.moolre.com';
 const MOOLRE_VAS_KEY = process.env.MOOLRE_VAS_KEY || '';
-const DEFAULT_SENDER_ID = process.env.MOOLRE_DEFAULT_SENDER_ID || 'Letronix';
+const DEFAULT_SENDER_ID = process.env.MOOLRE_DEFAULT_SENDER_ID || 'GadgetCITi';
 
 export async function POST(request: Request) {
   try {

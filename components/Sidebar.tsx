@@ -34,7 +34,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
   const menus = [
     { id: 4, name: 'Dashboard', href: '/customer/orders', icon: LayoutDashboard },
     { id: 1, name: 'Start Selling', href: '/sell', icon: Plus },
-    { id: 2, name: 'Buy any gadget', href: '/buy', icon: ShoppingBagIcon },
+    { id: 2, name: 'Shop now', href: '/buy', icon: ShoppingBagIcon },
     { id: 3, name: 'Ask for any gadget ', href: '/chatroom', icon: MailPlus },
     { id: 5, name: 'Help Center', href: '/help', icon: HelpCircle },
     { id: 6, name: 'Pickup Trash', href: '/dump', icon: MapPin },

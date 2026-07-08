@@ -1,5 +1,5 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, Megaphone, Search, Zap, Home, MapPin } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, Megaphone, Search, Zap, Home, MapPin, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
@@ -167,7 +167,7 @@ const Navbar = () => {
             <ActiveLink href="/buy">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingBag size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Buy Gadgets</span>
+                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Shop now</span>
               </div>
             </ActiveLink>
 
@@ -189,6 +189,13 @@ const Navbar = () => {
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
                 <Zap size={18} className="group-hover:text-orange-500" />
                 <span className="text-xs md:text-sm font-semibold">Falaa Deals</span>
+              </div>
+            </ActiveLink>
+
+            <ActiveLink href="/customer/pay-small-small">
+              <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
+                <Wallet size={18} className="group-hover:text-orange-500" />
+                <span className="text-xs md:text-sm font-semibold">Pay Small Small</span>
               </div>
             </ActiveLink>
 

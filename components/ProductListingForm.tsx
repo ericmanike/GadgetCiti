@@ -176,7 +176,7 @@ export default function ProductListingForm() {
             <div className="bg-white rounded-lg shadow-xl p-8">
                 <div className="mb-8">
                     <h1 className="text-[12px] md:text-3xl font-bold text-gray-900 mb-2">Sell a Product</h1>
-                    <p className="text-gray-600">List an electronic gadget for sale on Letronix</p>
+                    <p className="text-gray-600">List an electronic gadget for sale on Gadget CITi</p>
                 </div>
 
                 {submitted && (

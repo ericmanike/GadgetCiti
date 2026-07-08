@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Electronix Mart',
-    short_name: 'Letronix',
-    description: 'A market for all your electronic needs',
+    name: 'Gadget CITi',
+    short_name: 'Gadget CITi',
+    description: 'A market for all your electronic and gadget needs',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

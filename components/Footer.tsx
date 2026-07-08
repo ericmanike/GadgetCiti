@@ -9,7 +9,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Section */}
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-black text-white tracking-tighter font-outfit">Letronix</h3>
+                        <h3 className="text-2xl font-black text-white tracking-tighter font-outfit">Gadget CITi</h3>
                         <p className="text-sm leading-relaxed text-gray-400">
                             Your trusted platform for premium smartphones, laptops, accessories, and professional IT services.
                         </p>
@@ -28,7 +28,7 @@ export default function Footer() {
                         <h4 className="text-lg font-bold text-white">Quick Links</h4>
                         <ul className="space-y-2 text-sm">
                             <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
-                            <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Buy Gadgets</Link></li>
+                            <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Shop now</Link></li>
                             <li><Link href="/sell" className="hover:text-orange-500 transition-colors">Sell to Us</Link></li>
                             <li><Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support</Link></li>
                         </ul>
@@ -59,14 +59,14 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-orange-500 shrink-0" />
-                                <span>contact@letronix.com</span>
+                                <span>contact@gadgetciti.com</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500">
-                    <p>&copy; {new Date().getFullYear()} Letronix Hub. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Gadget CITi Hub. All rights reserved.</p>
                 </div>
             </div>
         </footer>

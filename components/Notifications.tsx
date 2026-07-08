@@ -29,7 +29,7 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
   {
     id: '3',
     type: 'chat',
-    title: 'New message from Letronix Support',
+    title: 'New message from Gadget CITi Support',
     message: 'Hi! We noticed you had a question about your warranty. Our team is ready to help you.',
     time: '3h ago',
     read: false,
@@ -46,7 +46,7 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
     id: '5',
     type: 'system',
     title: 'Account verified',
-    message: 'Your Letronix account has been fully verified. You can now sell gadgets on our platform.',
+    message: 'Your Gadget CITi account has been fully verified. You can now sell gadgets on our platform.',
     time: '2 days ago',
     read: true,
   },

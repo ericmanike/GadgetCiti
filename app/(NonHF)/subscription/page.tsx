@@ -6,7 +6,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function LetronixSubscriptions() {
+export default function GadgetCitiSubscriptions() {
   const { user, loading } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
@@ -141,7 +141,7 @@ export default function LetronixSubscriptions() {
           
           <div className="text-center max-w-2xl mb-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900">
-              Upgrade to Letronix Pro
+              Upgrade to Gadget CITi Pro
             </h1>
             <p className="text-lg text-gray-600">
               Supercharge your e-commerce storefront with advanced tools, analytics, and custom branding.

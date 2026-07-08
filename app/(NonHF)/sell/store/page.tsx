@@ -115,7 +115,7 @@ export default function StoreProfilePage() {
               value={formik.values.storeName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              placeholder="e.g. Letronix Tech Hub"
+              placeholder="e.g. Gadget CITi Tech Hub"
               className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
             />
             {formik.touched.storeName && formik.errors.storeName && (
@@ -174,7 +174,7 @@ export default function StoreProfilePage() {
                 value={formik.values.storeEmail}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                placeholder="store@letronix.com"
+                placeholder="store@gadgetciti.com"
                 className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
               />
               {formik.touched.storeEmail && formik.errors.storeEmail && (
