@@ -52,7 +52,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       items: [
         { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
         { id: 6, name: 'Locate Our Shop(s)', href: '/dump', icon: MapPin },
-        { id: 5, name: 'Help Center', href: '/help', icon: HelpCircle },
+        { id: 5, name: 'FAQs', href: '/faq', icon: HelpCircle },
       ]
     }
   ];

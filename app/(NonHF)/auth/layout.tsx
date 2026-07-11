@@ -34,7 +34,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           Need help? Watch how to log in
         </Link>
         <span className="text-[11px] text-slate-400 font-medium">
-          © {new Date().getFullYear()} Gadgets CITi
+          © {new Date().getFullYear()} Gadget's CITi
         </span>
       </div>
     </div>
