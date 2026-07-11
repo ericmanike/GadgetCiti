@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MailPlus, Plus, MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, CircleUser, Zap, Wallet, ClipboardList } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from './AuthContext';
 
 interface NotificationsPanelProps {
   isOpen: boolean;
@@ -58,10 +59,9 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
 
 
   const router = useRouter();
+  const { user } = useAuth();
 
-
-
-
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Guest';
 
   return (
 
@@ -82,7 +82,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
 
 
         <CircleUser className='w-8 h-8' color='white' strokeWidth={1.5} />
-        <span className='text-white font-bold text-sm tracking-wide'>Hello, Guest</span>
+        <span className='text-white font-bold text-sm tracking-wide'>Hello, {displayName}</span>
 
 
       </div>

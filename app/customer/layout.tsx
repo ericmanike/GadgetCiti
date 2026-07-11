@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from "@/components/Navbar";
 import CustomerSidebar from "@/components/CustomerSidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

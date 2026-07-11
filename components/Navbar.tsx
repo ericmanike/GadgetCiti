@@ -86,11 +86,11 @@ const Navbar = () => {
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
            
-             <Image src={logo} alt="logo" width={90} height={60} className=" w-10 h-8  md:w-12  md:h-10" />
+            <span className="text-2xl font-bold text-slate-600">Gadget's CITi</span>
             </Link>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar */} 
           <div className="w-full order-last mt-2 md:order-none md:flex-1 md:w-auto md:mt-0 max-w-2xl px-0 md:px-2">
             <div className="relative" ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="flex w-full">
@@ -103,7 +103,7 @@ const Navbar = () => {
                       setIsSearchOpen(true);
                     }}
                     onFocus={() => setIsSearchOpen(true)}
-                    placeholder="Search Electronics Mart..."
+                    placeholder="Search in Gadget's CITi ..."
                     className="w-full h-10 md:h-12 px-3 md:px-4 py-1.5 md:py-2 pr-8 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (

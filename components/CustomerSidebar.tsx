@@ -11,7 +11,6 @@ import {
     Heart,
     Star,
     Clock,
-    Settings,
     LogOut,
     Ticket,
     MailPlus,
@@ -58,12 +57,7 @@ const CustomerSidebar = () => {
             label: 'Saved Items',
             href: '/customer/wishlist',
             icon: Heart,
-        },
-        {
-            label: 'Recently Viewed',
-            href: '/customer/recently-viewed',
-            icon: Clock,
-        },
+        }
     ];
 
     const managementItems = [

@@ -109,13 +109,14 @@ export default function Home() {
                 flex  items-center justify-between gap-3 
                 px-8 py-3 bg-orange-500 
                 hover:bg-orange-600 text-white rounded-xl
-                 font-bold text-1xl tracking-wide 
-                 transition-all duration-200 shadow-md
-                  hover:shadow-lg hover:scale-102 active:scale-98
-                   cursor-pointer select-none"
+                font-bold text-sm md:text-1xl tracking-wide 
+                transition-all duration-200 shadow-md
+                hover:shadow-lg
+                hover:scale-102 active:scale-98
+                cursor-pointer select-none"
               >
                 See More 
-                <ChevronDown className="w-4.5 h-4.5 ml-2" /> 
+                <ChevronDown className="w-3.5 h-3.5 ml-1" /> 
               </Link>
             </div>
           </div>
