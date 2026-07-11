@@ -128,7 +128,7 @@ export default function Home() {
           <FramerMultiSlideCarousel
             items={SPONSORED_GADGETS}
             renderItem={(product) => <ProductCard product={product} />}
-            title="Gadgets For You"
+            title="For You"
             viewAllLink="/buy"
           /> 
         </section>
