@@ -96,17 +96,15 @@ export default function FAQPage() {
   }, [activeCategory]);
 
   return (
-    <div className="min-h-screen bg-gray-300 py-12 px-4 pt-28 pb-20">
+    <div className="min-h-screen bg-gray-300 py-12 px-4 pt-28 pb-20 mt-30 md:mt-15 ">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#3d5a80] mb-4 flex items-center justify-center gap-2">
-            <HelpCircle className="w-8 h-8 md:w-10 md:h-10 text-orange-500 animate-pulse" />
+            <HelpCircle className="w-8 h-8 md:w-10 md:h-10 text-orange-500 " />
             Frequently Asked Questions
           </h1>
-          <p className="text-base md:text-lg text-gray-700 max-w-xl mx-auto font-medium">
-            Find answers to commonly asked questions about tracking orders, payments, financing options, selling gadgets, and returns.
-          </p>
+
         </div>
 
         {/* Category Filters */}
