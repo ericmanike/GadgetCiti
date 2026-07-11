@@ -6,12 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "./ProductCard";
 import FramerMultiSlideCarousel from "./multicouresel";
 import { formatCurrency } from "@/lib/utils";
+import SkeletonCards from "./SkeletonCards";
 
 import { fetchAllProducts, Product } from "@/lib/products";
 
 export default function BuyPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState({
     category: '',
     priceRange: '',
@@ -57,7 +59,11 @@ export default function BuyPage() {
   }, [category, priceRange]);
 
   useEffect(() => {
-    fetchAllProducts().then(setAllProducts);
+    setLoading(true);
+    fetchAllProducts().then((products) => {
+      setAllProducts(products);
+      setLoading(false);
+    });
   }, []);
 
 
@@ -230,12 +236,15 @@ export default function BuyPage() {
 
         </div >
         <div className="flex-1 p-2 md:p-4 overflow-hidden">
-
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
-            {allProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <SkeletonCards cols={3} rows={2} />
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
+              {allProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
 
 

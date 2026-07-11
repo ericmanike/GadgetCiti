@@ -10,6 +10,7 @@ import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
 import { ChevronDown } from 'lucide-react';
+import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
@@ -21,9 +22,14 @@ const COMPUTER_SLIDES = [
 
 export default function Home() {
   const [ALL_PRODUCTS, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAllProducts().then(setAllProducts);
+    setLoading(true);
+    fetchAllProducts().then((products) => {
+      setAllProducts(products);
+      setLoading(false);
+    });
   }, []);
 
   // Basic slice partitioning for demo since ID is now dynamic from DB
@@ -125,22 +131,46 @@ export default function Home() {
 
         {/* Sponsored Gadgets - Carousel */}
         <section className="w-full">
-          <FramerMultiSlideCarousel
-            items={SPONSORED_GADGETS}
-            renderItem={(product) => <ProductCard product={product} />}
-            title="For You"
-            viewAllLink="/buy"
-          /> 
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <h2 className="text-[10px] md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
+              For You
+            </h2>
+            {!loading && SPONSORED_GADGETS.length > 0 && (
+              <Link href="/buy" className="text-orange-500 font-bold text-[12px] md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+                View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </Link>
+            )}
+          </div>
+          {loading ? (
+            <SkeletonCards cols={4} rows={1} />
+          ) : (
+            <FramerMultiSlideCarousel
+              items={SPONSORED_GADGETS}
+              renderItem={(product) => <ProductCard product={product} />}
+            />
+          )}
         </section>
 
         {/* Trending Now - Carousel */}
         <section className="w-full overflow-hidden pb-10">
-          <FramerMultiSlideCarousel
-            items={RECOMMENDED_GADGETS}
-            renderItem={(product) => <ProductCard product={product} />}
-            title="Most Popular"
-            viewAllLink="/buy"
-          />
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <h2 className="text-[10px] md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
+              Most Popular
+            </h2>
+            {!loading && RECOMMENDED_GADGETS.length > 0 && (
+              <Link href="/buy" className="text-orange-500 font-bold text-[12px] md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+                View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </Link>
+            )}
+          </div>
+          {loading ? (
+            <SkeletonCards cols={4} rows={1} />
+          ) : (
+            <FramerMultiSlideCarousel
+              items={RECOMMENDED_GADGETS}
+              renderItem={(product) => <ProductCard product={product} />}
+            />
+          )}
         </section>
 
       </div>
