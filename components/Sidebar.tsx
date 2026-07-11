@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MailPlus, Plus, MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, CircleUser, Zap, Wallet, ClipboardList } from 'lucide-react';
+import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from './AuthContext';
 
@@ -81,7 +81,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       <div className='w-full bg-slate-800 p-5 py-4 gap-3.5 flex justify-start items-center shadow-sm shrink-0'>
 
 
-        <CircleUser className='w-8 h-8' color='white' strokeWidth={1.5} />
+        <SquareUser className='w-8 h-8' color='white' strokeWidth={1.5} />
         <span className='text-white font-bold text-sm tracking-wide'>Hello, {displayName}</span>
 
 
