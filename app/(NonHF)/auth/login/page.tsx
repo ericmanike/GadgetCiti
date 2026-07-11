@@ -199,7 +199,7 @@ export default function LoginPage() {
           href="/auth/signup"
           className="font-bold text-[#fb923c] hover:text-[#f97316] transition-colors"
         >
-          Sign Up
+        Create one 
         </Link>
       </p>
     </div>

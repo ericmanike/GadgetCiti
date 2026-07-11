@@ -4,7 +4,7 @@ import { RadioTower, ArrowRight, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Authentication",
+  title: "Account - Gadget's CITi",
   description: "Sign in or create a free account with Nexa Bundles. Start your mobile data agent business or buy bundles directly.",
 };
 
