@@ -24,6 +24,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Check active sessions and sets the user
         const fetchSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                document.cookie = `token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax; Secure`;
+            } else {
+                document.cookie = 'token=; path=/; max-age=0; SameSite=Lax; Secure';
+            }
             setUser(session?.user ?? null);
             setLoading(false);
         };
@@ -32,6 +37,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Listen for changes on auth state (logged in, signed out, etc.)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) {
+                document.cookie = `token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax; Secure`;
+            } else {
+                document.cookie = 'token=; path=/; max-age=0; SameSite=Lax; Secure';
+            }
             setUser(session?.user ?? null);
             setLoading(false);
         });

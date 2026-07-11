@@ -27,7 +27,7 @@ const Marquee = () => {
      
       <div className="whitespace-nowrap animate-marquee m-auto text-center font-bold h-10 w-full cursor-pointer tracking-wider">
      
-        Welcome to <span className="text-orange-500 font-bold">GADGETS CITI</span>, Your number one destination for quality electronic gadgets 🛍️🎉
+        Welcome to <span className="text-orange-500 font-bold">GADGETS CITi</span>, Your number one destination for quality electronic gadgets 🛍️🎉
         
       </div> 
     
