@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
+import { ChevronDown } from 'lucide-react';
 
 const COMPUTER_SLIDES = [
   { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
@@ -70,36 +71,53 @@ export default function Home() {
 
             {/* Small Category Cards */}
             {[
-              { title: 'Laptops', url: '/L1.jpg', query: 'laptops' },
-              { title: 'Printers', url: '/printers', query: 'printers' },
-              { title: 'Flashy iPhones', url: '/p2.jpg', query: 'iphones' },
-              { title: 'hardware & IT infrastructure', url: '/hardware.jpg', query: 'hardware & IT infrastructure' },
-              { title: 'Tablets', url: '/tb1.jpg', query: 'tablets' },
-              { title: 'Accessories', url: '/access.jpg', query: 'accessories' },
+              { title: 'Laptops', url: '/cat_laptops.png', query: 'laptops' },
+         
+              { title: 'Latest Smartphones', url: '/cat_smartphones.png', query: 'iphones' },
+              { title: 'Tablets', url: '/cat_tablets.png', query: 'tablets' },
+              { title: 'Accessories', url: '/cat_accessories.png', query: 'accessories' },
+             { title: 'Printers', url: '/cat_printers.png', query: 'printers' },
+              { title: 'IT Infrastructure', url: '/cat_hardware.png', query: 'hardware & IT infrastructure' },
             ].map((cat, idx) => (
               <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="relative h-[90px] md:h-[150px] rounded-[8px] overflow-hidden group shadow-sm border border-slate-100  bg-slate-100 md:col-span-2"
+                className="group flex flex-col gap-2 md:col-span-2 select-none"
               >
-                <Image
-                  src={cat.url}
-                  alt={cat.title}
-                  fill
-                  priority={true}
-                  placeholder='blur'
-                  blurDataURL="data:image/jpeg;base64"
-                  className="absolute inset-0 w-full h-full  object-cover transition-transform duration-500 group-hover:scale-110"
-
-                />
-                <div className="absolute inset-0 bg-transparent group-hover:bg-black/40 transition-colors" />
-                <div className="absolute inset-0 flex items-center justify-center p-2">
-                  <span className="text-white font-bold text-sm md:text-base tracking-wide drop-shadow-md text-center">
-                    {cat.title}
-                  </span>
+                {/* Image Container */}
+                <div className="relative h-[110px] md:h-[160px] rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
+                  <Image
+                    src={cat.url}
+                    alt={cat.title}
+                    fill
+                    priority={true}
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 </div>
+                {/* Label under card */}
+                <span className="text-xs md:text-sm font-bold text-slate-800 tracking-wide text-center group-hover:text-orange-500 transition-colors">
+                  {cat.title.toUpperCase()}
+                </span>
               </Link>
             ))}
+
+            {/* View All Button */}
+            <div className="col-span-full flex justify-center mt-6">
+              <Link
+                href="/categories"
+                className="
+                flex  items-center justify-between gap-3 
+                px-8 py-3 bg-orange-500 
+                hover:bg-orange-600 text-white rounded-xl
+                 font-bold text-1xl tracking-wide 
+                 transition-all duration-200 shadow-md
+                  hover:shadow-lg hover:scale-102 active:scale-98
+                   cursor-pointer select-none"
+              >
+                See More 
+                <ChevronDown className="w-4.5 h-4.5 ml-2" /> 
+              </Link>
+            </div>
           </div>
 
         </section>

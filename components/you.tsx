@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
+import { useToast } from '@/components/toastProvider';
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string()
@@ -30,6 +31,7 @@ const ProfileSchema = Yup.object().shape({
 
 export default function RecycoProfile() {
   const { user, loading } = useAuth();
+  const { showToast } = useToast();
   const [profile, setProfile] = useState({
     name: '',
     role: 'Buyer/Seller',
@@ -42,9 +44,44 @@ export default function RecycoProfile() {
   });
 
   const [editMode, setEditMode] = useState(false);
+  const [isEditingAbout, setIsEditingAbout] = useState(false);
+  const [aboutText, setAboutText] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const handleStartEditAbout = () => {
+    setAboutText(profile.about || '');
+    setIsEditingAbout(true);
+  };
+
+  const handleSaveAbout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aboutText || aboutText.trim().length < 10) {
+      showToast('About section should be at least 10 characters', 'error');
+      return;
+    }
+    if (aboutText.trim().length > 500) {
+      showToast('About section is too long (max 500 characters)', 'error');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          about: aboutText.trim()
+        }
+      });
+
+      if (error) throw error;
+
+      setProfile(prev => ({ ...prev, about: aboutText.trim() }));
+      setIsEditingAbout(false);
+      showToast('About section updated successfully!', 'success');
+    } catch (err: any) {
+      showToast(err.message || 'Failed to update about section', 'error');
+    }
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -94,9 +131,9 @@ export default function RecycoProfile() {
 
         setProfile(values);
         setEditMode(false);
-        alert('Profile updated successfully!');
+        showToast('Profile updated successfully!', 'success');
       } catch (error: any) {
-        alert(error.message || 'Failed to update profile');
+        showToast(error.message || 'Failed to update profile', 'error');
       }
     },
     enableReinitialize: true
@@ -361,7 +398,20 @@ export default function RecycoProfile() {
 
           {/* About Section */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-lg font-semibold text-gray-900">About</h2>
+              {!editMode && !isEditingAbout && (
+                <button
+                  type="button"
+                  onClick={handleStartEditAbout}
+                  className="text-emerald-600 hover:text-emerald-700 text-sm font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <Edit2 size={14} />
+                  Edit About
+                </button>
+              )}
+            </div>
+
             {editMode ? (
               <div>
                 <textarea
@@ -377,8 +427,33 @@ export default function RecycoProfile() {
                   <p className="text-red-500 text-sm mt-1">{formik.errors.about}</p>
                 )}
               </div>
+            ) : isEditingAbout ? (
+              <div className="space-y-3">
+                <textarea
+                  value={aboutText}
+                  onChange={(e) => setAboutText(e.target.value)}
+                  className="w-full text-gray-700 leading-relaxed border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent rounded-md p-3 min-h-[120px]"
+                  placeholder="Tell us about yourself..."
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingAbout(false)}
+                    className="px-3 py-1.5 rounded-md text-xs font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveAbout}
+                    className="px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
+                  >
+                    Save About
+                  </button>
+                </div>
+              </div>
             ) : (
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                 {profile.about}
               </p>
             )}

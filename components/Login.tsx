@@ -143,7 +143,7 @@ export default function Login() {
                 <button
                   type="button"
                   className='cursor-pointer text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors'
-                  onClick={() => router.push('/auth/forgotPassword')}
+                  onClick={() => router.push('/auth/forgot-password')}
                 >
                   Forgot password?
                 </button>
