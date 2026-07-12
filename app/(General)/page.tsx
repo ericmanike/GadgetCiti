@@ -88,7 +88,7 @@ export default function Home() {
               <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="group flex flex-col gap-2 col-span-2 select-none"
+                className="group flex flex-col gap-2 md:col-span-2 select-none"
               >
                 {/* Image Container */}
                 <div className="relative h-[110px] md:h-[160px] rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
