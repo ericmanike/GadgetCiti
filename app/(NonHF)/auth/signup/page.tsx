@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 
 import { useToast } from "@/components/toastProvider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { User, Phone, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Read and sanitize redirect URL
+  const rawRedirectTo = searchParams.get("redirectTo") || "/buy";
+  const redirectTo = (rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")) ? rawRedirectTo : "/buy";
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +32,7 @@ export default function SignUpPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/buy`,
+          redirectTo: `${window.location.origin}${redirectTo}`,
         },
       });
       if (error) throw error;
@@ -84,14 +90,14 @@ export default function SignUpPage() {
       if (data.session) {
         showToast("Account created and logged in!", "success");
         setTimeout(() => {
-          window.location.href = "/buy";
+          window.location.href = redirectTo;
         }, 800);
         return;
       }
 
       showToast("Account created! Please check your email for verification.", "success");
       setTimeout(() => {
-        router.push("/auth/login");
+        router.push(`/auth/login?redirectTo=${encodeURIComponent(redirectTo)}`);
       }, 3000);
 
     } catch (err: any) {
@@ -103,7 +109,6 @@ export default function SignUpPage() {
 
   return (
     <div className="w-full rounded-[24px] border border-slate-100 bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.04)] sm:p-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      
       
       {/* Title & Subtitle */}
       <div className="mb-6 space-y-1 text-left">
@@ -271,12 +276,24 @@ export default function SignUpPage() {
       <p className="mt-6 text-center text-[13px] font-medium text-slate-500">
         Already have an account?{" "}
         <Link
-          href="/auth/login"
+          href={`/auth/login?redirectTo=${encodeURIComponent(redirectTo)}`}
           className="font-bold text-[#fb923c] hover:text-[#f97316] transition-colors"
         >
           Sign In
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full rounded-[24px] border border-slate-100 bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.04)] sm:p-9 flex justify-center items-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-[#fbcb08]" />
+      </div>
+    }>
+      <SignUpForm />
+    </Suspense>
   );
 }
