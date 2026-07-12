@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Tag, Search, Plus, Trash2, Loader2, AlertCircle, CheckCircle, Sparkles 
+  Tag, Search, Plus, Trash2, Loader2, AlertCircle, CheckCircle, Sparkles, Edit
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -28,6 +28,10 @@ export default function AdminCategoriesPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [cannotDeleteMsg, setCannotDeleteMsg] = useState<string | null>(null);
 
+  // Edit State
+  const [editingCat, setEditingCat] = useState<CategoryItem | null>(null);
+  const [editCatName, setEditCatName] = useState('');
+
   async function loadCategories() {
     try {
       setLoading(true);
@@ -38,7 +42,10 @@ export default function AdminCategoriesPage() {
         .select('id, name, slug')
         .order('name');
       
-      if (catError) throw catError;
+      if (catError) {
+        console.log(catError);
+        throw catError;
+      }
 
       // 2. Fetch all products to count occurrences in memory
       const { data: dbProducts } = await supabase
@@ -102,7 +109,11 @@ export default function AdminCategoriesPage() {
         .select('id')
         .single();
 
-      if (error) throw error;
+      console.log("inserted cat",data);
+      if (error) {
+        console.log(error);
+        throw error;
+      }
 
       setSuccessMsg(`Category "${newCatName.trim()}" created successfully!`);
       setNewCatName('');
@@ -112,6 +123,50 @@ export default function AdminCategoriesPage() {
     } catch (err: any) {
       console.error("Failed to add category:", err);
       setErrorMsg(err.message || 'Failed to create category.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Handle Edit Category
+  const handleEditCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCat || !editCatName.trim()) return;
+
+    setSubmitting(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const slug = editCatName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      // Check duplicate locally first (excluding currently edited category)
+      const duplicate = categories.find(c => c.id !== editingCat.id && (c.name.toLowerCase() === editCatName.trim().toLowerCase() || c.slug === slug));
+      if (duplicate) {
+        setErrorMsg('A category with this name or slug already exists.');
+        setSubmitting(false);
+        return;
+      }
+
+      const { error } = await supabase
+        .from('categories')
+        .update({
+          name: editCatName.trim(),
+          slug
+        })
+        .eq('id', editingCat.id);
+
+      if (error) throw error;
+
+      setSuccessMsg(`Category updated successfully!`);
+      setEditingCat(null);
+      setEditCatName('');
+      await loadCategories();
+      
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err: any) {
+      console.error("Failed to edit category:", err);
+      setErrorMsg(err.message || 'Failed to update category.');
     } finally {
       setSubmitting(false);
     }
@@ -128,18 +183,23 @@ export default function AdminCategoriesPage() {
 
   const handleDeleteCategory = async (id: string) => {
     setSubmitting(true);
+    setErrorMsg('');
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('categories')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.log(error);
+        throw error;
+      }
 
       setCategories(categories.filter(c => c.id !== id));
       setDeletingId(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error deleting category:", err);
+      setErrorMsg(err.message || 'Failed to delete category.');
     } finally {
       setSubmitting(false);
     }
@@ -272,12 +332,24 @@ export default function AdminCategoriesPage() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => checkDeleteCategory(cat)}
-                    className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 hover:border-rose-100 rounded-lg transition cursor-pointer shrink-0"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => {
+                        setEditingCat(cat);
+                        setEditCatName(cat.name);
+                        setErrorMsg('');
+                      }}
+                      className="p-2 bg-slate-50 hover:bg-orange-50 text-slate-500 hover:text-orange-600 border border-slate-200 hover:border-orange-100 rounded-lg transition cursor-pointer"
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <button
+                      onClick={() => checkDeleteCategory(cat)}
+                      className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 hover:border-rose-100 rounded-lg transition cursor-pointer"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -318,10 +390,19 @@ export default function AdminCategoriesPage() {
             <p className="text-slate-550 text-sm leading-relaxed">
               Are you sure you want to permanently delete this category? This will remove it from the classification filters list.
             </p>
+            {errorMsg && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
+                <AlertCircle size={14} className="shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
             <div className="flex gap-3 justify-end pt-2">
               <button
                 disabled={submitting}
-                onClick={() => setDeletingId(null)}
+                onClick={() => {
+                  setDeletingId(null);
+                  setErrorMsg('');
+                }}
                 className="px-4 py-2 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
               >
                 Cancel
@@ -335,6 +416,68 @@ export default function AdminCategoriesPage() {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Category Modal */}
+      {editingCat && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center space-x-2 text-orange-500">
+              <Edit size={20} />
+              <h3 className="text-lg font-black text-slate-900">Edit Category</h3>
+            </div>
+            
+            <form onSubmit={handleEditCategory} className="space-y-4">
+              <div>
+                <label htmlFor="editCatName" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  Category Name *
+                </label>
+                <input
+                  type="text"
+                  id="editCatName"
+                  value={editCatName}
+                  onChange={(e) => setEditCatName(e.target.value)}
+                  placeholder="e.g. Smart Home"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                  required
+                />
+                <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal font-semibold">
+                  Auto-generates slug: <strong>{editCatName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')}</strong>
+                </span>
+              </div>
+
+              {errorMsg && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <div className="flex gap-3 justify-end pt-2">
+                <button
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => {
+                    setEditingCat(null);
+                    setEditCatName('');
+                    setErrorMsg('');
+                  }}
+                  className="px-4 py-2 border border-slate-200 text-slate-650 bg-white hover:bg-slate-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !editCatName.trim() || editCatName.trim() === editingCat.name}
+                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {submitting ? <Loader2 size={14} className="animate-spin" /> : null}
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

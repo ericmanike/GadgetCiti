@@ -33,7 +33,7 @@ interface ProductFormValues {
   category: string;
   overview: string;
   description: string;
-  imageUrl: string;
+  imageFile: File | null;
 }
 
 const validationSchema = Yup.object({
@@ -44,7 +44,7 @@ const validationSchema = Yup.object({
   category: Yup.string().required('Category is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
-  imageUrl: Yup.string().url('Must be a valid URL').optional()
+  imageFile: Yup.mixed().required('Product image file is required')
 });
 
 export default function AdminProductsPage() {
@@ -88,7 +88,9 @@ export default function AdminProductsPage() {
       if (error) throw error;
 
       const mappedProducts: ProductItem[] = dbProducts?.map((row: any) => {
-        const images = row.product_images?.map((img: any) => img.image_url) || [];
+        const images = row.product_images?.flatMap((img: any) => 
+          Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
+        ) || [];
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",
@@ -155,7 +157,7 @@ export default function AdminProductsPage() {
       category: '',
       overview: '',
       description: '',
-      imageUrl: ''
+      imageFile: null
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -205,13 +207,46 @@ export default function AdminProductsPage() {
         if (productError) throw productError;
         const productId = product.id;
 
-        // 3. Insert Product Image relationship
-        const finalImgUrl = values.imageUrl.trim() || "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80";
+         let finalImgUrl = "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80";
+        
+         if (values.imageFile) {
+          const file = values.imageFile;
+          const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dzj8q4qtf';
+          const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
+
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', uploadPreset);
+
+          try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            if (data.secure_url) { 
+              console.log("data", data) 
+              finalImgUrl = data.secure_url;
+              console.log("Uploaded successfully to Cloudinary:", finalImgUrl);
+            } else {
+              throw new Error("No secure_url returned from Cloudinary response");
+            }
+          } catch (uploadError) {
+            console.error('Cloudinary upload failed, using fallback URL:', uploadError);
+          }
+        }
+
         await supabase
           .from('product_images')
           .insert({
             product_id: productId,
-            image_url: finalImgUrl
+            image_url: [finalImgUrl]
           });
 
         setSuccessMsg('Product created successfully!');
@@ -439,7 +474,7 @@ export default function AdminProductsPage() {
       {/* Add Product Side Drawer Modal */}
       {isAddDrawerOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex justify-end">
-          <div className="w-full max-w-lg bg-white border-l border-slate-200 h-full overflow-y-auto p-6 md:p-8 flex flex-col space-y-6 shadow-2xl animate-in slide-in-from-right duration-350">
+          <div className="w-full md:w-[70vw]  bg-white border-l border-slate-200 h-full overflow-y-auto p-6 md:p-8 flex flex-col space-y-6 shadow-2xl animate-in slide-in-from-right duration-350">
             
             {/* Header */}
             <div className="flex justify-between items-center border-b border-slate-250 pb-4">
@@ -568,21 +603,52 @@ export default function AdminProductsPage() {
                     </div>
                   </div>
 
-                  {/* Image URL */}
+                  {/* Image Upload */}
                   <div>
-                    <label htmlFor="imageUrl" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                      Product Image URL
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Product Image *
                     </label>
-                    <Field
-                      type="text"
-                      id="imageUrl"
-                      name="imageUrl"
-                      placeholder="e.g. https://images.unsplash.com/photo-..."
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
-                    />
-                    {formik.touched.imageUrl && formik.errors.imageUrl && (
+                    <div className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 hover:bg-slate-100/50 hover:border-orange-500/50 transition duration-200">
+                      {formik.values.imageFile ? (
+                        <div className="relative w-full flex flex-col items-center gap-2">
+                          <img
+                            src={URL.createObjectURL(formik.values.imageFile)}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-xl border border-slate-200 shadow-sm"
+                          />
+                          <p className="text-xs font-semibold text-slate-600 truncate max-w-xs">
+                            {formik.values.imageFile.name} ({(formik.values.imageFile.size / 1024).toFixed(1)} KB)
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => formik.setFieldValue('imageFile', null)}
+                            className="text-xs text-red-500 hover:text-red-650 font-bold hover:underline cursor-pointer"
+                          >
+                            Remove Image
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-4">
+                          <Plus className="text-slate-400 w-8 h-8 mb-2" />
+                          <span className="text-xs font-bold text-slate-600">Click to upload product image</span>
+                          <span className="text-[10px] text-slate-400 mt-1 font-semibold">PNG, JPG, JPEG (Max 5MB)</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.currentTarget.files?.[0];
+                              if (file) {
+                                formik.setFieldValue('imageFile', file);
+                              }
+                            }}
+                          />
+                        </label>
+                      )}
+                    </div>
+                    {formik.touched.imageFile && formik.errors.imageFile && (
                       <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {formik.errors.imageUrl}
+                        <AlertCircle size={12} /> {String(formik.errors.imageFile)}
                       </p>
                     )}
                   </div>

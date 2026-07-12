@@ -74,7 +74,9 @@ export default function SellerDashboard() {
 
         // 2. Fetch Recent Products (limit to 5)
         const mappedProducts: RecentProduct[] = sellerProducts?.slice(0, 5).map((row: any) => {
-          const images = row.product_images?.map((img: any) => img.image_url) || [];
+          const images = row.product_images?.flatMap((img: any) => 
+            Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
+          ) || [];
           return {
             id: row.id.toString(),
             name: row.name || "Unknown Product",

@@ -96,7 +96,9 @@ export default function SellerProductsPage() {
       if (error) throw error;
 
       const mappedProducts: ProductItem[] = dbProducts?.map((row: any) => {
-        const images = row.product_images?.map((img: any) => img.image_url) || [];
+        const images = row.product_images?.flatMap((img: any) => 
+          Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
+        ) || [];
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",

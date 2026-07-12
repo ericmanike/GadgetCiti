@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     if (!product) return { title: 'Product Not Found' };
 
     return {
-        title: `${product.name} | SWAPPI`,
+        title: `${product.name} | Gadget's CITi`,
         description: product.description,
     };
 }

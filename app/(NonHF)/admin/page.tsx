@@ -86,14 +86,16 @@ export default function AdminDashboard() {
           .limit(5);
 
         const mappedProducts: RecentProduct[] = dbProducts?.map((row: any) => {
-          const images = row.product_images?.map((img: any) => img.image_url) || [];
+          const images = row.product_images?.flatMap((img: any) => 
+            Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
+          ) || [];
           return {
             id: row.id.toString(),
             name: row.name || "Unknown Product",
             price: Number(row.price || 0),
             stock: Number(row.stock || 0),
             category: row.categories?.name || "Uncategorized",
-            imageUrl: images.length > 0 ? images[0] : images 
+            imageUrl: images.length > 0 ? images[0] : "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80"
           };
         }) || [];
 

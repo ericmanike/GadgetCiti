@@ -48,7 +48,9 @@ export async function getRelatedProducts(product: Product): Promise<Product[]> {
 }
 
 function mapDBProductToClient(row: any): Product {
-    const images = row.product_images?.map((img: any) => img.image_url) || [];
+    const images = row.product_images?.flatMap((img: any) => 
+        Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
+    ) || [];
     const ratingSum = row.reviews?.reduce((sum: number, r: any) => sum + r.rating, 0) || 0;
     const ratingCount = row.reviews?.length || 0;
 
