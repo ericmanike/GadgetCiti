@@ -83,7 +83,7 @@ export default function Home() {
               { title: 'Tablets & Ipad', url: '/cat_tablets.png', query: 'tablets' },
               { title: 'Accessories ', url: '/cat_accessories.png', query: 'accessories' },
              { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers' },
-              { title: 'Network Devices', url: '/cat_hardware.png', query: 'hardware & IT infrastructure' },
+              { title: 'Network Devices', url: '/cat_hardware.png', query: 'Network Devices' },
             ].map((cat, idx) => (
               <Link
                 key={idx}
