@@ -218,12 +218,14 @@ export default function FAQPage() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 mt-6 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-[#e0f2fe]">
+          <div className="border-t border-white/10 mt-6 pt-5 grid grid-cols-1 sm:grid-cols-2
+           gap-4 text-xs font-semibold text-[#e0f2fe]">
             <div className="flex items-center gap-2 justify-center sm:justify-start">
               <Phone className="w-4 h-4 text-orange-400 shrink-0" />
               <span>Call Us: 054 344 2518 (Mon-Fri 8am-8pm)</span>
             </div>
-            <div className="flex items-center gap-2 justify-center sm:justify-end">
+            <div className="flex items-center gap-2 justify-center
+             sm:justify-end">
               <Mail className="w-4 h-4 text-orange-400 shrink-0" />
               <span>Email: contact@gadgetciti.com</span>
             </div>

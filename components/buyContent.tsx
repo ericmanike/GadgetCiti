@@ -4,7 +4,6 @@ import { Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "./ProductCard";
-import FramerMultiSlideCarousel from "./multicouresel";
 import { formatCurrency } from "@/lib/utils";
 import SkeletonCards from "./SkeletonCards";
 
@@ -235,9 +234,9 @@ export default function BuyPage() {
 
 
         </div >
-        <div className="flex-1 p-2 md:p-4 overflow-hidden">
+        <div className="flex-1 p-2 md:p-4 overflow-hidden w-full">
           {loading ? (
-            <SkeletonCards cols={3} rows={2} />
+            <SkeletonCards cols={4} rows={2} />
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
               {allProducts.map((product) => (

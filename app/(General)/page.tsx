@@ -77,13 +77,13 @@ export default function Home() {
 
             {/* Small Category Cards */}
             {[
-              { title: 'Laptops', url: '/L1.jpg', query: 'laptops' },
+              { title: 'Computers', url: '/L1.jpg', query: 'computers' },
          
               { title: 'Latest Smartphones', url: '/cat_smartphones.png', query: 'iphones' },
               { title: 'Tablets & Ipad', url: '/cat_tablets.png', query: 'tablets' },
               { title: 'Accessories ', url: '/cat_accessories.png', query: 'accessories' },
              { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers' },
-              { title: 'IT Infrastructure', url: '/cat_hardware.png', query: 'hardware & IT infrastructure' },
+              { title: 'Network Devices', url: '/cat_hardware.png', query: 'hardware & IT infrastructure' },
             ].map((cat, idx) => (
               <Link
                 key={idx}

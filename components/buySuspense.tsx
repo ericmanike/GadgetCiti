@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
 import BuyPage from './buyContent';
-import Loader from '@/app/loading';
+import SkeletonCards from './SkeletonCards';
+
 
 export default function BuySuspense() {
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<SkeletonCards cols={4} rows={2}/>}>
       <BuyPage />
     </Suspense>
   );

@@ -86,7 +86,7 @@ const Navbar = () => {
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
            
-            <span className="text-2xl font-extrabold text-gray-800">Gadget's CITi</span>
+            <span className="text-2xl font-extrabold text-gray-800 logo">Gadget's CITi</span>
             </Link>  
           </div>
 
