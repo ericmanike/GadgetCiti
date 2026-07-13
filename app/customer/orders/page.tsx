@@ -19,7 +19,7 @@ export default function OrdersPage() {
                     All your orders will be saved here for you to access anytime.
                 </p>
                 <Link href="/buy">
-                    <button className="bg-orange-500 text-white px-4 md:px-8 py-2 md:py-3 rounded text-[10px] md:text-sm font-bold uppercase tracking-wider hover:bg-orange-600 transition-colors shadow-md">
+                    <button className="bg-orange-500 text-white px-4 md:px-8 py-2 md:py-3 rounded-lg text-[10px] md:text-sm font-bold uppercase tracking-wider hover:bg-orange-600 transition-colors shadow-md">
                         Continue Shopping
                     </button>
                 </Link>
