@@ -44,122 +44,6 @@ interface Order {
   isMock?: boolean;
 }
 
-// -------------------------------------------------------------
-// High-fidelity Mock Orders fallback when DB has no records
-// -------------------------------------------------------------
-const MOCK_ORDERS: Order[] = [
-  {
-    id: "9f6bcf01-ea92-4f74-a4f6-8c76adbe9b5a",
-    created_at: "2026-06-30T18:45:00.000Z",
-    total: 1448.99,
-    status: "Pending",
-    user_id: "u1-mock-id",
-    isMock: true,
-    users: {
-      name: "Emmanuel Kwansa",
-      email: "emmanuel.k@gmail.com",
-      phone: "+233 55 123 4567"
-    },
-    order_items: [
-      {
-        id: "oi-mock-1",
-        quantity: 1,
-        price: 1199.99,
-        products: {
-          name: "iPhone 15 Pro Max",
-          brand: "Apple",
-          product_images: [{ image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" }]
-        }
-      },
-      {
-        id: "oi-mock-2",
-        quantity: 1,
-        price: 249.00,
-        products: {
-          name: "AirPods Pro (2nd Generation)",
-          brand: "Apple",
-          product_images: [{ image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" }]
-        }
-      }
-    ]
-  },
-  {
-    id: "3e5898d9-2d1b-4171-8bc1-bc8c962fe3d7",
-    created_at: "2026-06-29T11:20:00.000Z",
-    total: 498.00,
-    status: "Shipped",
-    user_id: "u2-mock-id",
-    isMock: true,
-    users: {
-      name: "Abena Mansa",
-      email: "abena.m@yahoo.com",
-      phone: "+233 20 987 6543"
-    },
-    order_items: [
-      {
-        id: "oi-mock-3",
-        quantity: 2,
-        price: 249.00,
-        products: {
-          name: "AirPods Pro (2nd Generation)",
-          brand: "Apple",
-          product_images: [{ image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" }]
-        }
-      }
-    ]
-  },
-  {
-    id: "7ab868f1-5fe2-4f76-96a2-bc8ccda1293c",
-    created_at: "2026-06-28T14:05:00.000Z",
-    total: 399.00,
-    status: "Delivered",
-    user_id: "u3-mock-id",
-    isMock: true,
-    users: {
-      name: "Kofi Owusu",
-      email: "k.owusu@outlook.com",
-      phone: "+233 24 333 4444"
-    },
-    order_items: [
-      {
-        id: "oi-mock-4",
-        quantity: 1,
-        price: 399.00,
-        products: {
-          name: "Smart Watch Series 9",
-          brand: "Apple",
-          product_images: [{ image_url: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&q=80" }]
-        }
-      }
-    ]
-  },
-  {
-    id: "f3c9597d-60fa-40ee-b4c6-2c5e5332f143",
-    created_at: "2026-06-27T09:15:00.000Z",
-    total: 1199.99,
-    status: "Cancelled",
-    user_id: "u4-mock-id",
-    isMock: true,
-    users: {
-      name: "Jessica Mensah",
-      email: "jess.mensah@gmail.com",
-      phone: "+233 50 444 5555"
-    },
-    order_items: [
-      {
-        id: "oi-mock-5",
-        quantity: 1,
-        price: 1199.99,
-        products: {
-          name: "iPhone 15 Pro Max",
-          brand: "Apple",
-          product_images: [{ image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" }]
-        }
-      }
-    ]
-  }
-];
-
 export default function AdminOrdersPage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -206,8 +90,8 @@ export default function AdminOrdersPage() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error("Failed to query real orders, showing mock database:", error);
-        setOrders(MOCK_ORDERS);
+        console.error("Failed to query real orders:", error);
+        setOrders([]);
       } else if (data && data.length > 0) {
         // Map and set real database orders
         const mapped: Order[] = data.map((row: any) => ({
@@ -238,12 +122,11 @@ export default function AdminOrdersPage() {
         }));
         setOrders(mapped);
       } else {
-        // Empty DB -> Fallback to beautiful mock orders
-        setOrders(MOCK_ORDERS);
+        setOrders([]);
       }
     } catch (err) {
       console.error("Failed to load orders:", err);
-      setOrders(MOCK_ORDERS);
+      setOrders([]);
     } finally {
       setLoading(false);
     }

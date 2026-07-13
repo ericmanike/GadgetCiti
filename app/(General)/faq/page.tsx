@@ -96,7 +96,7 @@ export default function FAQPage() {
   }, [activeCategory]);
 
   return (
-    <div className="min-h-screen bg-gray-300 py-12 px-4 pt-28 pb-20 mt-30 md:mt-15 ">
+    <div className="min-h-screen bg-slate-50 py-12 px-4 pt-28 pb-20 mt-30 md:mt-15 ">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

@@ -67,7 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${outfit.variable} font-sans bg-gray-300`}>
+      <body className={`${geistSans.variable} ${outfit.variable} font-sans bg-slate-50 overflow-x-hidden min-h-screen`}>
         <AuthProvider>
           <CartProvider>
             <ToastProvider>

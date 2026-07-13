@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Star,
 
-    ShoppingCart,
+     Phone ,
     ShieldCheck,
     Truck,
     RotateCcw,
@@ -355,12 +355,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             >
                                 ADD TO CART
                             </button>
-                            <button
-                                className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-900 font-black py-2 px-4 rounded-2xl transition-all active:scale-95 disabled:border-gray-200 disabled:text-gray-300"
-                                disabled={!product.inStock}
-                            >
-                                BUY NOW
+                            <button className='text-white font-black py-2 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg bg-black'>
+                                <Phone />
+                                WHATSAPP
                             </button>
+                        
                         </div>
                     </div>
 
@@ -444,14 +443,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         </div>
                     </div>
 
-                    {/* <div className="p-6 rounded-3xl bg-blue-600 text-white flex flex-col gap-4 relative overflow-hidden group">
-                        <div className="z-10 relative">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">PROMO DEALS</p>
-                            <h4 className="text-lg font-black mt-1">Buy 2, Get 1 Free on all accessories!</h4>
-                            <button className="mt-4 bg-white text-blue-600 px-4 py-2 rounded-xl font-black text-xs uppercase hover:bg-blue-50 transition-colors">Claim Now</button>
-                        </div>
-                        <ShoppingCart className="absolute -bottom-4 -right-4 w-24 h-24 opacity-10 group-hover:scale-110 transition-transform duration-700" />
-                    </div> */}
+                  
                 </div>
             </div>
 
@@ -460,18 +452,18 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 <div className="flex gap-8 border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab("ai")}
-                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-1.5 ${activeTab === "ai" ? "text-purple-600" : "text-gray-400 hover:text-purple-500"
+                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-1.5 ${activeTab === "ai" ? "text-black" : "text-gray-400 hover:text-purple-500"
                             }`}
                     >
-                        <Sparkles size={14} className={activeTab === "ai" ? "text-purple-500 animate-pulse" : ""} />
+                        <Sparkles size={14} className={activeTab === "ai" ? "text-slate-900 animate-pulse" : ""} />
                         AI Recommendation
                         {activeTab === "ai" && (
-                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-purple-600 rounded-t-full" />
+                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
                     </button>
                     <button
                         onClick={() => setActiveTab("overview")}
-                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
+                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
                             }`}
                     >
                         Product Overview
@@ -479,16 +471,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
                     </button>
-                    <button
-                        onClick={() => setActiveTab("specs")}
-                        className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "specs" ? "text-slate-900" : "text-gray-400"
-                            }`}
-                    >
-                        Specifications
-                        {activeTab === "specs" && (
-                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
-                        )}
-                    </button>
+                
                 </div>
 
                 <div className="py-8">
@@ -512,7 +495,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             {product.features.map((feature, i) => (
                                                 <li key={i} className="flex items-center gap-3 text-sm text-gray-600 font-medium">
-                                                    <CheckCircle2 size={18} className="text-blue-600 shrink-0" />
+                                                    <CheckCircle2 size={18} className="text-slate-900 shrink-0" />
                                                     {feature}
                                                 </li>
                                             ))}
@@ -547,9 +530,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 exit={{ opacity: 0, y: -10 }}
                                 className="flex flex-col gap-6"
                             >
-                                <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-pink-50 border border-purple-100 p-6 rounded-3xl flex flex-col gap-4">
-                                    <div className="flex items-center gap-2 text-purple-700 font-extrabold text-sm uppercase tracking-wider">
-                                        <Sparkles className="w-5 h-5 animate-pulse text-purple-500" />
+                                <div className="bg-gradient-to-r from-slate-50 via-slate-50 to-slate-50 border border-slate-100 p-6 rounded-3xl flex flex-col gap-4">
+                                    <div className="flex items-center gap-2 text-slate-900 font-extrabold text-sm uppercase tracking-wider">
+                                     
                                         <span>AI-Powered Recommendations & Verdict</span>
                                     </div>
                                     <p className="text-sm font-bold text-slate-800 leading-relaxed">
@@ -570,7 +553,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                                     </div>
                                                     <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
                                                         <div 
-                                                            className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                                                            className="h-full bg-gradient-to-r from-red-500 to-red-900 rounded-full"
                                                             style={{ width: `${item.score}%` }}
                                                         />
                                                     </div>

@@ -30,58 +30,6 @@ interface Order {
   status: 'pending' | 'shipped' | 'delivered';
 }
 
-const INITIAL_MOCK_ORDERS: Order[] = [
-  {
-    id: 'ord-1',
-    orderNumber: 'LTX-8791024',
-    customerName: 'Kofi Mensah',
-    customerEmail: 'kofi@mensah.com',
-    customerPhone: '+233 24 456 7890',
-    shippingAddress: '15 Liberation Road',
-    city: 'Accra',
-    date: '2026-07-02 14:32',
-    total: 1449.99,
-    status: 'pending',
-    items: [
-      {
-        id: 'item-1',
-        productName: 'iPhone 15 Pro Max',
-        price: 1199.99,
-        quantity: 1,
-        imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80',
-      },
-      {
-        id: 'item-2',
-        productName: 'AirPods Pro (2nd Gen)',
-        price: 249.00,
-        quantity: 1,
-        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80',
-      }
-    ]
-  },
-  {
-    id: 'ord-2',
-    orderNumber: 'LTX-2309187',
-    customerName: 'Ama Serwaa',
-    customerEmail: 'ama@serwaa.com',
-    customerPhone: '+233 50 123 4567',
-    shippingAddress: 'Spintex Plaza Road, Shop 12',
-    city: 'Tema',
-    date: '2026-07-01 09:15',
-    total: 498.00,
-    status: 'shipped',
-    items: [
-      {
-        id: 'item-3',
-        productName: 'AirPods Pro (2nd Gen)',
-        price: 249.00,
-        quantity: 2,
-        imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80',
-      }
-    ]
-  }
-];
-
 export default function SellerOrdersPage() {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -94,11 +42,8 @@ export default function SellerOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
-    // Simulate loading orders from backend
-    setTimeout(() => {
-      setOrders(INITIAL_MOCK_ORDERS);
-      setLoading(false);
-    }, 800);
+    setOrders([]);
+    setLoading(false);
   }, []);
 
   // Update Status Handler

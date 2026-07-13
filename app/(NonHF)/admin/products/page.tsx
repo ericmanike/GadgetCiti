@@ -33,7 +33,7 @@ interface ProductFormValues {
   category: string;
   overview: string;
   description: string;
-  imageFile: File | null;
+  imageFiles: File[];
 }
 
 const validationSchema = Yup.object({
@@ -44,7 +44,7 @@ const validationSchema = Yup.object({
   category: Yup.string().required('Category is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
-  imageFile: Yup.mixed().required('Product image file is required')
+  imageFiles: Yup.array().of(Yup.mixed()).min(1, 'At least one product image is required').max(3, 'You can upload a maximum of 3 images')
 });
 
 export default function AdminProductsPage() {
@@ -157,7 +157,7 @@ export default function AdminProductsPage() {
       category: '',
       overview: '',
       description: '',
-      imageFile: null
+      imageFiles: []
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -207,47 +207,52 @@ export default function AdminProductsPage() {
         if (productError) throw productError;
         const productId = product.id;
 
-         let finalImgUrl = "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80";
-        
-         if (values.imageFile) {
-          const file = values.imageFile;
-          const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dzj8q4qtf';
-          const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
+         let uploadedUrls: string[] = [];
 
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('upload_preset', uploadPreset);
+         if (values.imageFiles && values.imageFiles.length > 0) {
+           const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dzj8q4qtf';
+           const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
 
-          try {
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-              method: 'POST',
-              body: formData
-            });
+           const uploadPromises = values.imageFiles.map(async (file) => {
+             const formData = new FormData();
+             formData.append('file', file);
+             formData.append('upload_preset', uploadPreset);
 
-            if (!res.ok) {
-              const errData = await res.json();
-              throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
-            }
+             const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+               method: 'POST',
+               body: formData
+             });
 
-            const data = await res.json();
-            if (data.secure_url) { 
-              console.log("data", data) 
-              finalImgUrl = data.secure_url;
-              console.log("Uploaded successfully to Cloudinary:", finalImgUrl);
-            } else {
-              throw new Error("No secure_url returned from Cloudinary response");
-            }
-          } catch (uploadError) {
-            console.error('Cloudinary upload failed, using fallback URL:', uploadError);
-          }
-        }
+             if (!res.ok) {
+               const errData = await res.json();
+               throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
+             }
 
-        await supabase
-          .from('product_images')
-          .insert({
-            product_id: productId,
-            image_url: [finalImgUrl]
-          });
+             const data = await res.json();
+             if (data.secure_url) {
+               return data.secure_url;
+             } else {
+               throw new Error("No secure_url returned from Cloudinary response");
+             }
+           });
+
+           try {
+             uploadedUrls = await Promise.all(uploadPromises);
+             console.log("Uploaded successfully to Cloudinary:", uploadedUrls);
+           } catch (uploadError) {
+             console.error('Cloudinary upload failed, using fallback URL:', uploadError);
+             uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+           }
+         } else {
+           uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+         }
+
+         await supabase
+           .from('product_images')
+           .insert({
+             product_id: productId,
+             image_url: uploadedUrls
+           });
 
         setSuccessMsg('Product created successfully!');
         
@@ -606,49 +611,76 @@ export default function AdminProductsPage() {
                   {/* Image Upload */}
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                      Product Image *
+                      Product Images (Up to 3) *
                     </label>
-                    <div className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 hover:bg-slate-100/50 hover:border-orange-500/50 transition duration-200">
-                      {formik.values.imageFile ? (
-                        <div className="relative w-full flex flex-col items-center gap-2">
-                          <img
-                            src={URL.createObjectURL(formik.values.imageFile)}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-xl border border-slate-200 shadow-sm"
-                          />
-                          <p className="text-xs font-semibold text-slate-600 truncate max-w-xs">
-                            {formik.values.imageFile.name} ({(formik.values.imageFile.size / 1024).toFixed(1)} KB)
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => formik.setFieldValue('imageFile', null)}
-                            className="text-xs text-red-500 hover:text-red-650 font-bold hover:underline cursor-pointer"
-                          >
-                            Remove Image
-                          </button>
+                    
+                    <div className="space-y-4">
+                      {/* Grid showing existing selection */}
+                      {formik.values.imageFiles && formik.values.imageFiles.length > 0 && (
+                        <div className="grid grid-cols-3 gap-3">
+                          {formik.values.imageFiles.map((file, idx) => (
+                            <div key={idx} className="relative aspect-square border border-slate-200 rounded-xl overflow-hidden bg-slate-50 group">
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt={`Preview ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-150 flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const nextFiles = formik.values.imageFiles.filter((_, i) => i !== idx);
+                                    formik.setFieldValue('imageFiles', nextFiles);
+                                  }}
+                                  className="p-1.5 bg-red-500 hover:bg-red-650 text-white rounded-full transition cursor-pointer animate-in zoom-in-50"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                              <span className="absolute bottom-1 left-1 bg-slate-900/70 backdrop-blur-xs text-[9px] text-white px-1.5 py-0.5 rounded font-black">
+                                #{idx + 1}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      ) : (
-                        <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-4">
-                          <Plus className="text-slate-400 w-8 h-8 mb-2" />
-                          <span className="text-xs font-bold text-slate-600">Click to upload product image</span>
-                          <span className="text-[10px] text-slate-400 mt-1 font-semibold">PNG, JPG, JPEG (Max 5MB)</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.currentTarget.files?.[0];
-                              if (file) {
-                                formik.setFieldValue('imageFile', file);
-                              }
-                            }}
-                          />
-                        </label>
+                      )}
+
+                      {/* Selector Dropzone / Add More card */}
+                      {(!formik.values.imageFiles || formik.values.imageFiles.length < 3) && (
+                        <div className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 hover:bg-slate-100/50 hover:border-orange-500/50 transition duration-200">
+                          <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-4">
+                            <Plus className="text-slate-400 w-8 h-8 mb-2 animate-bounce" />
+                            <span className="text-xs font-bold text-slate-600">
+                              {formik.values.imageFiles && formik.values.imageFiles.length > 0
+                                ? `Add more images (${formik.values.imageFiles.length}/3)`
+                                : "Click to upload product images"}
+                            </span>
+                            <span className="text-[10px] text-slate-400 mt-1 font-semibold">
+                              PNG, JPG, JPEG (Max 3 files, 5MB each)
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              onChange={(e) => {
+                                const files = Array.from(e.currentTarget.files || []);
+                                const currentFiles = formik.values.imageFiles || [];
+                                const combined = [...currentFiles, ...files];
+                                const uniqueCombined = combined.filter((file, idx, self) =>
+                                  self.findIndex(f => f.name === file.name && f.size === file.size) === idx
+                                ).slice(0, 3);
+                                formik.setFieldValue('imageFiles', uniqueCombined);
+                              }}
+                            />
+                          </label>
+                        </div>
                       )}
                     </div>
-                    {formik.touched.imageFile && formik.errors.imageFile && (
+
+                    {formik.touched.imageFiles && formik.errors.imageFiles && (
                       <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {String(formik.errors.imageFile)}
+                        <AlertCircle size={12} /> {String(formik.errors.imageFiles)}
                       </p>
                     )}
                   </div>
