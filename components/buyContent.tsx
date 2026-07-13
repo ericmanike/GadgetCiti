@@ -183,9 +183,9 @@ export default function BuyPage() {
               <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Category</label>
               <div className="space-y-2.5">
                 {[
-                  { id: 'phones', label: 'Smartphones', value: 'phones' },
-                  { id: 'laptops', label: 'Laptops', value: 'laptops' },
-                  { id: 'tablets', label: 'Tablets', value: 'tablets' },
+                  { id: 'smartphones', label: 'Smartphones', value: 'smartphones' },
+                  { id: 'computers', label: 'Computers', value: 'computers' },
+                  { id: 'tablets', label: 'Tablets & Ipad', value: 'tablets' },
                   { id: 'accessories', label: 'Accessories', value: 'accessories' },
                   { id: 'electronics', label: 'Other Electronics', value: 'electronics' },
                 ].map((cat) => (
@@ -220,28 +220,27 @@ export default function BuyPage() {
             <div className="mb-8">
               <label className="block mb-4 font-bold text-base text-gray-900 border-b border-gray-100 pb-1 flex justify-between items-center">
                 Price Range
-                <span className="text-orange-500 text-xs font-black">Up to {formatCurrency(Number(filteredProducts.priceRange) || 5000)}</span>
+                <span className="text-orange-500 text-xs font-black">Up to {formatCurrency(Number(filteredProducts.priceRange) || 25000)}</span>
               </label>
               <div className="px-1">
                 <input
                   type="range"
                   min="0"
-                  max="5000"
+                  max="25000"
                   step="50"
-                  value={filteredProducts.priceRange || '5000'}
+                  value={filteredProducts.priceRange || '25000'}
                   onChange={(e) => {
                     setFilteredProducts(prev => ({ ...prev, priceRange: e.target.value }));
                     priceRangeFilter(e.target.value);
                   }}
                   style={{
-                    background: `linear-gradient(to right, #f97316 0%, #f97316 ${((Number(filteredProducts.priceRange || 5000) / 5000) * 100)}%, #e5e7eb ${((Number(filteredProducts.priceRange || 5000) / 5000) * 100)}%, #e5e7eb 100%)`
+                    background: `linear-gradient(to right, #f97316 0%, #f97316 ${((Number(filteredProducts.priceRange || 25000) / 25000) * 100)}%, #e5e7eb ${((Number(filteredProducts.priceRange || 25000) / 25000) * 100)}%, #e5e7eb 100%)`
                   }}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-orange-500 [&::-moz-range-thumb]:border-none"
                 />
                 <div className="flex justify-between mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   <span>0 GHS</span>
-                  <span>2.5K</span>
-                  <span>5K GHS</span>
+                  <span>25K GHS</span>
                 </div>
               </div>
             </div>
@@ -317,7 +316,27 @@ export default function BuyPage() {
               </div>
             </div>
 
-
+            {/* Mobile Footer Actions */}
+            <div className="md:hidden pt-4 border-t border-gray-150 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
+                  router.push('?');
+                }}
+                className="flex-1 py-3 px-4 rounded-xl border border-gray-250 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer active:scale-98"
+              >
+                Reset Filters
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsFilterOpen(false)}
+                className="flex-1 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-xs font-bold text-white transition cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 shadow-sm"
+              >
+               
+                Apply All
+              </button>
+            </div>
           </div>
           {/*  Slider   */}
 

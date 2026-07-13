@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import Script from "next/script";
+
 
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -100,7 +100,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-50 space-y-2 pointer-events-none">
+      <div className="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}
