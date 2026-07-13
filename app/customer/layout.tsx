@@ -28,14 +28,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }, [isMobileSidebarOpen]);
 
     return (
-        <div className="min-h-screen bg-gray-300 relative">
+        <div className="min-h-screen bg-slate-50 relative">
          
             
-            <div className="w-full mx-auto  ">
+            <div className="w-full mx-auto">
                 {/* Mobile Top Navigation Bar */}
-                <div className=" flex items-center justify-between bg-white px-4 py-3  shadow-lg mb-4  border border-gray-200">
+                <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 shadow-lg mb-4 border border-gray-200">
                     <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500 "></span> 
+                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span> 
                         <span className="font-bold text-slate-800 text-sm tracking-wide">Customer Dashboard</span>
                     </div>
                     <button
@@ -47,9 +47,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-[264px_1fr] gap-4 md:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[264px_1fr] gap-4 md:gap-6 min-h-screen">
                     {/* Desktop Sidebar (Always visible on large screens, hidden on mobile) */}
-                    <aside className="hidden md:block">
+                    <aside className="hidden md:block h-screen sticky top-0 flex-shrink-0">
                         <CustomerSidebar />
                     </aside>
 
@@ -73,9 +73,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                     animate={{ x: 0 }}
                                     exit={{ x: '-100%' }}
                                     transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-                                    className="relative flex flex-col w-[280px] max-w-[85%] h-full bg-white shadow-2xl z-10 overflow-y-auto"
+                                    className="relative flex flex-col w-[280px] max-w-[85%] h-full bg-white shadow-2xl z-10 overflow-hidden"
                                 >
-                                    <div className="flex justify-between items-center p-4 border-b border-gray-150 bg-gray-50">
+                                    <div className="flex justify-between items-center p-4 border-b border-gray-150 bg-gray-50 flex-shrink-0">
                                         <span className="font-bold text-slate-800 text-sm">Dashboard Menu</span>
                                         <button 
                                             onClick={() => setIsMobileSidebarOpen(false)}
@@ -84,7 +84,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                             <X size={20} />
                                         </button>
                                     </div>
-                                    <div className="flex-1 p-2" onClick={() => setIsMobileSidebarOpen(false)}>
+                                    <div className="flex-1 overflow-hidden" onClick={() => setIsMobileSidebarOpen(false)}>
                                         <CustomerSidebar />
                                     </div>
                                 </motion.div>

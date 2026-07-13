@@ -95,6 +95,7 @@ const Navbar = () => {
             <div className="relative" ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="flex w-full">
                 <div className="relative flex-1">
+                  <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" strokeWidth={2} />
                   <input
                     type="text"
                     value={searchQuery}
@@ -104,7 +105,7 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className="w-full h-10 md:h-12 px-3 md:px-4 py-1.5 md:py-2 pr-8 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
+                    className="w-full h-10 md:h-12 pl-10 md:pl-11 pr-8 py-1.5 md:py-2 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (
                     <button

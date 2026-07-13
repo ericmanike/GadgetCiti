@@ -68,3 +68,29 @@
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.4));
 }
+
+/* Custom Thin Scrollbar */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 84px;
+  margin-bottom: 84px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(249, 115, 22, 0.7);
+}
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}

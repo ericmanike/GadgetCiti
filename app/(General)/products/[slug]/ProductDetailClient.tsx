@@ -15,6 +15,7 @@ import {
     Heart,
     Share2,
     ChevronRight,
+    ChevronLeft,
     Minus,
     Plus,
     CheckCircle2,
@@ -63,10 +64,7 @@ function getAIRecommendations(product: Product): AIAnalysis {
                 suitabilityRating: [
                     { label: "Value For Money", score: 95 },
                     { label: "Portability", score: 85 },
-                    { label: "Battery Life", score: 80 },
-                    { label: "Office Work", score: 75 },
-                    { label: "Heavy Multi-tasking", score: 40 },
-                    { label: "Creative Design / Gaming", score: 30 }
+                    { label: "Battery Life", score: 80 }
                 ],
                 useCases: [
                     {
@@ -80,30 +78,16 @@ function getAIRecommendations(product: Product): AIAnalysis {
                         description: "Highly recommended for running Microsoft Office suite, handling emails, web browsing, and simple bookkeeping tasks.",
                         matchScore: 90,
                         category: "Business"
-                    },
-                    {
-                        title: "🎬 Media Streaming & Browsing",
-                        description: "Perfect for watching YouTube, Netflix, social media, and managing files with fast SSD read speeds.",
-                        matchScore: 85,
-                        category: "Entertainment"
-                    },
-                    {
-                        title: "🖥️ Intro to Web Development",
-                        description: "Good for learning HTML, CSS, and basic JavaScript. Lightweight IDEs like VS Code run smoothly.",
-                        matchScore: 70,
-                        category: "Coding"
                     }
                 ],
-                verdict: `This laptop is an outstanding, cost-effective choice. Equipped with solid storage and optimized resources, it ensures quick boot times and fluid operation for day-to-day administrative or academic tasks. While not built for intensive 3D gaming or heavy video rendering, it offers amazing value for casual users, students, and remote workers looking for a reliable daily driver.`
+                verdict: "An outstanding, cost-effective choice. Optimized for fluid daily administration, online lectures, and media streaming with quick boot times."
             };
         } else {
             return {
                 suitabilityRating: [
                     { label: "Processing Speed", score: 98 },
-                    { label: "Creative Editing", score: 92 },
                     { label: "Software Engineering", score: 95 },
-                    { label: "Gaming Capability", score: 85 },
-                    { label: "Value For Money", score: 78 }
+                    { label: "Creative Editing", score: 92 }
                 ],
                 useCases: [
                     {
@@ -117,15 +101,9 @@ function getAIRecommendations(product: Product): AIAnalysis {
                         description: "Excellent performance for high-end graphic design, 4K video editing, and complex rendering using Adobe Suite or Blender.",
                         matchScore: 92,
                         category: "Design"
-                    },
-                    {
-                        title: "🎮 High-FPS Gaming & Streaming",
-                        description: "Powerful hardware suitable for running modern games at high refresh rates and encoding live streams simultaneously.",
-                        matchScore: 88,
-                        category: "Gaming"
                     }
                 ],
-                verdict: `A high-performance powerhouse designed for demanding professionals. Its premium processing power and robust thermal management make it ideal for resource-heavy workloads like compilation, virtualization, and creative production. Highly recommended if you need an absolute workhorse that is fully future-proof.`
+                verdict: "A high-performance powerhouse designed for demanding professionals, full-stack software development, and heavy creative production."
             };
         }
     }
@@ -135,10 +113,8 @@ function getAIRecommendations(product: Product): AIAnalysis {
             return {
                 suitabilityRating: [
                     { label: "Battery Endurance", score: 95 },
-                    { label: "Daily Social Apps", score: 90 },
                     { label: "Mobile Money & Banking", score: 92 },
-                    { label: "Camera Quality", score: 50 },
-                    { label: "High-End Gaming", score: 35 }
+                    { label: "Daily Social Apps", score: 90 }
                 ],
                 useCases: [
                     {
@@ -152,24 +128,16 @@ function getAIRecommendations(product: Product): AIAnalysis {
                         description: "Fast and secure execution of MoMo transactions, banking apps, and QR code payments.",
                         matchScore: 92,
                         category: "Finance"
-                    },
-                    {
-                        title: "🔋 Extended Travel Companion",
-                        description: "Great secondary device or long-commute driver due to highly optimized power saving options.",
-                        matchScore: 88,
-                        category: "Travel"
                     }
                 ],
-                verdict: `A solid entry-level smartphone focusing on communication, battery longevity, and regular app utility. It handles everyday operations with ease and provides a reliable platform for local transactions and communication without breaking the bank.`
+                verdict: "A solid entry-level smartphone focusing on communication, extended battery endurance, daily social apps, and fast mobile transactions."
             };
         } else {
             return {
                 suitabilityRating: [
                     { label: "Camera & Photography", score: 96 },
                     { label: "Multi-tasking Speed", score: 95 },
-                    { label: "Display Quality", score: 98 },
-                    { label: "Mobile Gaming", score: 90 },
-                    { label: "Future Proof", score: 92 }
+                    { label: "Display Quality", score: 98 }
                 ],
                 useCases: [
                     {
@@ -183,15 +151,9 @@ function getAIRecommendations(product: Product): AIAnalysis {
                         description: "Runs multiple heavy apps in split-screen, handles large documents, and processes information rapidly without lag.",
                         matchScore: 94,
                         category: "Business"
-                    },
-                    {
-                        title: "🎮 Immersive Mobile Gaming",
-                        description: "Flawless gameplay on high graphics settings for resource-intensive titles like PUBG or Genshin Impact.",
-                        matchScore: 90,
-                        category: "Gaming"
                     }
                 ],
-                verdict: `A flagship device that delivers top-tier performance, a stellar camera system, and a stunning screen. Perfect for creators, developers, and tech enthusiasts who want zero compromise on speed, photography, and gaming capability.`
+                verdict: "A flagship device delivering top-tier processing speed, a stellar camera system, and a vibrant display for creators and power users."
             };
         }
     }
@@ -200,8 +162,7 @@ function getAIRecommendations(product: Product): AIAnalysis {
         suitabilityRating: [
             { label: "General Performance", score: 85 },
             { label: "Value", score: 88 },
-            { label: "Reliability", score: 90 },
-            { label: "Productivity", score: 75 }
+            { label: "Reliability", score: 90 }
         ],
         useCases: [
             {
@@ -217,7 +178,7 @@ function getAIRecommendations(product: Product): AIAnalysis {
                 category: "Utility"
             }
         ],
-        verdict: `A versatile electronic accessory designed to improve your daily convenience. It delivers solid performance for standard workflows and is an excellent value addition to your technology catalog.`
+        verdict: "A versatile electronic device built for daily convenience, dependable build quality, and smooth everyday productivity."
     };
 }
 
@@ -232,7 +193,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const images = product.images.length > 0 ? product.images : ["/next.svg"];
 
     return (
-        <div className="flex flex-col gap-10 ">
+        <div className="flex flex-col gap-10  pt-10 md:pt-20 ">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-500 font-medium">
                 <Link href="/" className="hover:text-blue-600">Home</Link>
@@ -245,25 +206,80 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 {/* Left: Image Gallery */}
                 <div className="lg:col-span-4 flex flex-col gap-4">
-                    <motion.div
-                        layoutId={`image-${product.slug}`}
-                        className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group"
-                    >
-                        <Image
-                            src={images[activeImage]}
-                            alt={product.name}
-                            fill
-                            className="object-cover rounded-2xl  transition-transform duration-500 group-hover:scale-105"
-                            priority
-                        />
+                    <div className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group">
+                        {/* Like / Heart Icon on Image Top Right */}
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsSaved(!isSaved);
+                            }}
+                            className="absolute top-2.5 right-2.5 z-20 p-2 rounded-full bg-white/80 hover:bg-white shadow-md backdrop-blur-xs transition-all hover:scale-110 active:scale-95 cursor-pointer border border-gray-200"
+                            aria-label="Save product"
+                        >
+                            <Heart size={18} className={isSaved ? "fill-red-500 text-red-500" : "text-gray-600"} />
+                        </button>
+
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeImage}
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.98 }}
+                                transition={{ duration: 0.25 }}
+                                className="absolute inset-0"
+                            >
+                                <Image
+                                    src={images[activeImage]}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+                                    priority
+                                />
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Slider Prev & Next Small Arrow Buttons */}
+                        {images.length > 1 && (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                                    }}
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 active:scale-95 cursor-pointer border border-gray-200"
+                                    aria-label="Previous image"
+                                >
+                                    <ChevronLeft size={16} strokeWidth={2.5} />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                                    }}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md backdrop-blur-xs transition-all hover:scale-110 active:scale-95 cursor-pointer border border-gray-200"
+                                    aria-label="Next image"
+                                >
+                                    <ChevronRight size={16} strokeWidth={2.5} />
+                                </button>
+                                
+                                {/* Slide Counter Badge */}
+                                <div className="absolute bottom-2.5 right-2.5 z-20 bg-slate-900/70 backdrop-blur-xs text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                                    {activeImage + 1} / {images.length}
+                                </div>
+                            </>
+                        )}
+
                         {!product.inStock && (
-                            <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-sm">
-                                <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase tracking-widest text-xs">
+                            <div className="absolute inset-0 bg-white/60 flex items-center justify-center backdrop-blur-sm z-30">
+                                <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase tracking-widest text-xs shadow-md">
                                     Out of Stock
                                 </span>
                             </div>
                         )}
-                    </motion.div>
+                    </div>
 
                     <div className="flex gap-3 h-fit overflow-x-auto p-2 no-scrollbar snap-x snap-mandatory">
                         {images.map((img, idx) => (
@@ -281,85 +297,73 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
                 {/* Middle: Product Info */}
                 <div className="lg:col-span-5 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
-                            <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-sm font-black uppercase tracking-widest hover:underline">
+                    <div className="flex flex-col gap-1.5">
+                        <div className="flex items-start justify-between">
+                            <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
                                 {product.brand}
                             </Link>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => setIsSaved(!isSaved)}
-                                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                                >
-                                    <Heart size={20} className={isSaved ? "fill-red-500 text-red-500" : "text-gray-400"} />
-                                </button>
-                                <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
-                                    <Share2 size={20} className="text-gray-400" />
-                                </button>
+                            <div className="flex flex-col items-end gap-0.5">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                    {product.ratingCount} Reviews
+                                </span>
+                                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-orange-50 border border-orange-100">
+                                    <Star size={12} className="fill-orange-400 text-orange-400" />
+                                    <span className="text-[11px] font-black text-orange-600">{product.rating.toFixed(1)}</span>
+                                </div>
                             </div>
                         </div>
-                        <h1 className="text-1xl md:text-2xl font-black text-gray-900 leading-tight">
+                        <h1 className="text-lg md:text-xl font-extrabold text-gray-900 leading-snug">
                             {product.name}
                         </h1>
-                        <div className="flex items-center gap-4 mt-1">
-                            <div className="flex items-center  px-2 py-0.5 rounded-lg">
-                                <Star size={16} className="fill-orange-400 text-orange-400" />
-                                <span className="ml-1 text-sm font-black text-orange-600">{product.rating.toFixed(1)}</span>
-                            </div>
-                            <span className="text-[14px] font-bold text-gray-400 border-l border-gray-200 pl-2 uppercase tracking-widest">
-                                {product.ratingCount} Reviews
-                            </span>
-                        </div>
                     </div>
 
-                    <div className="p-6 rounded-3xl bg-white shadow-lg transition-all duration-300 flex flex-col gap-4">
+                    <div className="p-5 md:p-6 rounded-3xl bg-white shadow-lg transition-all duration-300 flex flex-col gap-4">
                         <div className="flex flex-col">
                             <div className="flex items-center gap-3">
-                                <span className="text-xl md:text-3xl font-black text-gray-900">{formatCurrency(product.price)}</span>
+                                <span className="text-lg md:text-2xl font-black text-gray-900">{formatCurrency(product.price)}</span>
                                 {product.oldPrice && (
-                                    <span className="text-base md:text-2xl text-gray-400 line-through">{formatCurrency(product.oldPrice)}</span>
+                                    <span className="text-sm md:text-lg text-gray-400 line-through">{formatCurrency(product.oldPrice)}</span>
                                 )}
-
                             </div>
-
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-4 border-t border-gray-50">
-                            <p className="text-sm font-bold text-gray-900">Quantity</p>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center border border-gray-200 rounded-full py-1.5 px-3 gap-6 bg-gray-50/50">
+                        <div className="flex flex-col gap-2 pt-3 border-t border-gray-50">
+                            <p className="text-xs font-bold text-gray-900">Quantity</p>
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center border border-gray-200 rounded-full py-1 px-2.5 gap-4 bg-gray-50/50">
                                     <button
                                         disabled={quantity <= 1}
                                         onClick={() => setQuantity(q => q - 1)}
                                         className="p-1 hover:text-blue-600 disabled:text-gray-300 transition-colors"
                                     >
-                                        <Minus size={18} strokeWidth={3} />
+                                        <Minus size={16} strokeWidth={2.5} />
                                     </button>
-                                    <span className="w-8 text-center font-black text-lg">{quantity}</span>
+                                    <span className="w-6 text-center font-black text-base">{quantity}</span>
                                     <button
                                         onClick={() => setQuantity(q => q + 1)}
                                         className="p-1 hover:text-blue-600 transition-colors"
                                     >
-                                        <Plus size={18} strokeWidth={3} />
+                                        <Plus size={16} strokeWidth={2.5} />
                                     </button>
                                 </div>
-                                <span className="text-xs font-bold text-gray-400 italic">Only 5 items left!</span>
+                                <span className="text-[11px] font-bold text-gray-400 italic">
+                                    {product.stock > 0 ? `Only ${product.stock} items left!` : 'Out of stock'}
+                                </span>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                             <button
-                                className="bg-orange-600 hover:bg-orange-700 text-white font-black py-2 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg  disabled:bg-gray-300"
+                                className="bg-orange-600 hover:bg-orange-700 text-white font-black text-xs md:text-sm py-2.5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md disabled:bg-gray-300"
                                 disabled={!product.inStock}
                                 onClick={() => addToCart(product, quantity)}
                             >
                                 ADD TO CART
                             </button>
-                            <button className='text-white font-black py-2 px-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg bg-black'>
-                                <Phone />
+                            <button className="bg-black hover:bg-gray-900 text-white font-black text-xs md:text-sm py-2.5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md cursor-pointer">
+                                <Phone size={16} />
                                 WHATSAPP
                             </button>
-                        
                         </div>
                     </div>
 
@@ -530,16 +534,6 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 exit={{ opacity: 0, y: -10 }}
                                 className="flex flex-col gap-6"
                             >
-                                <div className="bg-gradient-to-r from-slate-50 via-slate-50 to-slate-50 border border-slate-100 p-6 rounded-3xl flex flex-col gap-4">
-                                    <div className="flex items-center gap-2 text-slate-900 font-extrabold text-sm uppercase tracking-wider">
-                                     
-                                        <span>AI-Powered Recommendations & Verdict</span>
-                                    </div>
-                                    <p className="text-sm font-bold text-slate-800 leading-relaxed">
-                                        {aiAnalysis.verdict}
-                                    </p>
-                                </div>
-
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
                                     {/* Suitability Ratings */}
                                     <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col gap-4 shadow-xs">
@@ -566,7 +560,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     <div className="flex flex-col gap-4">
                                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Top Recommended Use Cases</h4>
                                         <div className="space-y-3">
-                                            {aiAnalysis.useCases.map((uc, idx) => (
+                                            {aiAnalysis.useCases.slice(0, 1).map((uc, idx) => (
                                                 <div key={idx} className="bg-white rounded-2xl border border-gray-150 p-4 shadow-xs hover:border-purple-200 transition-colors">
                                                     <div className="flex justify-between items-start gap-2">
                                                         <h5 className="text-xs sm:text-sm font-bold text-slate-900">{uc.title}</h5>

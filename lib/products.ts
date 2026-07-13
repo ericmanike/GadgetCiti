@@ -11,17 +11,19 @@ export interface Product {
     category: string;
     images: string[];
     inStock: boolean;
+    stock: number;
     rating: number;
     ratingCount: number;
     specifications?: { label: string; value: string }[];
     features?: string[];
+    createdAt?: string;
 }
 
 export async function fetchAllProducts(): Promise<Product[]> {
     const { data, error } = await supabase
         .from('products')
         .select(`
-            id, name, brand, price, stock, over_view, specifications,
+            id, name, brand, price, stock, over_view, specifications, created_at,
             categories(name),
             product_images(image_url),
             reviews(rating)
@@ -75,9 +77,11 @@ function mapDBProductToClient(row: any): Product {
         category: row.categories?.name || "Uncategorized",
         images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"],
         inStock: Number(row.stock || 0) > 0,
+        stock: Number(row.stock || 0),
         rating: ratingCount > 0 ? ratingSum / ratingCount : 0,
         ratingCount: ratingCount,
         specifications: specs,
-        features: row.over_view?.features || []
+        features: row.over_view?.features || [],
+        createdAt: row.created_at || new Date().toISOString()
     };
 }

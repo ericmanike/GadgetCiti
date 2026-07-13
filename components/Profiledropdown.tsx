@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react"
-import { LogOut, User, Store, ChevronDown, ChevronUp } from "lucide-react"
+import { LogOut, User, Store, ChevronDown, ChevronUp, ShoppingBag } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -80,14 +80,30 @@ export default function DropdownProfile() {
       >
         <DropdownMenuItem 
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 focus:bg-slate-50 focus:text-gray-700 cursor-pointer transition-colors outline-hidden border-none" 
+          onClick={() => router.push('/customer/orders')}
+        >
+          <ShoppingBag className="size-5 text-gray-500" strokeWidth={1.5} />
+          <span className="font-semibold text-[15px]">My Orders</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem 
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 focus:bg-slate-50 focus:text-gray-700 cursor-pointer transition-colors outline-hidden border-none" 
           onClick={() => router.push('/customer/account')}
         >
           <User className="size-5 text-gray-500" strokeWidth={1.5} />
-          <span className="font-semibold text-[15px]">Account</span>
+          <span className="font-semibold text-[15px]">Account Details</span>
         </DropdownMenuItem>
 
       
         
+        <DropdownMenuItem 
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 focus:bg-slate-50 focus:text-gray-700 cursor-pointer transition-colors outline-hidden border-none" 
+          onClick={() => router.push('/buy')}
+        >
+          <Store className="size-5 text-gray-500" strokeWidth={1.5} />
+          <span className="font-semibold text-[15px]">Back to Shop</span>
+        </DropdownMenuItem>
+
         <DropdownMenuItem 
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#e52e2e] focus:bg-red-50 focus:text-[#e52e2e] cursor-pointer transition-colors outline-hidden border-none" 
           onClick={() => handleLogout()}

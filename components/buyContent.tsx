@@ -1,6 +1,6 @@
 'use client';
 import { motion } from "framer-motion";
-import { Filter } from "lucide-react";
+import { Filter, Check, X, ScanSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "./ProductCard";
@@ -14,21 +14,32 @@ export default function BuyPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState({
-    category: '',
+    categories: [] as string[],
     priceRange: '',
-    location: '',
-    condition: '',
+    brands: [] as string[],
+    conditions: [] as string[],
   });
+  const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+  const [sortBy, setSortBy] = useState('newest');
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const category = searchParams.get("category") || "All";
-  const priceRange = searchParams.get("priceRange") || "All";
+  const categoryParam = searchParams.get("category") || "";
+  const priceRange = searchParams.get("priceRange") || "";
+  const brandParam = searchParams.get("brand") || "";
+  const conditionParam = searchParams.get("condition") || "";
 
+  const selectedCategories = categoryParam ? categoryParam.split(",") : [];
+  const selectedBrands = brandParam ? brandParam.split(",") : [];
+  const selectedConditions = conditionParam ? conditionParam.split(",") : [];
 
-  const categoryFilter = (value: string) => {
+  const categoryFilter = (values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("category", value);
+    if (values.length > 0) {
+      params.set("category", values.join(","));
+    } else {
+      params.delete("category");
+    }
     router.push(`?${params.toString()}`);
   };
 
@@ -38,24 +49,25 @@ export default function BuyPage() {
     router.push(`?${params.toString()}`);
   };
 
-
-  const locationFilter = (value: string) => {
+  const brandFilter = (values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("location", value);
+    if (values.length > 0) {
+      params.set("brand", values.join(","));
+    } else {
+      params.delete("brand");
+    }
     router.push(`?${params.toString()}`);
   };
 
-  const handleConditionChange = (condition: string) => {
+  const handleConditionChange = (values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("condition", condition);
+    if (values.length > 0) {
+      params.set("condition", values.join(","));
+    } else {
+      params.delete("condition");
+    }
     router.push(`?${params.toString()}`);
   }
-
-
-
-  useEffect(() => {
-    console.log("Filters updated:", { category, priceRange });
-  }, [category, priceRange]);
 
   useEffect(() => {
     setLoading(true);
@@ -65,13 +77,71 @@ export default function BuyPage() {
     });
   }, []);
 
+  useEffect(() => {
+    setFilteredProducts({
+      categories: selectedCategories,
+      priceRange,
+      brands: selectedBrands,
+      conditions: selectedConditions,
+    });
 
+    let updated = [...allProducts];
+
+    // Filter by categories
+    if (selectedCategories.length > 0) {
+      updated = updated.filter(p => selectedCategories.some(cat => p.category?.toLowerCase() === cat.toLowerCase()));
+    }
+
+    // Filter by price range
+    if (priceRange && priceRange !== 'All') {
+      const maxPrice = Number(priceRange);
+      if (!isNaN(maxPrice)) {
+        updated = updated.filter(p => p.price <= maxPrice);
+      }
+    }
+
+    // Filter by brands
+    if (selectedBrands.length > 0) {
+      updated = updated.filter(p => selectedBrands.some(b => p.brand?.toLowerCase() === b.toLowerCase()));
+    }
+
+    // Filter by condition
+    if (selectedConditions.length > 0) {
+      updated = updated.filter(p => {
+        const specStr = p.specifications?.map(s => `${s.label} ${s.value}`).join(' ').toLowerCase() || '';
+        const descStr = p.description?.toLowerCase() || '';
+        return selectedConditions.some(cond => specStr.includes(cond.toLowerCase()) || descStr.includes(cond.toLowerCase()));
+      });
+    }
+
+    // Sort products
+    if (sortBy === 'price-asc') {
+      updated.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      updated.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'rating') {
+      updated.sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === 'newest') {
+      updated.sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
+    } else {
+      // popularity
+      updated.sort((a, b) => b.ratingCount - a.ratingCount);
+    }
+
+    setDisplayProducts(updated);
+  }, [allProducts, categoryParam, priceRange, brandParam, conditionParam, sortBy]);
 
   return (
-    <div className="flex min-h-screen font-sans w-full md:mt-30 mt-15 bg-gray-50">
-
-      <div className="grid  grid-cols-1 md:grid-cols-[0.4fr_1fr] py-10 relative ">
-        <div className=" ">
+    <div className="min-h-screen font-sans w-full md:mt-30 mt-15 bg-gray-50">
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 py-10 w-full max-w-7xl mx-auto px-4 md:px-6 relative">
+        <div className="md:sticky md:top-36 h-fit flex-shrink-0">
+          {/* Mobile Backdrop */}
+          {isFilterOpen && (
+            <div 
+              className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 md:hidden"
+              onClick={() => setIsFilterOpen(false)}
+            />
+          )}
 
 
           <button
@@ -82,20 +152,37 @@ export default function BuyPage() {
             <span className="font-bold text-sm">Filters</span>
           </button>
 
-          <div className={`md:block ${isFilterOpen ? 'block' : 'hidden'} bg-white space-y-8 text-gray-900 p-6 m-3 rounded-[2rem] shadow-lg z-40 transition-all duration-300`}>
-            <h2 className="text-xl font-bold mb-4 flex justify-between w-full ">
-              <span>Filters</span><button className="text-red-500 text-xs font-bold hover:underline cursor-pointer"
-                onClick={() => {
-                  setFilteredProducts({ category: '', priceRange: '', location: '', condition: '' });
-                  router.push('?');
-                }}>
-                Clear all
-              </button></h2>
+          <div 
+            className={`
+              bg-white text-gray-900 p-6 shadow-lg z-[60] transition-all duration-300 md:max-h-[70vh] overflow-y-auto thin-scrollbar
+              ${isFilterOpen 
+                ? 'fixed inset-x-4 top-28 bottom-6 max-h-[75vh] block rounded-[20px] border border-gray-150 space-y-6' 
+                : 'hidden md:block md:relative md:space-y-6 md:m-3 md:rounded-[5px]'
+              }
+            `}
+          >
+            <h2 className="text-xl font-bold mb-4 flex justify-between w-full items-center">
+              <span>Filters</span>
+              <div className="flex items-center gap-3">
+                <button className="text-red-500 text-xs font-bold hover:underline cursor-pointer"
+                  onClick={() => {
+                    setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
+                    router.push('?');
+                  }}>
+                  Reset all
+                </button>
+                <button 
+                  onClick={() => setIsFilterOpen(false)}
+                  className="md:hidden p-1 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-slate-700 transition cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </h2>
             <div className="mb-6">
               <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Category</label>
               <div className="space-y-2.5">
                 {[
-                  { id: 'all', label: 'All Categories', value: '' },
                   { id: 'phones', label: 'Smartphones', value: 'phones' },
                   { id: 'laptops', label: 'Laptops', value: 'laptops' },
                   { id: 'tablets', label: 'Tablets', value: 'tablets' },
@@ -105,21 +192,24 @@ export default function BuyPage() {
                   <label key={cat.id} className="flex items-center group cursor-pointer">
                     <div className="relative flex items-center justify-center">
                       <input
-                        type="radio"
-                        name="category"
+                        type="checkbox"
                         value={cat.value}
-                        checked={filteredProducts.category === cat.value}
+                        checked={filteredProducts.categories.includes(cat.value)}
                         onChange={(e) => {
-                          setFilteredProducts(prev => ({ ...prev, category: e.target.value }));
-                          categoryFilter(e.target.value);
+                          const isChecked = e.target.checked;
+                          const newCategories = isChecked
+                            ? [...filteredProducts.categories, cat.value]
+                            : filteredProducts.categories.filter(c => c !== cat.value);
+                          setFilteredProducts(prev => ({ ...prev, categories: newCategories }));
+                          categoryFilter(newCategories);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
                       />
-                      {filteredProducts.category === cat.value && (
-                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      {filteredProducts.categories.includes(cat.value) && (
+                        <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
+                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
                       {cat.label}
                     </span>
                   </label>
@@ -156,47 +246,45 @@ export default function BuyPage() {
               </div>
             </div>
 
-            {/* Location */}
+            {/* Brand Filter */}
             <div className="mb-6">
-              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Location</label>
-              <div className="space-y-2.5">
-                {[
-                  { id: 'l-all', label: 'All Locations', value: '' },
-                  { id: 'l-accra', label: 'Accra', value: 'accra' },
-                  { id: 'l-kumasi', label: 'Kumasi', value: 'kumasi' },
-                  { id: 'l-takoradi', label: 'Takoradi', value: 'takoradi' },
-                  { id: 'l-tamale', label: 'Tamale', value: 'tamale' },
-                ].map((loc) => (
-                  <label key={loc.id} className="flex items-center group cursor-pointer">
+              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Brand</label>
+              <div className="space-y-2.5 max-h-[160px] overflow-y-auto thin-scrollbar pr-1">
+                {Array.from(new Set(allProducts.map(p => p.brand).filter(Boolean))).sort().map((brand) => (
+                  <label key={brand} className="flex items-center group cursor-pointer">
                     <div className="relative flex items-center justify-center">
                       <input
-                        type="radio"
-                        name="location"
-                        value={loc.value}
-                        checked={filteredProducts.location === loc.value}
+                        type="checkbox"
+                        value={brand}
+                        checked={filteredProducts.brands.includes(brand)}
                         onChange={(e) => {
-                          setFilteredProducts(prev => ({ ...prev, location: e.target.value }));
-                          locationFilter(e.target.value);
+                          const isChecked = e.target.checked;
+                          const newBrands = isChecked
+                            ? [...filteredProducts.brands, brand]
+                            : filteredProducts.brands.filter(b => b !== brand);
+                          setFilteredProducts(prev => ({ ...prev, brands: newBrands }));
+                          brandFilter(newBrands);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
                       />
-                      {filteredProducts.location === loc.value && (
-                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      {filteredProducts.brands.includes(brand) && (
+                        <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
-                      {loc.label}
+                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
+                      {brand}
                     </span>
                   </label>
                 ))}
               </div>
             </div>
 
+
+
             <div className="mb-6">
               <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Condition</label>
               <div className="space-y-3">
                 {[
-                  { id: 'c-all', label: 'All Conditions', value: '' },
                   { id: 'c-new', label: 'New', value: 'new' },
                   { id: 'c-used', label: 'Used / Pre-owned', value: 'used' },
                   { id: 'c-refurbished', label: 'Refurbished', value: 'refurbished' },
@@ -204,21 +292,24 @@ export default function BuyPage() {
                   <label key={cond.id} className="flex items-center group cursor-pointer">
                     <div className="relative flex items-center justify-center">
                       <input
-                        type="radio"
-                        name="condition"
+                        type="checkbox"
                         value={cond.value}
-                        checked={filteredProducts.condition === cond.value}
+                        checked={filteredProducts.conditions.includes(cond.value)}
                         onChange={(e) => {
-                          setFilteredProducts(prev => ({ ...prev, condition: e.target.value }));
-                          handleConditionChange(e.target.value);
+                          const isChecked = e.target.checked;
+                          const newConditions = isChecked
+                            ? [...filteredProducts.conditions, cond.value]
+                            : filteredProducts.conditions.filter(c => c !== cond.value);
+                          setFilteredProducts(prev => ({ ...prev, conditions: newConditions }));
+                          handleConditionChange(newConditions);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-full checked:border-orange-500 transition-all cursor-pointer"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
                       />
-                      {filteredProducts.condition === cond.value && (
-                        <div className="absolute w-2.5 h-2.5 bg-orange-500 rounded-full"></div>
+                      {filteredProducts.conditions.includes(cond.value) && (
+                        <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-medium text-gray-600 group-hover:text-orange-500 transition-colors">
+                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
                       {cond.label}
                     </span>
                   </label>
@@ -233,16 +324,44 @@ export default function BuyPage() {
 
 
 
-        </div >
-        <div className="flex-1 p-2 md:p-4 overflow-hidden w-full">
+        </div>
+        <div className="flex-1 p-2 md:p-4 overflow-hidden w-full flex flex-col gap-4">
+          {!loading && (
+            <div className="flex items-center justify-between px-2 mb-2 w-full">
+              <span className="flex flex-row gap-1">
+                 < Filter onClick={()=>setIsFilterOpen(!isFilterOpen)}  className="md:hidden"/> 
+                  <span className="md:hidden">filter</span> 
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider hidden sm:inline">Sort By:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className=" border-gray-800 bg-white border border-gray-255 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-gray-800 cursor-pointer shadow-xs transition"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                </select>
+              </div>
+            </div>
+          )}
+
           {loading ? (
             <SkeletonCards cols={4} rows={2} />
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center">
-              {allProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            displayProducts.length > 0 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center w-full">
+                {displayProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-24 text-center w-full gap-4">
+                <ScanSearch size={48} className="text-gray-300 stroke-[1.5]" />
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No products found matching filters</p>
+              </div>
+            )
           )}
         </div>
 
