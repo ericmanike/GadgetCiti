@@ -2,8 +2,26 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/components/AuthContext';
 
 export default function OrdersPage() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         <div className="bg-white rounded shadow-sm min-h-[calc(100vh-8rem)]">
             <div className="p-4 border-b border-gray-100">

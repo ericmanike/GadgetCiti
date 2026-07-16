@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Search, Plus, Trash2, Eye, Loader2, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
+  Search, Plus, Trash2, Eye, Loader2, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles, Upload 
 } from 'lucide-react';
 import { useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
@@ -37,7 +37,7 @@ interface ProductFormValues {
   category: string;
   overview: string;
   description: string;
-  imageUrl: string;
+  imageFiles: File[];
 }
 
 const validationSchema = Yup.object({
@@ -48,7 +48,7 @@ const validationSchema = Yup.object({
   category: Yup.string().required('Category is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
-  imageUrl: Yup.string().url('Must be a valid URL').optional()
+  imageFiles: Yup.array().of(Yup.mixed()).min(1, 'At least one product image is required').max(3, 'You can upload a maximum of 3 images')
 });
 
 export default function SellerProductsPage() {
@@ -123,6 +123,7 @@ export default function SellerProductsPage() {
 
   useEffect(() => {
     loadData();
+    console.log(user)
   }, [user]);
 
   // Handle Sort
@@ -167,7 +168,7 @@ export default function SellerProductsPage() {
       category: '',
       overview: '',
       description: '',
-      imageUrl: ''
+      imageFiles: []
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -215,17 +216,58 @@ export default function SellerProductsPage() {
           .select('id')
           .single();
 
-        if (productError) throw productError;
+        if (productError) {
+        showToast(`Failed to add Product, ${productError}`,'error')
+          console.log(productError)
+          return;
+        }
 
-        // 3. Insert Image if URL exists
-        const defaultImage = "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=250&q=80";
-        const finalImageUrl = values.imageUrl || defaultImage;
-        
+        // 3. Upload Images to Cloudinary
+        let uploadedUrls: string[] = [];
+
+        if (values.imageFiles && values.imageFiles.length > 0) {
+          const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dwjvjjplu';
+          const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
+
+          const uploadPromises = values.imageFiles.map(async (file) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            if (data.secure_url) {
+              return data.secure_url;
+            } else {
+              throw new Error("No secure_url returned from Cloudinary response");
+            }
+          });
+
+          try {
+            uploadedUrls = await Promise.all(uploadPromises);
+            console.log("Uploaded successfully to Cloudinary:", uploadedUrls);
+          } catch (uploadError) {
+            console.error('Cloudinary upload failed, using fallback URL:', uploadError);
+            uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+          }
+        } else {
+          uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+        }
+
         await supabase
           .from('product_images')
           .insert({
             product_id: product.id,
-            image_url: finalImageUrl
+            image_url: uploadedUrls
           });
 
         showToast("Product uploaded successfully! 🚀", "success");
@@ -410,7 +452,7 @@ export default function SellerProductsPage() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="relative w-full max-w-lg bg-white h-full shadow-2xl p-6 overflow-y-auto z-10 flex flex-col"
+              className="relative w-full md:w-[60%] bg-white h-full shadow-2xl p-6 overflow-y-auto z-10 flex flex-col"
             >
               <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
                 <div>
@@ -468,15 +510,18 @@ export default function SellerProductsPage() {
                     {/* Category */}
                     <div className="space-y-1">
                       <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Category</label>
-                      <input
+                      <select
                         name="category"
-                        type="text"
                         value={formik.values.category}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="e.g. Laptops"
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
-                      />
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm font-semibold text-gray-900 cursor-pointer"
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map(cat => (
+                          <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))}
+                      </select>
                       {formik.touched.category && formik.errors.category && (
                         <p className="text-xs font-bold text-red-500">{formik.errors.category}</p>
                       )}
@@ -520,20 +565,78 @@ export default function SellerProductsPage() {
                     </div>
                   </div>
 
-                  {/* Image URL */}
-                  <div className="space-y-1">
-                    <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Image URL (Optional)</label>
-                    <input
-                      name="imageUrl"
-                      type="text"
-                      value={formik.values.imageUrl}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
-                    />
-                    {formik.touched.imageUrl && formik.errors.imageUrl && (
-                      <p className="text-xs font-bold text-red-500">{formik.errors.imageUrl}</p>
+                  {/* Image Upload */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">
+                      Product Images (Up to 3)
+                    </label>
+                    
+                    <div className="space-y-4">
+                      {/* Grid showing current selection */}
+                      {formik.values.imageFiles && formik.values.imageFiles.length > 0 && (
+                        <div className="grid grid-cols-3 gap-3">
+                          {formik.values.imageFiles.map((file, idx) => (
+                            <div key={idx} className="relative aspect-square border border-gray-200 rounded-xl overflow-hidden bg-gray-50 group">
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt={`Preview ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-150 flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const nextFiles = formik.values.imageFiles.filter((_, i) => i !== idx);
+                                    formik.setFieldValue('imageFiles', nextFiles);
+                                  }}
+                                  className="p-1.5 bg-red-500 hover:bg-red-655 text-white rounded-full transition cursor-pointer"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                              <span className="absolute bottom-1 left-1 bg-black/75 text-[9px] text-white px-1.5 py-0.5 rounded font-black">
+                                #{idx + 1}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Dropzone */}
+                      {(!formik.values.imageFiles || formik.values.imageFiles.length < 3) && (
+                        <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-6 bg-slate-50/50 hover:bg-slate-50 hover:border-orange-500/50 transition duration-200">
+                          <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-2">
+                            <Upload className="text-gray-400 w-8 h-8 mb-2 animate-bounce" />
+                            <span className="text-xs font-bold text-gray-700">
+                              {formik.values.imageFiles && formik.values.imageFiles.length > 0
+                                ? `Add more images (${formik.values.imageFiles.length}/3)`
+                                : "Click to upload product images"}
+                            </span>
+                            <span className="text-[10px] text-gray-400 mt-1 font-semibold">
+                              PNG, JPG, JPEG (Max 3 files, 5MB each)
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              className="hidden"
+                              onChange={(e) => {
+                                const files = Array.from(e.currentTarget.files || []);
+                                const currentFiles = formik.values.imageFiles || [];
+                                const combined = [...currentFiles, ...files];
+                                const uniqueCombined = combined.filter((file, idx, self) =>
+                                  self.findIndex(f => f.name === file.name && f.size === file.size) === idx
+                                ).slice(0, 3);
+                                formik.setFieldValue('imageFiles', uniqueCombined);
+                              }}
+                            />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+
+                    {formik.touched.imageFiles && formik.errors.imageFiles && (
+                      <p className="text-xs font-bold text-red-500">{String(formik.errors.imageFiles)}</p>
                     )}
                   </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Product } from "@/lib/products";
+import { Product, mapDBProductToClient } from "@/lib/products";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/components/AuthContext";
@@ -42,27 +42,82 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    // Helper to get or create a cart for the user
+    const getOrCreateCart = async (userId: string): Promise<string | number | null> => {
+        try {
+            const { data: cart, error: fetchError } = await supabase
+                .from('carts')
+                .select('id')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (fetchError) throw fetchError;
+
+            if (cart) {
+                return cart.id;
+            }
+
+            const { data: newCart, error: createError } = await supabase
+                .from('carts')
+                .insert({ user_id: userId })
+                .select('id')
+                .single();
+
+            if (createError) throw createError;
+            return newCart.id;
+        } catch (err) {
+            console.error("Error in getOrCreateCart:", err);
+            return null;
+        }
+    };
+
     // Retrieve from DB when user logs in
     useEffect(() => {
         if (user) {
             const fetchDBCart = async () => {
                 try {
-                    const { data, error } = await supabase
-                        .from('cart_items')
-                        .select('product_id, quantity, product_data')
-                        .eq('user_id', user.id);
+                    const { data: cartData, error: cartError } = await supabase
+                        .from('carts')
+                        .select('id')
+                        .eq('user_id', user.id)
+                        .maybeSingle();
 
-                    if (error) {
-                        console.error("Error loading cart from DB:", error.message);
+                    if (cartError) {
+                        console.error("Error fetching cart from DB:", cartError.message);
                         return;
                     }
 
-                    if (data) {
-                        const items: CartItem[] = data.map((row: any) => ({
-                            product: row.product_data,
-                            quantity: row.quantity
-                        })).filter(item => item.product !== null);
-                        setCart(items);
+                    if (cartData) {
+                        const { data: itemsData, error: itemsError } = await supabase
+                            .from('cart_items')
+                            .select(`
+                                quantity,
+                                products (
+                                    id, name, brand, price, stock, over_view, specifications, created_at,
+                                    categories (name),
+                                    product_images (image_url),
+                                    reviews (rating)
+                                )
+                            `)
+                            .eq('cart_id', cartData.id);
+
+                        if (itemsError) {
+                            console.error("Error loading cart items from DB:", itemsError.message);
+                            return;
+                        }
+
+                        if (itemsData) {
+                            const items: CartItem[] = itemsData.map((row: any) => {
+                                if (!row.products) return null;
+                                return {
+                                    product: mapDBProductToClient(row.products),
+                                    quantity: Number(row.quantity) || 1
+                                };
+                            }).filter((item): item is CartItem => item !== null);
+                            setCart(items);
+                        }
+                    } else {
+                        setCart([]);
                     }
                 } catch (err) {
                     console.error("Supabase cart load error:", err);
@@ -86,56 +141,68 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const syncItemToSupabase = async (product: Product, quantity: number) => {
         if (!user) return;
         try {
+            const cartId = await getOrCreateCart(user.id);
+            if (!cartId) return;
+
             const { data } = await supabase.from('cart_items')
                 .select('id')
-                .eq('user_id', user.id)
-                .eq('product_id', product.id)
+                .eq('cart_id', cartId)
+                .eq('product_id', Number(product.id))
                 .maybeSingle();
 
             if (data) {
                 const { error } = await supabase.from('cart_items')
-                    .update({ quantity, product_data: product })
+                    .update({ quantity })
                     .eq('id', data.id);
-                if (error) console.error("Update cart error:", error.message);
+                if (error) console.error("Update cart item error:", error.message);
             } else {
                 const { error } = await supabase.from('cart_items')
                     .insert({
-                        user_id: user.id,
-                        product_id: product.id,
-                        quantity,
-                        product_data: product
+                        cart_id: cartId,
+                        product_id: Number(product.id),
+                        quantity
                     });
-                if (error) console.error("Insert cart error:", error.message);
+                if (error) console.error("Insert cart item error:", error.message);
             }
         } catch (err) {
             console.error("Supabase cart sync exception:", err);
         }
-    }
+    };
 
     const removeItemFromSupabase = async (productId: string) => {
         if (!user) return;
         try {
+            const { data: cart } = await supabase
+                .from('carts')
+                .select('id')
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            if (!cart) return;
+
             const { error } = await supabase.from('cart_items')
                 .delete()
-                .eq('user_id', user.id)
-                .eq('product_id', productId);
-            if (error) console.error("Remove cart error:", error.message);
+                .eq('cart_id', cart.id)
+                .eq('product_id', Number(productId));
+
+            if (error) console.error("Remove cart item error:", error.message);
         } catch (err) {
             console.error("Supabase cart auto remove exception:", err);
         }
-    }
+    };
 
     const clearCartFromSupabase = async () => {
         if (!user) return;
         try {
-            const { error } = await supabase.from('cart_items')
+            const { error } = await supabase.from('carts')
                 .delete()
                 .eq('user_id', user.id);
-            if (error) console.error("Clear cart error:", error);
+
+            if (error) console.error("Clear cart error:", error.message);
         } catch (err) {
             console.error("Supabase cart auto clearing exception:", err);
         }
-    }
+    };
 
     const addToCart = async (product: Product, quantity: number = 1) => {
         let newQuantity = quantity;

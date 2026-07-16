@@ -61,7 +61,7 @@ export default function AddressBookPage() {
       setLoading(true);
       const { data, error } = await supabase
         .from('users')
-        .select('address, city, region, addtional_address_information, additional_phone_number')
+        .select('address, city, region, address_additional_info, additional_phone')
         .eq('id', userId)
         .single();
 
@@ -79,8 +79,8 @@ export default function AddressBookPage() {
           address: data.address || '',
           city: data.city || '',
           region: data.region || '',
-          additionalInfo: data.addtional_address_information || '',
-          additionalPhone: data.additional_phone_number || ''
+          additionalInfo: data.address_additional_info || '',
+          additionalPhone: data.additional_phone || ''
         };
         setAddressData(fetched);
         setOriginalData(fetched);
@@ -117,8 +117,8 @@ export default function AddressBookPage() {
           address: addressData.address,
           city: addressData.city,
           region: addressData.region,
-          addtional_address_information: addressData.additionalInfo,
-          additional_phone_number: addressData.additionalPhone
+          address_additional_info: addressData.additionalInfo,
+          additional_phone: addressData.additionalPhone
         })
         .eq('id', user.id);
 

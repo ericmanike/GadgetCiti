@@ -73,7 +73,7 @@ export default function AccountPage() {
     const memberSince = user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6 h-screen">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-200 pb-5">
                 <div>

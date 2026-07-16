@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { User, Phone, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import SignupSuccessModal from "@/components/SignupSuccessModal";
 
 function SignUpForm() {
   const router = useRouter();
@@ -25,6 +26,19 @@ function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { showToast } = useToast();
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<'verification_pending' | 'success'>('success');
+  const [registeredEmail, setRegisteredEmail] = useState("");
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    if (modalType === "success") {
+      window.location.href = redirectTo;
+    } else {
+      router.push(`/auth/login?redirectTo=${encodeURIComponent(redirectTo)}`);
+    }
+  };
 
   const handleGoogleAuth = async () => {
     setIsGoogleLoading(true);
@@ -69,36 +83,23 @@ function SignUpForm() {
         },
       });
 
+       console.log("Sign Up Data", data);
+       console.log("Sign Up Error", error);
       if (error) throw error;
 
-      if (data.user) {
-        // Sync user details to public database table
-        const { error: dbError } = await supabase
-          .from("users")
-          .upsert({
-            id: data.user.id,
-            name: name,
-            email: email,
-            phone: phone,
-          });
 
-        if (dbError) {
-          console.error("Database Sync Error:", dbError);
-        }
-      }
+     
+     
 
+      setRegisteredEmail(email);
       if (data.session) {
-        showToast("Account created and logged in!", "success");
-        setTimeout(() => {
-          window.location.href = redirectTo;
-        }, 800);
+        setModalType("success");
+        setShowModal(true);
         return;
       }
 
-      showToast("Account created! Please check your email for verification.", "success");
-      setTimeout(() => {
-        router.push(`/auth/login?redirectTo=${encodeURIComponent(redirectTo)}`);
-      }, 3000);
+      setModalType("verification_pending");
+      setShowModal(true);
 
     } catch (err: any) {
       showToast(err.message || "Signup failed", "error");
@@ -282,6 +283,14 @@ function SignUpForm() {
           Sign In
         </Link>
       </p>
+
+      <SignupSuccessModal
+        isOpen={showModal}
+        onClose={handleModalClose}
+        type={modalType}
+        email={registeredEmail}
+        redirectTo={redirectTo}
+      />
     </div>
   );
 }

@@ -49,7 +49,7 @@ export async function getRelatedProducts(product: Product): Promise<Product[]> {
     ).slice(0, 4);
 }
 
-function mapDBProductToClient(row: any): Product {
+export function mapDBProductToClient(row: any): Product {
     const images = row.product_images?.flatMap((img: any) => 
         Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
     ) || [];
