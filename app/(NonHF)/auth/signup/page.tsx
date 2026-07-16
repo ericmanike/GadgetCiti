@@ -5,7 +5,8 @@ import Link from "next/link";
 
 import { useToast } from "@/components/toastProvider";
 import { useRouter, useSearchParams } from "next/navigation";
-import { User, Phone, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { User, Phone, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import SignupSuccessModal from "@/components/SignupSuccessModal";
@@ -263,7 +264,7 @@ function SignUpForm() {
           className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-sm font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
         >
           {isLoading ? (
-            <Loader2 className="h-5 w-5 animate-spin text-slate-900" />
+            <Spinner className="h-5 w-5" />
           ) : (
             <>
               Create Account
@@ -299,7 +300,7 @@ export default function SignUpPage() {
   return (
     <Suspense fallback={
       <div className="w-full rounded-[24px] border border-slate-100 bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.04)] sm:p-9 flex justify-center items-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#fbcb08]" />
+        <div className="loader w-8 h-8" />
       </div>
     }>
       <SignUpForm />

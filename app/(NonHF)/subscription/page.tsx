@@ -23,7 +23,7 @@ export default function GadgetCitiSubscriptions() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="loader w-10 h-10" />
       </div>
     );
   }
@@ -274,7 +274,7 @@ export default function GadgetCitiSubscriptions() {
 
               {paymentStatus === 'initiating' && (
                 <div className="py-6 text-center space-y-4">
-                  <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <div className="loader w-12 h-12 mx-auto" />
                   <h3 className="text-lg font-black text-gray-900">Initiating Payment</h3>
                   <p className="text-gray-500 text-sm">Connecting to Moolre Mobile Money gateway...</p>
                 </div>
@@ -282,10 +282,7 @@ export default function GadgetCitiSubscriptions() {
 
               {paymentStatus === 'pending' && (
                 <div className="py-6 text-center space-y-4">
-                  <div className="relative w-16 h-16 mx-auto">
-                    <div className="absolute inset-0 border-4 border-emerald-100 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
+                  <div className="loader w-12 h-12 mx-auto" />
                   <h3 className="text-lg font-black text-gray-900">USSD Prompt Sent! 📲</h3>
                   <p className="text-gray-650 text-sm font-semibold">
                     Please check your phone for a Mobile Money prompt.

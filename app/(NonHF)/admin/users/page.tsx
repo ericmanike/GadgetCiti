@@ -116,7 +116,7 @@ export default function AdminUsersPage() {
       {/* Directory Grid / Table */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 bg-white border border-slate-200 rounded-3xl shadow-sm">
-          <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+          <div className="loader w-10 h-10 mb-2" />
           <p className="text-slate-500 font-semibold">Updating user directory accounts...</p>
         </div>
       ) : filteredUsers.length === 0 ? (

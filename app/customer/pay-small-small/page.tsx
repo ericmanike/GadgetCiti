@@ -273,7 +273,7 @@ export default function PaySmallSmallPage() {
     if (authLoading || loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-slate-700 bg-gray-50 rounded-lg border border-gray-150 p-8 shadow-xs">
-                <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-4" />
+                <div className="loader w-10 h-10 mb-4" />
                 <p className="font-semibold text-sm">Loading Pay Small Small Dashboard...</p>
             </div>
         );
@@ -795,7 +795,7 @@ export default function PaySmallSmallPage() {
                                 {/* Loading Screen / Pin Authorization simulation */}
                                 {paymentStatus === 'initiating' && (
                                     <div className="text-center py-8 space-y-4">
-                                        <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto" />
+                                        <div className="loader w-12 h-12 mx-auto" />
                                         <div>
                                             <h4 className="text-sm font-bold text-slate-900 uppercase">Processing Down Payment</h4>
                                             <p className="text-xs text-gray-500 mt-1.5 leading-relaxed max-w-xs mx-auto">
@@ -1188,7 +1188,7 @@ export default function PaySmallSmallPage() {
 
                         {paymentStatus === 'initiating' && (
                             <div className="text-center py-8 space-y-4">
-                                <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto" />
+                                <div className="loader w-12 h-12 mx-auto" />
                                 <div>
                                     <h4 className="text-sm font-bold text-slate-900 uppercase">Connecting Gateway</h4>
                                     <p className="text-xs text-gray-500 mt-1 leading-relaxed">

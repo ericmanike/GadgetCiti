@@ -195,7 +195,7 @@ export default function RecycoProfile() {
   if (loading || !user) {
     return (
       <div className="min-h-screen bg-gray-300 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+        <div className="loader w-12 h-12" />
       </div>
     );
   }

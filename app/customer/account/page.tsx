@@ -64,7 +64,7 @@ export default function AccountPage() {
     if (loading) {
         return (
             <div className="p-8 flex items-center justify-center min-h-[50vh]">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
+                <div className="loader w-10 h-10" />
             </div>
         );
     }

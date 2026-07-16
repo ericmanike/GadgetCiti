@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Tag, Search, Plus, Trash2, Loader2, AlertCircle, CheckCircle, Sparkles, Edit
+  Tag, Search, Plus, Trash2, AlertCircle, CheckCircle, Sparkles, Edit
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/lib/supabase';
 
 interface CategoryItem {
@@ -271,7 +272,7 @@ export default function AdminCategoriesPage() {
               disabled={submitting || !newCatName.trim()}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-orange-500/20 text-sm cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {submitting ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+              {submitting ? <Spinner className="size-4" /> : <Plus size={16} />}
               <span>Add Category</span>
             </button>
           </form>
@@ -293,11 +294,11 @@ export default function AdminCategoriesPage() {
           </div>
 
           {/* Grid listing */}
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
-              <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
-              <p className="text-slate-500 font-semibold">Updating categorization nodes...</p>
-            </div>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl shadow-sm">
+                <div className="loader w-10 h-10 mb-2" />
+                <p className="text-slate-500 font-semibold">Updating categorization nodes...</p>
+              </div>
           ) : filteredCategories.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 bg-white border border-slate-200 rounded-3xl text-center space-y-3 shadow-sm">
               <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded-full flex items-center justify-center text-slate-400">
@@ -412,7 +413,7 @@ export default function AdminCategoriesPage() {
                 onClick={() => deletingId && handleDeleteCategory(deletingId)}
                 className="px-4 py-2 bg-red-500 hover:bg-red-650 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
               >
-                {submitting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                {submitting ? <Spinner className="size-3.5" /> : <Trash2 size={14} />}
                 Delete
               </button>
             </div>
@@ -473,7 +474,7 @@ export default function AdminCategoriesPage() {
                   disabled={submitting || !editCatName.trim() || editCatName.trim() === editingCat.name}
                   className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  {submitting ? <Loader2 size={14} className="animate-spin" /> : null}
+                  {submitting ? <Spinner className="size-3.5" /> : null}
                   Save Changes
                 </button>
               </div>

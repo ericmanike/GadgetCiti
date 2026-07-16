@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, Loader2 } from "lucide-react";
+import { ArrowLeft, Mail } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/components/toastProvider";
 import { supabase } from "@/lib/supabase";
 
@@ -75,7 +76,7 @@ export default function ForgotPasswordPage() {
         >
           {loading ? (
             <>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Spinner className="h-5 w-5" />
               Sending...
             </>
           ) : (

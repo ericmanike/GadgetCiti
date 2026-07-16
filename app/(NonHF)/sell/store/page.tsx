@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { 
-  Store, Phone, Mail, MapPin, AlignLeft, ShieldCheck, Loader2, Sparkles
+  Store, Phone, Mail, MapPin, AlignLeft, ShieldCheck, Sparkles
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
@@ -81,7 +82,7 @@ export default function StoreProfilePage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+        <div className="loader w-10 h-10 mb-2" />
         <p className="text-slate-500 font-semibold">Loading store settings...</p>
       </div>
     );
@@ -213,7 +214,7 @@ export default function StoreProfilePage() {
               disabled={saving}
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition duration-200 shadow-lg shadow-orange-500/20 disabled:opacity-50 cursor-pointer flex items-center gap-2"
             >
-              {saving && <Loader2 className="animate-spin size-4" />}
+              {saving && <Spinner className="size-4" />}
               {saving ? 'Saving Profile...' : 'Save Store Profile'}
             </button>
           </div>

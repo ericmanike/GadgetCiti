@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Search, Plus, Trash2, Eye, Loader2, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
+  Search, Plus, Trash2, Eye, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import { useFormik, Field, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { supabase } from '@/lib/supabase';
@@ -347,7 +348,7 @@ export default function AdminProductsPage() {
       {/* Grid Listing / Table */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 bg-white border border-slate-200 rounded-3xl shadow-sm">
-          <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+          <div className="loader w-10 h-10 mb-2" />
           <p className="text-slate-500 font-semibold">Updating catalog directory...</p>
         </div>
       ) : filteredProducts.length === 0 ? (
@@ -468,7 +469,7 @@ export default function AdminProductsPage() {
                 onClick={() => deletingId && handleDeleteProduct(deletingId)}
                 className="px-4 py-2 bg-red-500 hover:bg-red-650 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
               >
-                {submitting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                {submitting ? <Spinner className="size-3.5" /> : <Trash2 size={14} />}
                 Delete
               </button>
             </div>
@@ -742,7 +743,7 @@ export default function AdminProductsPage() {
                     disabled={submitting}
                     className="flex-1 py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition text-sm shadow-lg shadow-orange-500/20 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
-                    {submitting && <Loader2 size={16} className="animate-spin" />}
+                    {submitting && <Spinner className="size-4" />}
                     <span>Publish Gadget</span>
                   </button>
                 </div>

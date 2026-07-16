@@ -5,8 +5,9 @@ import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
 import { 
-  MapPin, Phone, Building, Compass, Info, Edit3, Save, X, Loader2, Sparkles, Check, CheckCircle2 
-} from 'lucide-react';
+  MapPin, Phone, Building, Compass, Info, Edit3, Save, X, Sparkles, Check, CheckCircle2 
+} from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from 'next/navigation';
 
 const GHANA_REGIONS = [
@@ -339,7 +340,7 @@ export default function AddressBookPage() {
             >
               {saving ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" />
+                  <Spinner className="size-3.5" />
                   Saving...
                 </>
               ) : (

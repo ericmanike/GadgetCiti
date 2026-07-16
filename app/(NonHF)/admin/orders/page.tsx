@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  ClipboardList, Search, Filter, Loader2, CheckCircle, 
-  Eye, RefreshCw, User, Mail, Phone, Calendar, DollarSign, 
-  ShoppingBag, X, TrendingUp, Clock, Truck, Sparkles
+  ClipboardList, Search, Filter, CheckCircle, 
+  Clock, Truck, AlertCircle, RefreshCw, Eye, ChevronRight, Sparkles,
+  User, Mail, Phone, Calendar, DollarSign, ShoppingBag, X, TrendingUp
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/toastProvider';
 import { formatCurrency } from '@/lib/utils';
@@ -246,7 +247,7 @@ export default function AdminOrdersPage() {
           onClick={loadOrders}
           className="flex items-center justify-center gap-2 bg-white border border-slate-200 hover:border-slate-350 text-slate-700 hover:text-slate-900 px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm cursor-pointer self-start md:self-auto"
         >
-          <RefreshCw size={14} className={loading ? "animate-spin text-orange-500" : ""} />
+          {loading ? <Spinner className="size-3.5" /> : <RefreshCw size={14} />}
           <span>Refresh List</span>
         </button>
       </div>
@@ -356,7 +357,7 @@ export default function AdminOrdersPage() {
       {/* Directory Grid / Table */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 bg-white border border-slate-200 rounded-3xl shadow-sm">
-          <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+          <div className="loader w-10 h-10 mb-2" />
           <p className="text-slate-500 font-semibold">Updating orders ledger registry...</p>
         </div>
       ) : filteredOrders.length === 0 ? (

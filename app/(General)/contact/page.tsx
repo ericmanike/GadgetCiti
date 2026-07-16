@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 
 
 export default function ContactPage() {
@@ -257,7 +258,7 @@ export default function ContactPage() {
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <Spinner className="size-5" />
                     Sending...
                   </>
                 ) : (

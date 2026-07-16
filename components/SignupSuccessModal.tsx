@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Mail, ExternalLink, ArrowRight, ShieldCheck, ShoppingBag, RefreshCw, X, Send } from 'lucide-react';
+import { Check, Mail, ExternalLink, ArrowRight, ShieldCheck, ShoppingBag, X, Send } from 'lucide-react';
+import { Spinner } from "@/components/ui/spinner";
 import { supabase } from '@/lib/supabase';
 
 interface SignupSuccessModalProps {
@@ -217,7 +218,7 @@ export default function SignupSuccessModal({ isOpen, onClose, type, email, redir
                   >
                     {isResending ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
+                        <Spinner className="h-4 w-4" />
                         Sending...
                       </>
                     ) : resendCooldown > 0 ? (

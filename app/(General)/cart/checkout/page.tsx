@@ -400,7 +400,7 @@ export default function CheckoutPage() {
                         >
                             {paymentStatus === 'initiating' && (
                                 <div className="py-6 space-y-4">
-                                    <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                    <div className="loader w-12 h-12 mx-auto" />
                                     <h3 className="text-lg font-black text-gray-900">Initiating Payment</h3>
                                     <p className="text-gray-500 text-sm">Connecting to Moolre Mobile Money gateway...</p>
                                 </div>
@@ -408,10 +408,7 @@ export default function CheckoutPage() {
 
                             {paymentStatus === 'pending' && (
                                 <div className="py-6 space-y-4">
-                                    <div className="relative w-16 h-16 mx-auto">
-                                        <div className="absolute inset-0 border-4 border-orange-200 rounded-full"></div>
-                                        <div className="absolute inset-0 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                                    </div>
+                                    <div className="loader w-12 h-12 mx-auto" />
                                     <h3 className="text-lg font-black text-gray-900">USSD Prompt Sent! 📲</h3>
                                     <p className="text-gray-600 text-sm font-semibold">
                                         Please check your phone for a Mobile Money prompt.

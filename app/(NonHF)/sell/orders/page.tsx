@@ -72,7 +72,7 @@ export default function SellerOrdersPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+        <div className="loader w-10 h-10 mb-2" />
         <p className="text-slate-500 font-semibold">Loading orders...</p>
       </div>
     );

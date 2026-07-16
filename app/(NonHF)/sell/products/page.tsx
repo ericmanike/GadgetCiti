@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Search, Plus, Trash2, Eye, Loader2, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles, Upload 
+  Search, Plus, Trash2, Eye, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles, Upload 
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import { useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { supabase } from '@/lib/supabase';
@@ -301,7 +302,7 @@ export default function SellerProductsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-orange-500 w-10 h-10 mb-2" />
+        <div className="loader w-10 h-10 mb-2" />
         <p className="text-slate-500 font-semibold">Loading catalog...</p>
       </div>
     );
@@ -680,7 +681,7 @@ export default function SellerProductsPage() {
                     disabled={submitting}
                     className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-sm transition duration-200 shadow-lg shadow-orange-500/20 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 mt-4"
                   >
-                    {submitting && <Loader2 className="animate-spin size-4" />}
+                    {submitting && <Spinner className="size-4" />}
                     {submitting ? 'Creating listing...' : 'Upload Product to Store'}
                   </button>
 
@@ -728,7 +729,7 @@ export default function SellerProductsPage() {
                   disabled={submitting}
                   className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl font-bold text-xs transition cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1"
                 >
-                  {submitting && <Loader2 className="animate-spin size-3" />}
+                  {submitting && <Spinner className="size-3" />}
                   Confirm Delete
                 </button>
               </div>

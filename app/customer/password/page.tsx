@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
@@ -193,7 +194,7 @@ export default function ChangePasswordPage() {
                         className="w-full mt-4 py-3 px-4 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-pointer active:scale-98 shadow-sm flex justify-center items-center gap-2"
                     >
                         {loading ? (
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <Spinner className="size-4" />
                         ) : (
                             'Update Password'
                         )}

@@ -47,7 +47,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
   if (authLoading) {
     return (
       <div className="min-h-screen bg-zinc-100 flex flex-col items-center justify-center text-black">
-        <Loader2 className="animate-spin text-orange-500 w-12 h-12 mb-4" />
+        <div className="loader w-12 h-12 mb-4" />
         <p className="text-slate-400 font-semibold animate-pulse">Connecting to Seller Dashboard...</p>
       </div>
     );

@@ -3,7 +3,8 @@
 import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, Loader2, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Lock, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/components/toastProvider";
 import { supabase } from "@/lib/supabase";
 
@@ -157,7 +158,7 @@ function ResetPasswordForm() {
         >
           {loading ? (
             <>
-              <Loader2 className="animate-spin h-5 w-5" />
+              <Spinner className="h-5 w-5" />
               Resetting...
             </>
           ) : (
