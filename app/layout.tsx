@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/toastProvider";
 import { AuthProvider } from "@/components/AuthContext";
 import { FirstVisitPopup } from "@/components/FirstVisitAlert";
 import { CartProvider } from "@/components/CartContext";
+import { WishlistProvider } from "@/components/WishlistContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,10 +71,12 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${outfit.variable} font-sans bg-slate-50 overflow-x-hidden min-h-screen`}>
         <AuthProvider>
           <CartProvider>
-            <ToastProvider>
-              {children}
-              <FirstVisitPopup />
-            </ToastProvider>
+            <WishlistProvider>
+              <ToastProvider>
+                {children}
+                <FirstVisitPopup />
+              </ToastProvider>
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
       </body>

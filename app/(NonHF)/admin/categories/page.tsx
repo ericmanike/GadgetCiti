@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 
 interface CategoryItem {
   id: string;
+  rawId?: any;
   name: string;
   slug: string;
   productCount: number;
@@ -63,6 +64,7 @@ export default function AdminCategoriesPage() {
 
       const mappedCats: CategoryItem[] = dbCats?.map((cat: any) => ({
         id: cat.id.toString(),
+        rawId: cat.id,
         name: cat.name || "Unnamed",
         slug: cat.slug || "",
         productCount: countsMap[cat.id.toString()] || 0
@@ -149,15 +151,39 @@ export default function AdminCategoriesPage() {
         return;
       }
 
-      const { error } = await supabase
+      const targetId = editingCat.rawId ?? (isNaN(Number(editingCat.id)) ? editingCat.id : Number(editingCat.id));
+
+      const { data, error } = await supabase
         .from('categories')
         .update({
           name: editCatName.trim(),
           slug
         })
-        .eq('id', editingCat.id);
+        .eq('id', targetId)
+        .select();
 
       if (error) throw error;
+
+      if (!data || data.length === 0) {
+        // Fallback: try with string id if number failed or vice versa
+        const fallbackId = targetId === editingCat.id ? Number(editingCat.id) : editingCat.id;
+        if (fallbackId !== targetId) {
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('categories')
+            .update({
+              name: editCatName.trim(),
+              slug
+            })
+            .eq('id', fallbackId)
+            .select();
+          if (fallbackError) throw fallbackError;
+          if (!fallbackData || fallbackData.length === 0) {
+            throw new Error('Could not update category. Please check database permissions.');
+          }
+        } else {
+          throw new Error('Could not update category. Please check database permissions.');
+        }
+      }
 
       setSuccessMsg(`Category updated successfully!`);
       setEditingCat(null);
@@ -186,10 +212,14 @@ export default function AdminCategoriesPage() {
     setSubmitting(true);
     setErrorMsg('');
     try {
+      const cat = categories.find(c => c.id === id);
+      const targetId = cat?.rawId ?? (isNaN(Number(id)) ? id : Number(id));
+
       const { data, error } = await supabase
         .from('categories')
         .delete()
-        .eq('id', id);
+        .eq('id', targetId)
+        .select();
 
       if (error) {
         console.log(error);
@@ -198,6 +228,8 @@ export default function AdminCategoriesPage() {
 
       setCategories(categories.filter(c => c.id !== id));
       setDeletingId(null);
+      setSuccessMsg('Category deleted successfully!');
+      setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err: any) {
       console.error("Error deleting category:", err);
       setErrorMsg(err.message || 'Failed to delete category.');
@@ -471,7 +503,7 @@ export default function AdminCategoriesPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting || !editCatName.trim() || editCatName.trim() === editingCat.name}
+                  disabled={submitting || !editCatName.trim()}
                   className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {submitting ? <Spinner className="size-3.5" /> : null}

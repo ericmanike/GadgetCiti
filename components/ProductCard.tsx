@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Heart } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useCart } from "@/components/CartContext";
+import { useWishlist } from "@/components/WishlistContext";
 import { Product } from "@/lib/products";
 
 interface ProductCardProps {
@@ -25,8 +26,9 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [isSaved, setIsSaved] = useState(false);
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const isSaved = isInWishlist(product.id);
 
   const handleAddToCart = () => {
     addToCart(product as Product);
@@ -50,9 +52,11 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           onClick={(e) => {
             e.preventDefault();
-            setIsSaved(!isSaved);
+            e.stopPropagation();
+            toggleWishlist(product as Product);
           }}
-          className="absolute bottom-2 right-2 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition hover:scale-110 active:scale-95 group/heart z-10"
+          aria-label={isSaved ? "Remove from wishlist" : "Add to wishlist"}
+          className="absolute bottom-2 right-2 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition hover:scale-110 active:scale-95 group/heart z-10 cursor-pointer"
         >
           <Heart
             size={18}

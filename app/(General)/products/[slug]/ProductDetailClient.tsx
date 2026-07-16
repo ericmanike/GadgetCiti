@@ -26,6 +26,7 @@ import { Product } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
 import { ProductCard } from "@/components/ProductCard";
 import { useCart } from "@/components/CartContext";
+import { useWishlist } from "@/components/WishlistContext";
 
 interface ProductDetailClientProps {
     product: Product;
@@ -185,7 +186,8 @@ function getAIRecommendations(product: Product): AIAnalysis {
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
     const [activeImage, setActiveImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
-    const [isSaved, setIsSaved] = useState(false);
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const isSaved = isInWishlist(product.id);
     const [activeTab, setActiveTab] = useState("ai");
     const { addToCart } = useCart();
     const aiAnalysis = getAIRecommendations(product);
@@ -212,10 +214,10 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             type="button"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setIsSaved(!isSaved);
+                                toggleWishlist(product);
                             }}
                             className="absolute top-2.5 right-2.5 z-20 p-2 rounded-full bg-white/80 hover:bg-white shadow-md backdrop-blur-xs transition-all hover:scale-110 active:scale-95 cursor-pointer border border-gray-200"
-                            aria-label="Save product"
+                            aria-label={isSaved ? "Remove from saved items" : "Save item"}
                         >
                             <Heart size={18} className={isSaved ? "fill-red-500 text-red-500" : "text-gray-600"} />
                         </button>

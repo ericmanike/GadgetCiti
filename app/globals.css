@@ -103,6 +103,14 @@
     position: relative;
     display: inline-block;
     box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.loader[class*="w-"],
+.loader[class*="h-"],
+.loader[class*="size-"] {
+    width: inherit;
+    height: inherit;
 }
 
 .loader::after {
@@ -111,7 +119,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 3.5px solid #ffc800;
+    border: 2.5px solid #ffc800;
     border-color: #ffc800 transparent #ffc800 transparent;
     animation: spin 1.2s linear infinite;
     box-sizing: border-box;

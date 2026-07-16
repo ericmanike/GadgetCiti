@@ -272,9 +272,9 @@ export default function PaySmallSmallPage() {
 
     if (authLoading || loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-slate-700 bg-gray-50 rounded-lg border border-gray-150 p-8 shadow-xs">
+            <div className="flex flex-col items-center justify-center min-h-screen text-slate-700 bg-gray-50 rounded-lg  p-8 shadow-xs">
                 <div className="loader w-10 h-10 mb-4" />
-                <p className="font-semibold text-sm">Loading Pay Small Small Dashboard...</p>
+                <p className="font-semibold text-sm">Loading Dashboard...</p>
             </div>
         );
     }
@@ -310,7 +310,7 @@ export default function PaySmallSmallPage() {
                 {currentView === 'overview' && (
                     <button
                         onClick={startWizard}
-                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer w-full md:w-auto uppercase tracking-wide"
+                        className="rounded-full flex items-center justify-center gap-1.5 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white  text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer w-full md:w-auto uppercase tracking-wide"
                     >
                         <Plus size={16} />
                         New Installment Plan
