@@ -211,7 +211,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <header className="md:hidden bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-sm tracking-wider">
-            S
+            G
           </div>
           <span className="font-black text-md text-white tracking-widest">SWAPPI ADMIN</span>
         </div>
@@ -234,7 +234,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <span className="font-black text-orange-500 tracking-wider">SWAPPI ADMIN</span>
+              <span className="font-black text-orange-500 tracking-wider">G CITi ADMIN</span>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
                 className="text-slate-400 hover:text-slate-200"

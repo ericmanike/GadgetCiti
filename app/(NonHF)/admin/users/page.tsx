@@ -64,7 +64,9 @@ export default function AdminUsersPage() {
     try {
       setSubmitting(true);
       const { error } = await supabase.from('users').delete().eq('id', id);
-      if (error) throw error;
+      if (error) {
+        console.log('Error occured deleting user'+error)
+        throw error;}
 
       showToast("User profile deleted successfully!", "success");
       setUsers(users.filter(u => u.id !== id));
