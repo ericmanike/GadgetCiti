@@ -38,6 +38,29 @@ export async function fetchAllProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+    const parts = slug.split('-');
+    const id = parts[parts.length - 1];
+
+    if (id) {
+        const { data, error } = await supabase
+            .from('products')
+            .select(`
+                id, name, brand, price, stock, over_view, specifications, created_at,
+                categories(name),
+                product_images(image_url),
+                reviews(rating)
+            `)
+            .eq('id', id)
+            .maybeSingle();
+
+        if (!error && data) {
+            const product = mapDBProductToClient(data);
+            if (product.slug === slug) {
+                return product;
+            }
+        }
+    }
+
     const products = await fetchAllProducts();
     return products.find((p) => p.slug === slug);
 }
@@ -88,10 +111,12 @@ export function mapDBProductToClient(row: any): Product {
         }
     }
 
+    const baseSlug = (row.name || "product").toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || "product";
+
     return {
         id: row.id.toString(),
         name: row.name || "Unknown Product",
-        slug: (row.name || "product-" + row.id).toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        slug: `${baseSlug}-${row.id}`, 
         description: row.over_view?.description || "No description available",
         price: Number(row.price || 0),
         oldPrice: row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined,
