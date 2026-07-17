@@ -49,10 +49,32 @@ export async function getRelatedProducts(product: Product): Promise<Product[]> {
     ).slice(0, 4);
 }
 
+export function parseImageUrls(productImages: any): string[] {
+    if (!productImages) return [];
+    const items = Array.isArray(productImages) ? productImages : [productImages];
+    
+    return items.flatMap((img: any) => {
+        let raw = typeof img === 'string' ? img : (img?.image_url ?? img?.url ?? img);
+        if (typeof raw === 'string') {
+            raw = raw.trim();
+            if ((raw.startsWith('[') && raw.endsWith(']')) || (raw.startsWith('{') && raw.endsWith('}'))) {
+                try {
+                    raw = JSON.parse(raw);
+                } catch (e) {}
+            }
+        }
+        if (Array.isArray(raw)) {
+            return raw.map((item: any) => (typeof item === 'string' ? item.trim() : '')).filter(Boolean);
+        }
+        if (typeof raw === 'string' && raw) {
+            return [raw];
+        }
+        return [];
+    }).filter((url: string) => typeof url === 'string' && url.length > 0);
+}
+
 export function mapDBProductToClient(row: any): Product {
-    const images = row.product_images?.flatMap((img: any) => 
-        Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
-    ) || [];
+    const images = parseImageUrls(row.product_images);
     const ratingSum = row.reviews?.reduce((sum: number, r: any) => sum + r.rating, 0) || 0;
     const ratingCount = row.reviews?.length || 0;
 

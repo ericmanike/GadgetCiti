@@ -222,9 +222,13 @@ export default function AdminProductsPage() {
          let uploadedUrls: string[] = [];
 
          if (values.imageFiles && values.imageFiles.length > 0) {
-           const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dzj8q4qtf';
-           const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
-
+           const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+           const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+           
+           if(!cloudName || !uploadPreset){
+            showToast("Cloudinary credentials not found", "error");
+            return;
+           }
            const uploadPromises = values.imageFiles.map(async (file) => {
              const formData = new FormData();
              formData.append('file', file);

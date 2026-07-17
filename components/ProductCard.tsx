@@ -34,13 +34,18 @@ export function ProductCard({ product }: ProductCardProps) {
     addToCart(product as Product);
   };
 
+  const mainImage = product.images?.[0] && typeof product.images[0] === 'string' && product.images[0].trim().length > 0
+    ? product.images[0]
+    : "https://placehold.co/800?text=photo+unavailable&font=roboto";
+
   return (
     <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group">
       <Link href={`/products/${product.slug}`} className="relative block h-32 md:h-48 overflow-hidden">
         <Image
-          src={product.images[0] ?? "/next.svg"}
+          src={mainImage}
           alt={product.name}
           fill
+          unoptimized
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 768px) 50vw, 25vw"
         />

@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { formatCurrency } from '@/lib/utils';
+import { parseImageUrls } from '@/lib/products';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Category {
@@ -97,9 +98,7 @@ export default function SellerProductsPage() {
       if (error) throw error;
 
       const mappedProducts: ProductItem[] = dbProducts?.map((row: any) => {
-        const images = row.product_images?.flatMap((img: any) => 
-          Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
-        ) || [];
+        const images = parseImageUrls(row.product_images);
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",

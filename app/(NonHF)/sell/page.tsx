@@ -8,6 +8,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
 import { formatCurrency } from '@/lib/utils';
+import { parseImageUrls } from '@/lib/products';
 
 interface DashboardStats {
   productsCount: number;
@@ -74,9 +75,7 @@ export default function SellerDashboard() {
 
         // 2. Fetch Recent Products (limit to 5)
         const mappedProducts: RecentProduct[] = sellerProducts?.slice(0, 5).map((row: any) => {
-          const images = row.product_images?.flatMap((img: any) => 
-            Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
-          ) || [];
+          const images = parseImageUrls(row.product_images);
           return {
             id: row.id.toString(),
             name: row.name || "Unknown Product",

@@ -22,7 +22,7 @@ import {
     MessageSquare,
     Sparkles
 } from "lucide-react";
-import { Product } from "@/lib/products";
+import { Product, parseImageUrls } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
 import { ProductCard } from "@/components/ProductCard";
 import { useCart } from "@/components/CartContext";
@@ -192,7 +192,16 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const { addToCart } = useCart();
     const aiAnalysis = getAIRecommendations(product);
 
-    const images = product.images.length > 0 ? product.images : ["/next.svg"];
+    const validImages = parseImageUrls(product?.images);
+    const images = validImages.length > 0 ? validImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
+    const [imgError, setImgError] = useState<Record<number, boolean>>({});
+
+    const getImgSrc = (idx: number) => {
+        if (imgError[idx]) {
+            return "https://placehold.co/800?text=photo+unavailable&font=roboto";
+        }
+        return images[idx] || "https://placehold.co/800?text=photo+unavailable&font=roboto";
+    };
 
     return (
         <div className="flex flex-col gap-6 md:gap-10 pt-18 md:pt-8">
@@ -232,9 +241,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 className="absolute inset-0"
                             >
                                 <Image
-                                    src={images[activeImage]}
+                                    src={getImgSrc(activeImage)}
                                     alt={product.name}
                                     fill
+                                    unoptimized
+                                    onError={() => setImgError(prev => ({ ...prev, [activeImage]: true }))}
                                     className="object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
                                     priority
                                 />
@@ -291,7 +302,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 className={`relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all shrink-0 snap-center ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
                                     }`}
                             >
-                                <Image src={img} alt={`${product.name} thumbnail ${idx}`} fill className="object-cover p-1 rounded-full" />
+                                <Image src={getImgSrc(idx)} alt={`${product.name} thumbnail ${idx}`} fill unoptimized className="object-cover p-1 rounded-full" />
                             </button>
                         ))}
                     </div>

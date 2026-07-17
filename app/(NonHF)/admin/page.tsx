@@ -6,6 +6,7 @@ import {
   ShoppingBag, Tag, Users, Package, ArrowUpRight, Plus, Eye, Loader2, Sparkles
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { parseImageUrls } from '@/lib/products';
 
 interface DashboardStats {
   productsCount: number;
@@ -86,9 +87,7 @@ export default function AdminDashboard() {
           .limit(5);
 
         const mappedProducts: RecentProduct[] = dbProducts?.map((row: any) => {
-          const images = row.product_images?.flatMap((img: any) => 
-            Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
-          ) || [];
+          const images = parseImageUrls(row.product_images);
           return {
             id: row.id.toString(),
             name: row.name || "Unknown Product",
