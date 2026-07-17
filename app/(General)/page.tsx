@@ -79,11 +79,11 @@ export default function Home() {
             {[
               { title: 'Computers', url: '/L1.jpg', query: 'computers' },
          
-              { title: 'Latest Smartphones', url: '/cat_smartphones.png', query: 'iphones' },
-              { title: 'Tablets & Ipad', url: '/cat_tablets.png', query: 'tablets' },
+              { title: 'Latest Smartphones', url: '/cat_smartphones.png', query: 'smartphones' },
+              { title: 'Tablets & Ipad', url: '/cat_tablets.png', query: 'tablets-ipads' },
               { title: 'Accessories ', url: '/cat_accessories.png', query: 'accessories' },
-             { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers' },
-              { title: 'Network Devices', url: '/starlink.png', query: 'Network Devices' },
+             { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers-scanners' },
+              { title: 'Network Devices', url: '/starlink.png', query: 'wifi-network-devices' },
             ].map((cat, idx) => (
               <Link
                 key={idx}
@@ -121,7 +121,7 @@ export default function Home() {
                 hover:scale-102 active:scale-98
                 cursor-pointer select-none"
               >
-                See More 
+                Explore All
                 <ChevronDown className="w-3.5 h-3.5 ml-1" /> 
               </Link>
             </div>

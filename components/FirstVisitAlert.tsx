@@ -55,10 +55,10 @@ export const FirstVisitPopup: React.FC = () => {
                 </button>
                 <div className="text-4xl mb-3">🛒  💻 🎧</div>
                 <h2 className="text-2xl font-black text-white leading-tight">
-                  Welcome to<br />Electronics Mart!
+                  Welcome to<br />Gadget's CITi!
                 </h2>
                 <p className="text-orange-100 text-sm mt-1 font-medium">
-                  Your one-stop shop for premium gadgets
+                  Your one-stop for premium gadgets
                 </p>
               </div>
 
