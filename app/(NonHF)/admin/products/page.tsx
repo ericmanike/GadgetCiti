@@ -104,7 +104,7 @@ export default function AdminProductsPage() {
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
           categoryId: row.categories?.id?.toString() || "",
-          imageUrl: images.length > 0 ? images[0] : "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80",
+          imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
           description: row.over_view?.description || ""
         };
       }) || [];
@@ -192,6 +192,10 @@ export default function AdminProductsPage() {
           }
         }
 
+        if(!user?.id){
+          showToast("Login Required to add a Product user id is : " + user?.id, "error");
+          return;
+        }
         // 2. Insert Product
         const { data: product, error: productError } = await supabase
           .from('products')
@@ -240,6 +244,7 @@ export default function AdminProductsPage() {
              if (data.secure_url) {
                return data.secure_url;
              } else {
+              showToast("No secure_url returned from Cloudinary response", "error");
                throw new Error("No secure_url returned from Cloudinary response");
              }
            });
@@ -248,11 +253,13 @@ export default function AdminProductsPage() {
              uploadedUrls = await Promise.all(uploadPromises);
              console.log("Uploaded successfully to Cloudinary:", uploadedUrls);
            } catch (uploadError) {
+            showToast("Cloudinary upload failed, using fallback URL:" + uploadError, "error");
              console.error('Cloudinary upload failed, using fallback URL:', uploadError);
-             uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+             uploadedUrls = ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
            }
          } else {
-           uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+          showToast("No image files provided", "error");
+           uploadedUrls = ['https://placehold.co/800?text=photo+unavailable&font=roboto']; 
          }
 
          await supabase

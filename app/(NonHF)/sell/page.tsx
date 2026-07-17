@@ -83,7 +83,7 @@ export default function SellerDashboard() {
             price: Number(row.price || 0),
             stock: Number(row.stock || 0),
             category: row.categories?.name || "Uncategorized",
-            imageUrl: images.length > 0 ? images[0] : "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=100&q=80"
+            imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto"
           };
         }) || [];
 

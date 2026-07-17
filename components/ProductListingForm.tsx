@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 import { AlertCircle, Upload } from 'lucide-react';
 import Spinner from './loadingComponent';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from './AuthContext';
+import { useToast } from './toastProvider';
 
 interface ProductFormValues {
     name: string;
@@ -31,6 +33,8 @@ export default function ProductListingForm() {
     const [submitted, setSubmitted] = useState(false);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [creating, setCreating] = useState(false);
+    const {user} = useAuth();
+    const { showToast } = useToast();
 
     const categories = [
         'Smartphones',
@@ -95,11 +99,16 @@ export default function ProductListingForm() {
                         .single();
                     if (newCat) categoryId = newCat.id;
                 }
+                if(!user?.id){
+                    showToast('Please login to continue', 'error');
+                    return;
+                }
 
                 // 2. Insert Product
                 const { data: product, error: productError } = await supabase
                     .from('products')
                     .insert({
+                        user_id: user?.id,
                         name: values.name,
                         brand: values.brand,
                         category_id: categoryId,
@@ -137,7 +146,7 @@ export default function ProductListingForm() {
                     } else {
                         console.error('Image upload failed, using fallback URL:', uploadError);
                         // Using a dummy fallback image if bucket isn't correctly configured yet
-                        imageUrls.push("https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80");
+                        imageUrls.push("https://placehold.co/800?text=photo+unavailable&font=roboto");
                     }
                 }
 
@@ -152,7 +161,7 @@ export default function ProductListingForm() {
                     // Default image
                     await supabase.from('product_images').insert({
                         product_id: productId,
-                        image_url: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"
+                        image_url: "https://placehold.co/800?text=photo+unavailable&font=roboto"
                     });
                 }
 

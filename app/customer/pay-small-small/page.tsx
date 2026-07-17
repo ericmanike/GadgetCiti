@@ -166,7 +166,7 @@ export default function PaySmallSmallPage() {
                     product_id: selectedProduct.id,
                     product_name: selectedProduct.name,
                     product_brand: selectedProduct.brand,
-                    product_image: selectedProduct.images[0] || "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80",
+                    product_image: selectedProduct.images[0] || "https://placehold.co/800?text=photo+unavailable&font=roboto",
                     total_amount: selectedProduct.price,
                     down_payment: calcDownPayment,
                     frequency: frequency,

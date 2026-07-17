@@ -195,7 +195,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const images = product.images.length > 0 ? product.images : ["/next.svg"];
 
     return (
-        <div className="flex flex-col gap-10  pt-10 md:pt-20 ">
+        <div className="flex flex-col gap-6 md:gap-10 pt-18 md:pt-8">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-500 font-medium">
                 <Link href="/" className="hover:text-blue-600">Home</Link>
@@ -304,7 +304,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
                                 {product.brand}
                             </Link>
-                            <div className="flex flex-col items-end gap-0.5">
+                            {/* <div className="flex flex-col items-end gap-0.5">
                                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                     {product.ratingCount} Reviews
                                 </span>
@@ -312,7 +312,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     <Star size={12} className="fill-orange-400 text-orange-400" />
                                     <span className="text-[11px] font-black text-orange-600">{product.rating.toFixed(1)}</span>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <h1 className="text-lg md:text-xl font-extrabold text-gray-900 leading-snug">
                             {product.name}

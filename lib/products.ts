@@ -75,7 +75,7 @@ export function mapDBProductToClient(row: any): Product {
         oldPrice: row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined,
         brand: row.brand || "Unbranded",
         category: row.categories?.name || "Uncategorized",
-        images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"],
+        images: images.length > 0 ? images : ["https://placehold.co/800?text=photo+unavailable&font=roboto"],
         inStock: Number(row.stock || 0) > 0,
         stock: Number(row.stock || 0),
         rating: ratingCount > 0 ? ratingSum / ratingCount : 0,

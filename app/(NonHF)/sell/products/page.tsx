@@ -108,7 +108,7 @@ export default function SellerProductsPage() {
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
           categoryId: row.categories?.id?.toString() || "",
-          imageUrl: images.length > 0 ? images[0] : "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=200&q=80",
+          imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
           description: row.over_view?.description || ""
         };
       }) || [];
@@ -258,10 +258,10 @@ export default function SellerProductsPage() {
             console.log("Uploaded successfully to Cloudinary:", uploadedUrls);
           } catch (uploadError) {
             console.error('Cloudinary upload failed, using fallback URL:', uploadError);
-            uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+            uploadedUrls = ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
           }
         } else {
-          uploadedUrls = ["https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=1000&q=80"];
+          uploadedUrls = ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
         }
 
         await supabase
