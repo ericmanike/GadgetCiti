@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   Search, Plus, Trash2, Eye, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
 } from 'lucide-react';
@@ -26,6 +26,7 @@ interface ProductItem {
   categoryId: string;
   imageUrl: string;
   description: string;
+  condition:string;
 }
 
 interface ProductFormValues {
@@ -34,6 +35,7 @@ interface ProductFormValues {
   price: string;
   stock: string;
   category: string;
+  condition:string;
   overview: string;
   description: string;
   imageFiles: File[];
@@ -45,6 +47,7 @@ const validationSchema = Yup.object({
   price: Yup.number().required('Price is required').positive('Price must be greater than 0'),
   stock: Yup.number().required('Stock is required').min(0, 'Stock cannot be negative'),
   category: Yup.string().required('Category is required'),
+  condition: Yup.string().required('Condition is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
   imageFiles: Yup.array().of(Yup.mixed()).min(1, 'At least one product image is required').max(3, 'You can upload a maximum of 3 images')
@@ -103,7 +106,9 @@ export default function AdminProductsPage() {
           price: Number(row.price || 0),
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
+          condition: row.condition || "Unknown",
           categoryId: row.categories?.id?.toString() || "",
+
           imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
           description: row.over_view?.description || ""
         };
@@ -162,6 +167,7 @@ export default function AdminProductsPage() {
       category: '',
       overview: '',
       description: '',
+      condition: '',
       imageFiles: []
     },
     validationSchema,
@@ -204,6 +210,7 @@ export default function AdminProductsPage() {
            user_id: user?.id,
             brand: values.brand,
             category_id: categoryId,
+            condition:values.condition,
             price: Number(values.price),
             stock: Number(values.stock),
             over_view: {
@@ -322,7 +329,7 @@ export default function AdminProductsPage() {
             Products Directory <Sparkles className="text-orange-500 w-5 h-5" />
           </h1>
           <p className="text-slate-550 text-sm mt-0.5 font-medium">
-            Manage your electronic gadgets directory, catalog pricing, and inventory levels.
+            Manage your  gadgets directory, catalog pricing, and inventory levels.
           </p>
         </div>
         <button
@@ -511,12 +518,12 @@ export default function AdminProductsPage() {
                 onClick={() => setIsAddDrawerOpen(false)}
                 className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition cursor-pointer border border-slate-200"
               >
-                <X size={20} />
+                <X size={16} />
               </button>
             </div>
 
             {successMsg && (
-              <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-700 text-sm font-semibold text-center animate-pulse">
+              <div className="p-2 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-700 text-sm font-semibold text-center ">
                 {successMsg}
               </div>
             )}
@@ -538,8 +545,8 @@ export default function AdminProductsPage() {
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                     />
                     {formik.touched.name && formik.errors.name && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {formik.errors.name}
+                      <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                        {formik.errors.name}
                       </p>
                     )}
                   </div>
@@ -558,8 +565,8 @@ export default function AdminProductsPage() {
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.brand && formik.errors.brand && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                          <AlertCircle size={12} /> {formik.errors.brand}
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                         {formik.errors.brand}
                         </p>
                       )}
                     </div>
@@ -581,37 +588,61 @@ export default function AdminProductsPage() {
                         <option value="Other Electronics">Other Electronics</option>
                       </Field>
                       {formik.touched.category && formik.errors.category && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                          <AlertCircle size={12} /> {formik.errors.category}
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                          {formik.errors.category}
                         </p>
                       )}
                     </div>
                   </div>
 
                   {/* Price & Stock row */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
+
+
                     <div>
-                      <label htmlFor="price" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="condition" className="block  text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                        Condition *
+                      </label>
+                      <Field
+                        as="select"
+                        id="condition"
+                        name="condition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-[9px] md:text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer"
+                      >
+                        <option value="">Select Condition</option>
+                        <option value="New">New</option>
+                        <option value="Used">Used</option>
+                      </Field>
+                      {formik.touched.condition && formik.errors.condition && (
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                          {formik.errors.condition}
+                        </p>
+                      )}
+                    </div>
+
+
+                    <div>
+                      <label htmlFor="price" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Price (GHS) *
                       </label>
                       <Field
                         type="number"
                         id="price"
                         name="price"
-                        step="0.01"
+                        step="50"
                         placeholder="1200.00"
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.price && formik.errors.price && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                          <AlertCircle size={12} /> {formik.errors.price}
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                          {formik.errors.price}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label htmlFor="stock" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                        Initial Stock *
+                      <label htmlFor="stock" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                       Stock * 
                       </label>
                       <Field
                         type="number"
@@ -621,8 +652,8 @@ export default function AdminProductsPage() {
                         className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                       />
                       {formik.touched.stock && formik.errors.stock && (
-                        <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                          <AlertCircle size={12} /> {formik.errors.stock}
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                         {formik.errors.stock}
                         </p>
                       )}
                     </div>
@@ -630,7 +661,7 @@ export default function AdminProductsPage() {
 
                   {/* Image Upload */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                       Product Images (Up to 3) *
                     </label>
                     
@@ -658,7 +689,7 @@ export default function AdminProductsPage() {
                                 </button>
                               </div>
                               <span className="absolute bottom-1 left-1 bg-slate-900/70 backdrop-blur-xs text-[9px] text-white px-1.5 py-0.5 rounded font-black">
-                                #{idx + 1}
+                                {idx + 1}
                               </span>
                             </div>
                           ))}
@@ -699,8 +730,8 @@ export default function AdminProductsPage() {
                     </div>
 
                     {formik.touched.imageFiles && formik.errors.imageFiles && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {String(formik.errors.imageFiles)}
+                      <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                         {String(formik.errors.imageFiles)}
                       </p>
                     )}
                   </div>
@@ -718,8 +749,8 @@ export default function AdminProductsPage() {
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
                     />
                     {formik.touched.overview && formik.errors.overview && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {formik.errors.overview}
+                      <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                       {formik.errors.overview}
                       </p>
                     )}
                   </div>
@@ -738,8 +769,8 @@ export default function AdminProductsPage() {
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition resize-none text-slate-800"
                     />
                     {formik.touched.description && formik.errors.description && (
-                      <p className="mt-1 text-xs text-red-500 flex items-center gap-1 font-semibold">
-                        <AlertCircle size={12} /> {formik.errors.description}
+                      <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                         {formik.errors.description}
                       </p>
                     )}
                   </div>

@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Star,
 
      Phone ,
     ShieldCheck,
@@ -13,7 +12,7 @@ import {
     RotateCcw,
     Store,
     Heart,
-    Share2,
+
     ChevronRight,
     ChevronLeft,
     Minus,
@@ -315,15 +314,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
                                 {product.brand}
                             </Link>
-                            {/* <div className="flex flex-col items-end gap-0.5">
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                    {product.ratingCount} Reviews
-                                </span>
-                                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-orange-50 border border-orange-100">
-                                    <Star size={12} className="fill-orange-400 text-orange-400" />
-                                    <span className="text-[11px] font-black text-orange-600">{product.rating.toFixed(1)}</span>
-                                </div>
-                            </div> */}
+                          
                         </div>
                         <h1 className="text-lg md:text-xl font-extrabold text-gray-900 leading-snug">
                             {product.name}
@@ -409,7 +400,6 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                         <Truck size={18} className="text-gray-600" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <p className="text-xs font-bold text-gray-900 leading-tight">Delivery Express</p>
                                         <p className="text-[10px] text-gray-500 mt-1">Ready for delivery within 24 hours to Accra, Kumasi, Takoradi, Tema, and other major cities</p>
                                     </div>
                                 </div>
@@ -419,7 +409,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     </div>
                                     <div className="flex flex-col">
                                         <p className="text-xs font-bold text-gray-900 leading-tight">Pick-up Station</p>
-                                        <p className="text-[10px] text-gray-500 mt-1">Available at  10 stations near you</p>
+                                      
                                     </div>
                                 </div>
                             </div>

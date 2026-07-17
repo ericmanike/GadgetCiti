@@ -26,6 +26,7 @@ interface ProductItem {
   price: number;
   stock: number;
   category: string;
+  condition: string;
   categoryId: string;
   imageUrl: string;
   description: string;
@@ -37,6 +38,7 @@ interface ProductFormValues {
   price: string;
   stock: string;
   category: string;
+  condition: string;
   overview: string;
   description: string;
   imageFiles: File[];
@@ -48,6 +50,7 @@ const validationSchema = Yup.object({
   price: Yup.number().required('Price is required').positive('Price must be greater than 0'),
   stock: Yup.number().required('Stock is required').min(0, 'Stock cannot be negative'),
   category: Yup.string().required('Category is required'),
+  condition: Yup.string().required('Condition is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
   imageFiles: Yup.array().of(Yup.mixed()).min(1, 'At least one product image is required').max(3, 'You can upload a maximum of 3 images')
@@ -89,7 +92,7 @@ export default function SellerProductsPage() {
       const { data: dbProducts, error } = await supabase
         .from('products')
         .select(`
-          id, name, brand, price, stock, over_view,
+          id, name, brand, price, stock, condition, over_view,
           categories(id, name),
           product_images(image_url)
         `)
@@ -106,6 +109,7 @@ export default function SellerProductsPage() {
           price: Number(row.price || 0),
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
+          condition: row.condition || "Unknown",
           categoryId: row.categories?.id?.toString() || "",
           imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
           description: row.over_view?.description || ""
@@ -166,6 +170,7 @@ export default function SellerProductsPage() {
       price: '',
       stock: '',
       category: '',
+      condition: '',
       overview: '',
       description: '',
       imageFiles: []
@@ -205,6 +210,7 @@ export default function SellerProductsPage() {
             name: values.name,
             brand: values.brand,
             category_id: categoryId,
+            condition: values.condition,
             user_id: user.id,
             price: Number(values.price),
             stock: Number(values.stock),
@@ -528,10 +534,29 @@ export default function SellerProductsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Condition */}
+                    <div className="space-y-1">
+                      <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Condition *</label>
+                      <select
+                        name="condition"
+                        value={formik.values.condition}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-xs font-semibold text-gray-900 cursor-pointer"
+                      >
+                        <option value="">Select Condition</option>
+                        <option value="New">New</option>
+                        <option value="Used">Used</option>
+                      </select>
+                      {formik.touched.condition && formik.errors.condition && (
+                        <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.condition}</p>
+                      )}
+                    </div>
+
                     {/* Price */}
                     <div className="space-y-1">
-                      <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Price (GHS)</label>
+                      <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Price (GHS) *</label>
                       <input
                         name="price"
                         type="number"
@@ -543,13 +568,13 @@ export default function SellerProductsPage() {
                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.price && formik.errors.price && (
-                        <p className="text-xs font-bold text-red-500">{formik.errors.price}</p>
+                        <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.price}</p>
                       )}
                     </div>
 
                     {/* Stock */}
                     <div className="space-y-1">
-                      <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Stock Count</label>
+                      <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Stock Count *</label>
                       <input
                         name="stock"
                         type="number"
@@ -560,7 +585,7 @@ export default function SellerProductsPage() {
                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.stock && formik.errors.stock && (
-                        <p className="text-xs font-bold text-red-500">{formik.errors.stock}</p>
+                        <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.stock}</p>
                       )}
                     </div>
                   </div>
