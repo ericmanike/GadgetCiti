@@ -10,7 +10,7 @@ import { useCart } from '@/components/CartContext';
 import { formatCurrency } from '@/lib/utils';
 
 export default function WishlistPage() {
-    const { wishlist, removeFromWishlist, clearWishlist, totalWishlistItems } = useWishlist();
+    const { wishlist, removeFromWishlist, clearWishlist, totalWishlistItems, loading } = useWishlist();
     const { addToCart } = useCart();
 
     return (
@@ -18,12 +18,10 @@ export default function WishlistPage() {
             {/* Header */}
             <div className="p-4 md:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center font-bold">
-                        <Heart className="size-5 fill-red-500 text-red-500" />
-                    </div>
+
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Saved Items</h1>
+                            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">My Wishlist</h1>
                             <span className="bg-slate-200 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-full">
                                 {totalWishlistItems} {totalWishlistItems === 1 ? 'item' : 'items'}
                             </span>
@@ -45,16 +43,20 @@ export default function WishlistPage() {
 
             {/* Content Body */}
             <div className="p-4 md:p-6 flex-1 flex flex-col">
-                {totalWishlistItems === 0 ? (
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                        {[1, 2, 3, 4].map((n) => (
+                            <div key={n} className="h-72 rounded-xl bg-slate-100 animate-pulse" />
+                        ))}
+                    </div>
+                ) : totalWishlistItems === 0 ? (
                     /* Empty State */
                     <div className="flex-1 flex flex-col items-center justify-center text-center py-12 md:py-20 max-w-md mx-auto">
                         <div className="relative mb-6">
                             <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center">
                                 <Heart size={44} className="text-red-400 stroke-[1.5]" />
                             </div>
-                            <div className="absolute -bottom-1 -right-1 bg-amber-100 p-2 rounded-full border-2 border-white text-amber-600">
-                                <Sparkles size={18} />
-                            </div>
+                         
                         </div>
 
                         <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-2">
@@ -66,7 +68,7 @@ export default function WishlistPage() {
 
                         <Link href="/buy">
                             <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl text-xs md:text-sm font-bold tracking-wide transition-all shadow-md hover:shadow-orange-500/20 active:scale-95 cursor-pointer">
-                                <ShoppingBag size={18} />
+                               
                                 Start Shopping
                                 <ArrowRight size={16} />
                             </button>

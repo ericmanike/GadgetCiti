@@ -361,7 +361,7 @@ export default function PaySmallSmallPage() {
 
                         {/* List of Plans */}
                         {plans.length === 0 ? (
-                            <div className="bg-white rounded-xl border border-gray-150 p-8 text-center flex flex-col items-center justify-center max-w-2xl mx-auto py-12">
+                            <div className="bg-white rounded-xl w-full   p-8 text-center flex flex-col items-center justify-center  py-12">
                                 <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center text-orange-500 mb-5 animate-pulse">
                                     <Wallet size={36} />
                                 </div>
@@ -371,11 +371,11 @@ export default function PaySmallSmallPage() {
                                 </p>
                                 <button
                                     onClick={startWizard}
-                                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-bold transition-all shadow-md uppercase tracking-wider active:scale-95 cursor-pointer"
+                                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-sm font-bold transition-all shadow-md uppercase tracking-wider active:scale-95 cursor-pointer"
                                 >
                                     Get Started
                                 </button>
-                            </div>
+                            </div> 
                         ) : (
                             <div className="space-y-4">
                                 <h2 className="text-base font-bold text-slate-950 px-1">Your Installment Purchases</h2>

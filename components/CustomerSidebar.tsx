@@ -5,17 +5,13 @@ import { CircleUser } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import {
-    User,
     ShoppingBag,
     Mail,
     Heart,
     Star,
-    Clock,
     LogOut,
-    Ticket,
-    MailPlus,
     Wallet,
-    Store
+    ArrowLeft
 } from 'lucide-react';
 
 const CustomerSidebar = () => {
@@ -132,7 +128,7 @@ const CustomerSidebar = () => {
                     href="/buy"
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
-                    <Store size={16} />
+                    <ArrowLeft size={12} />
                     Back to Shop
                 </Link>
                 <button 

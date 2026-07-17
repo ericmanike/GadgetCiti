@@ -83,7 +83,7 @@ export default function DropdownProfile() {
           onClick={() => router.push('/customer/orders')}
         >
           <ShoppingBag className="size-5 text-gray-500" strokeWidth={1.5} />
-          <span className="font-semibold text-[15px]">My Orders</span>
+          <span className="font-semibold text-[16px]">My Orders</span>
         </DropdownMenuItem>
 
         <DropdownMenuItem 
@@ -91,7 +91,7 @@ export default function DropdownProfile() {
           onClick={() => router.push('/customer/wishlist')}
         >
           <Heart className="size-5 text-gray-500" strokeWidth={1.5} />
-          <span className="font-semibold text-[15px]">Saved Items</span>
+          <span className="font-semibold text-[16px]">Saved Items</span>
         </DropdownMenuItem>
 
         <DropdownMenuItem 
@@ -99,7 +99,7 @@ export default function DropdownProfile() {
           onClick={() => router.push('/customer/account')}
         >
           <User className="size-5 text-gray-500" strokeWidth={1.5} />
-          <span className="font-semibold text-[15px]">Account </span>
+          <span className="font-semibold text-[16px]">Account </span>
         </DropdownMenuItem>
 
       
@@ -111,7 +111,7 @@ export default function DropdownProfile() {
           onClick={() => handleLogout()}
         >
           <LogOut className="size-5 text-[#e52e2e]" strokeWidth={1.5} />
-          <span className="font-semibold text-[15px]">Logout</span>
+          <span className="font-semibold text-[16px]">Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

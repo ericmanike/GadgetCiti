@@ -35,15 +35,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {/* Mobile Top Navigation Bar */}
                 <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 shadow-lg mb-4 border border-gray-200">
                     <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span> 
-                        <span className="font-bold text-slate-800 text-sm tracking-wide">Customer Dashboard</span>
+                    
+                        <span className="logo text-sm ">Gadget's CITi</span>
                     </div>
                     <button
                         onClick={() => setIsMobileSidebarOpen(true)}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
                     >
                         <Menu size={16} />
-                        Menu
+                      
                     </button>
                 </div>
 

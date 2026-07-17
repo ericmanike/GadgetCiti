@@ -8,6 +8,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { useFormik, Field, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/components/AuthContext';
+import { useToast } from '@/components/toastProvider';
 
 interface Category {
   id: string;
@@ -64,6 +66,8 @@ export default function AdminProductsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const { showToast } = useToast();
+    const { user } = useAuth();
 
   // Fetch Products & Categories
   async function loadData() {
@@ -193,6 +197,7 @@ export default function AdminProductsPage() {
           .from('products')
           .insert({
             name: values.name,
+           user_id: user?.id,
             brand: values.brand,
             category_id: categoryId,
             price: Number(values.price),
@@ -205,7 +210,9 @@ export default function AdminProductsPage() {
           .select('id')
           .single();
 
-        if (productError) throw productError;
+        if (productError) {
+          console.log("producterror",productError);
+          throw productError};
         const productId = product.id;
 
          let uploadedUrls: string[] = [];
@@ -255,7 +262,7 @@ export default function AdminProductsPage() {
              image_url: uploadedUrls
            });
 
-        setSuccessMsg('Product created successfully!');
+        showToast('Product created successfully!');
         
         // Refresh products list
         await loadData();
@@ -267,9 +274,10 @@ export default function AdminProductsPage() {
         }, 1500);
 
       } catch (err) {
+        showToast('Failed to create product!','error');
         console.error("Error creating product:", err);
       } finally {
-        setSubmitting(false);
+        setSubmitting(false); 
       }
     }
   });

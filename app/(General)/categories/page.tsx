@@ -13,7 +13,6 @@ import {
   Cpu, 
   Headphones, 
   Gamepad2, 
-  ChevronRight,
   ArrowRight
 } from "lucide-react";
 import Pattern from "@/components/ui/Pattern";
