@@ -122,8 +122,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </p>
             <div className="bg-slate-950/65 border border-slate-850 p-4 rounded-xl text-left space-y-2 text-xs md:text-sm text-slate-400 font-mono">
               <p className="text-red-400 font-bold">Diagnostics Details:</p>
-              <p>• Connected User: {user.email}</p>
-              <p>• Role Assigned: <span className="text-orange-400 font-bold">Buyer/Seller</span> (requires <span className="text-emerald-400 font-bold">Admin</span>)</p>
+              <p>Connected User: {user.email}</p>
+              <p>Role Assigned: <span className="text-orange-400 font-bold">Buyer/Seller</span> (requires <span className="text-emerald-400 font-bold">Admin</span>)</p>
               <p className="mt-2 text-slate-500 border-t border-slate-850 pt-2">
                 To grant access, add this user's email to the `ADMIN_EMAILS` list in `app/(NonHF)/admin/layout.tsx`:
               </p>
@@ -161,9 +161,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-lg tracking-wider shadow-lg shadow-orange-500/30">
             S
           </div>
-          <span className="font-black text-xl text-white tracking-widest uppercase">
-            Gaddets<span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
-          </span>
+         <span className='text-white'> 
+          Admin Panel
+         </span>
+       
         </div>
 
         <nav className="flex-1 space-y-2">

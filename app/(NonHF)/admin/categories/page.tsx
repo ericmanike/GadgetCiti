@@ -249,7 +249,7 @@ export default function AdminCategoriesPage() {
       {/* Page Header */}
       <div className="border-b border-slate-200 pb-5">
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          Categories Inventory <Sparkles className="text-orange-500 w-5 h-5" />
+          Categories Inventory
         </h1>
         <p className="text-slate-550 text-sm mt-0.5 font-medium">
           Configure product classification nodes, search slugs, and monitor active catalog stock distribution.

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { 
-  Search, Plus, Trash2, Eye, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
+  Search, Plus, Trash2, Edit, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles 
 } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { useFormik, Field, FormikProvider } from 'formik';
@@ -25,8 +25,10 @@ interface ProductItem {
   category: string;
   categoryId: string;
   imageUrl: string;
+  images: string[];
   description: string;
-  condition:string;
+  condition: string;
+  overview: string;
 }
 
 interface ProductFormValues {
@@ -50,7 +52,7 @@ const validationSchema = Yup.object({
   condition: Yup.string().required('Condition is required'),
   overview: Yup.string().required('Overview is required').min(5, 'Overview is too short'),
   description: Yup.string().required('Description is required').min(10, 'Description is too short'),
-  imageFiles: Yup.array().of(Yup.mixed()).min(1, 'At least one product image is required').max(3, 'You can upload a maximum of 3 images')
+  imageFiles: Yup.array().of(Yup.mixed()).max(3, 'You can upload a maximum of 3 images')
 });
 
 export default function AdminProductsPage() {
@@ -66,11 +68,13 @@ export default function AdminProductsPage() {
   
   // Modals & UI States
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const { showToast } = useToast();
-    const { user } = useAuth();
+  const { user } = useAuth();
 
   // Fetch Products & Categories
   async function loadData() {
@@ -88,7 +92,7 @@ export default function AdminProductsPage() {
       const { data: dbProducts, error } = await supabase
         .from('products')
         .select(`
-          id, name, brand, price, stock, over_view,
+          id, name, brand, price, stock, condition, over_view,
           categories(id, name),
           product_images(image_url)
         `);
@@ -99,6 +103,9 @@ export default function AdminProductsPage() {
         const images = row.product_images?.flatMap((img: any) => 
           Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
         ) || [];
+        const overviewText = Array.isArray(row.over_view?.features) && row.over_view.features.length > 0
+          ? row.over_view.features[0]
+          : (row.over_view?.overview || '');
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",
@@ -106,10 +113,11 @@ export default function AdminProductsPage() {
           price: Number(row.price || 0),
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
-          condition: row.condition || "Unknown",
+          condition: row.condition || "New",
           categoryId: row.categories?.id?.toString() || "",
-
           imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
+          images: images,
+          overview: overviewText,
           description: row.over_view?.description || ""
         };
       }) || [];
@@ -157,7 +165,7 @@ export default function AdminProductsPage() {
     }
   };
 
-  // Formik for new product
+  // Formik for product create/edit
   const formik = useFormik<ProductFormValues>({
     initialValues: {
       name: '',
@@ -172,6 +180,12 @@ export default function AdminProductsPage() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      const totalImages = existingImages.length + (values.imageFiles?.length || 0);
+      if (totalImages === 0) {
+        showToast("At least one product image is required", "error");
+        return;
+      }
+
       setSubmitting(true);
       try {
         // 1. Resolve or Create Category ID
@@ -193,112 +207,152 @@ export default function AdminProductsPage() {
           if (catError) throw catError;
           if (newCat) {
             categoryId = newCat.id;
-            // Add new category to local list
             setCategories(prev => [...prev, { id: newCat.id, name: values.category }]);
           }
         }
 
-        if(!user?.id){
-          showToast("Login Required to add a Product user id is : " + user?.id, "error");
+        if (!user?.id) {
+          showToast("Login required to save product", "error");
           return;
         }
-        // 2. Insert Product
-        const { data: product, error: productError } = await supabase
-          .from('products')
-          .insert({
-            name: values.name,
-           user_id: user?.id,
-            brand: values.brand,
-            category_id: categoryId,
-            condition:values.condition,
-            price: Number(values.price),
-            stock: Number(values.stock),
-            over_view: {
-              description: values.description,
-              features: [values.overview]
+
+        // 2. Upload New Images to Cloudinary if provided
+        let uploadedUrls: string[] = [];
+        if (values.imageFiles && values.imageFiles.length > 0) {
+          const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dwjvjjplu';
+          const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'letronix_preset';
+
+          const uploadPromises = values.imageFiles.map(async (file) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
             }
-          })
-          .select('id')
-          .single();
 
-        if (productError) {
-          console.log("producterror",productError);
-          throw productError};
-        const productId = product.id;
+            const data = await res.json();
+            if (data.secure_url) {
+              return data.secure_url;
+            } else {
+              throw new Error("No secure_url returned from Cloudinary response");
+            }
+          });
 
-         let uploadedUrls: string[] = [];
-
-         if (values.imageFiles && values.imageFiles.length > 0) {
-           const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-           const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-           
-           if(!cloudName || !uploadPreset){
-            showToast("Cloudinary credentials not found", "error");
+          try {
+            uploadedUrls = await Promise.all(uploadPromises);
+          } catch (uploadError: any) {
+            console.error('Cloudinary upload failed:', uploadError);
+            showToast("Failed to upload new product images.", "error");
+            setSubmitting(false);
             return;
-           }
-           const uploadPromises = values.imageFiles.map(async (file) => {
-             const formData = new FormData();
-             formData.append('file', file);
-             formData.append('upload_preset', uploadPreset);
+          }
+        }
 
-             const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-               method: 'POST',
-               body: formData
-             });
+        const finalImages = [...existingImages, ...uploadedUrls];
+        const primaryImage = finalImages.length > 0 ? finalImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
 
-             if (!res.ok) {
-               const errData = await res.json();
-               throw new Error(errData.error?.message || `Cloudinary returned ${res.statusText}`);
-             }
+        if (editingProduct) {
+          // UPDATE PRODUCT
+          const { error: updateError } = await supabase
+            .from('products')
+            .update({
+              name: values.name,
+              brand: values.brand,
+              category_id: categoryId,
+              condition: values.condition,
+              price: Number(values.price),
+              stock: Number(values.stock),
+              over_view: {
+                description: values.description,
+                features: [values.overview]
+              }
+            })
+            .eq('id', editingProduct.id);
 
-             const data = await res.json();
-             if (data.secure_url) {
-               return data.secure_url;
-             } else {
-              showToast("No secure_url returned from Cloudinary response", "error");
-               throw new Error("No secure_url returned from Cloudinary response");
-             }
-           });
+          if (updateError) throw updateError;
 
-           try {
-             uploadedUrls = await Promise.all(uploadPromises);
-             console.log("Uploaded successfully to Cloudinary:", uploadedUrls);
-           } catch (uploadError) {
-            showToast("Cloudinary upload failed, using fallback URL:" + uploadError, "error");
-             console.error('Cloudinary upload failed, using fallback URL:', uploadError);
-             uploadedUrls = ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
-           }
-         } else {
-          showToast("No image files provided", "error");
-           uploadedUrls = ['https://placehold.co/800?text=photo+unavailable&font=roboto']; 
-         }
+          // Replace product_images
+          await supabase.from('product_images').delete().eq('product_id', editingProduct.id);
+          await supabase.from('product_images').insert({
+            product_id: editingProduct.id,
+            image_url: primaryImage
+          });
 
-         await supabase
-           .from('product_images')
-           .insert({
-             product_id: productId,
-             image_url: uploadedUrls
-           });
+          showToast("Product updated successfully! 🚀", "success");
+        } else {
+          // INSERT PRODUCT
+          const { data: product, error: productError } = await supabase
+            .from('products')
+            .insert({
+              name: values.name,
+              user_id: user.id,
+              brand: values.brand,
+              category_id: categoryId,
+              condition: values.condition,
+              price: Number(values.price),
+              stock: Number(values.stock),
+              over_view: {
+                description: values.description,
+                features: [values.overview]
+              }
+            })
+            .select('id')
+            .single();
 
-        showToast('Product created successfully!');
-        
-        // Refresh products list
+          if (productError) throw productError;
+
+          await supabase.from('product_images').insert({
+            product_id: product.id,
+            image_url: primaryImage
+          });
+
+          showToast("Product published successfully! 🚀", "success");
+        }
+
+        setIsAddDrawerOpen(false);
+        setEditingProduct(null);
+        setExistingImages([]);
+        formik.resetForm();
         await loadData();
-        
-        setTimeout(() => {
-          setSuccessMsg('');
-          setIsAddDrawerOpen(false);
-          formik.resetForm();
-        }, 1500);
-
-      } catch (err) {
-        showToast('Failed to create product!','error');
-        console.error("Error creating product:", err);
+      } catch (err: any) {
+        showToast("Failed to save product!", "error");
+        console.error("Error saving product:", err);
       } finally {
-        setSubmitting(false); 
+        setSubmitting(false);
       }
     }
   });
+
+  const handleEditProduct = (prod: ProductItem) => {
+    setEditingProduct(prod);
+    setExistingImages(prod.images || (prod.imageUrl ? [prod.imageUrl] : []));
+    formik.setValues({
+      name: prod.name,
+      brand: prod.brand,
+      price: prod.price.toString(),
+      stock: prod.stock.toString(),
+      category: prod.category,
+      condition: prod.condition,
+      overview: prod.overview,
+      description: prod.description,
+      imageFiles: []
+    });
+    setIsAddDrawerOpen(true);
+  };
+
+  const handleOpenAddDrawer = () => {
+    setEditingProduct(null);
+    setExistingImages([]);
+    formik.resetForm();
+    setIsAddDrawerOpen(true);
+  };
 
   // Filtered products list
   const filteredProducts = products.filter(product => {
@@ -326,18 +380,18 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            Products Directory <Sparkles className="text-orange-500 w-5 h-5" />
-          </h1>
+            Products Directory 
+          </h1> 
           <p className="text-slate-550 text-sm mt-0.5 font-medium">
             Manage your  gadgets directory, catalog pricing, and inventory levels.
           </p>
         </div>
         <button
-          onClick={() => setIsAddDrawerOpen(true)}
-          className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-5 rounded-xl transition duration-200 shadow-lg shadow-orange-500/20 text-sm cursor-pointer"
+          onClick={handleOpenAddDrawer}
+          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-xs md:text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-lg shadow-orange-500/20 cursor-pointer"
         >
           <Plus size={16} />
-          <span>Add New Product</span>
+          Publish Gadget
         </button>
       </div>
 
@@ -389,7 +443,7 @@ export default function AdminProductsPage() {
             </p>
           </div>
           <button
-            onClick={() => setIsAddDrawerOpen(true)}
+            onClick={handleOpenAddDrawer}
             className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2 rounded-xl text-sm transition cursor-pointer"
           >
             Add Product
@@ -455,9 +509,13 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="py-4 px-6 text-center whitespace-nowrap">
                       <div className="flex justify-center items-center gap-2">
-                        <a href={`/products/${prod.id}`} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg transition cursor-pointer">
-                          <Eye size={14} />
-                        </a>
+                        <button 
+                          onClick={() => handleEditProduct(prod)} 
+                          className="p-2 bg-slate-50 hover:bg-orange-50 text-slate-600 hover:text-orange-600 border border-slate-200 rounded-lg transition cursor-pointer" 
+                          title="Edit Product"
+                        >
+                          <Edit size={14} />
+                        </button>
                         <button 
                           onClick={() => setDeletingId(prod.id)}
                           className="p-2 bg-slate-50 hover:bg-rose-550/10 hover:bg-rose-50 hover:text-rose-600 text-slate-500 rounded-lg border border-slate-200 hover:border-rose-100 transition cursor-pointer"
@@ -511,8 +569,12 @@ export default function AdminProductsPage() {
             {/* Header */}
             <div className="flex justify-between items-center border-b border-slate-250 pb-4">
               <div>
-                <h3 className="text-xl font-black text-slate-900">Publish New Gadget</h3>
-                <p className="text-xs text-slate-500">List an electronic gadget for sale on Swappi</p>
+                <h3 className="text-xl font-black text-slate-900">
+                  {editingProduct ? 'Edit Gadget Details' : 'Publish New Gadget'}
+                </h3>
+                <p className="text-xs text-slate-500">
+                  {editingProduct ? `Modifying item: ${editingProduct.name}` : 'List an electronic gadget for sale on Swappi'}
+                </p>
               </div>
               <button 
                 onClick={() => setIsAddDrawerOpen(false)}
@@ -666,11 +728,35 @@ export default function AdminProductsPage() {
                     </label>
                     
                     <div className="space-y-4">
-                      {/* Grid showing existing selection */}
-                      {formik.values.imageFiles && formik.values.imageFiles.length > 0 && (
+                      {/* Grid showing existing & newly selected image previews */}
+                      {(existingImages.length > 0 || (formik.values.imageFiles && formik.values.imageFiles.length > 0)) && (
                         <div className="grid grid-cols-3 gap-3">
-                          {formik.values.imageFiles.map((file, idx) => (
-                            <div key={idx} className="relative aspect-square border border-slate-200 rounded-xl overflow-hidden bg-slate-50 group">
+                          {/* Existing Images */}
+                          {existingImages.map((url, idx) => (
+                            <div key={`existing-${idx}`} className="relative aspect-square border border-slate-200 rounded-xl overflow-hidden bg-slate-50 group">
+                              <img
+                                src={url}
+                                alt={`Existing ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-150 flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => setExistingImages(prev => prev.filter((_, i) => i !== idx))}
+                                  className="p-1.5 bg-red-500 hover:bg-red-650 text-white rounded-full transition cursor-pointer animate-in zoom-in-50"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                              <span className="absolute bottom-1 left-1 bg-slate-900/70 backdrop-blur-xs text-[9px] text-white px-1.5 py-0.5 rounded font-black">
+                                Saved #{idx + 1}
+                              </span>
+                            </div>
+                          ))}
+
+                          {/* New Files */}
+                          {formik.values.imageFiles?.map((file, idx) => (
+                            <div key={`new-${idx}`} className="relative aspect-square border border-slate-200 rounded-xl overflow-hidden bg-slate-50 group">
                               <img
                                 src={URL.createObjectURL(file)}
                                 alt={`Preview ${idx + 1}`}
@@ -688,22 +774,22 @@ export default function AdminProductsPage() {
                                   <X size={14} />
                                 </button>
                               </div>
-                              <span className="absolute bottom-1 left-1 bg-slate-900/70 backdrop-blur-xs text-[9px] text-white px-1.5 py-0.5 rounded font-black">
-                                {idx + 1}
+                              <span className="absolute bottom-1 left-1 bg-orange-500 text-[9px] text-white px-1.5 py-0.5 rounded font-black">
+                                New
                               </span>
                             </div>
                           ))}
                         </div>
                       )}
 
-                      {/* Selector Dropzone / Add More card */}
-                      {(!formik.values.imageFiles || formik.values.imageFiles.length < 3) && (
+                      {/* Dropzone */}
+                      {(existingImages.length + (formik.values.imageFiles?.length || 0)) < 3 && (
                         <div className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 hover:bg-slate-100/50 hover:border-orange-500/50 transition duration-200">
                           <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-4">
                             <Plus className="text-slate-400 w-8 h-8 mb-2 animate-bounce" />
                             <span className="text-xs font-bold text-slate-600">
-                              {formik.values.imageFiles && formik.values.imageFiles.length > 0
-                                ? `Add more images (${formik.values.imageFiles.length}/3)`
+                              {(existingImages.length + (formik.values.imageFiles?.length || 0)) > 0
+                                ? `Add more images (${existingImages.length + (formik.values.imageFiles?.length || 0)}/3)`
                                 : "Click to upload product images"}
                             </span>
                             <span className="text-[10px] text-slate-400 mt-1 font-semibold">
@@ -718,9 +804,10 @@ export default function AdminProductsPage() {
                                 const files = Array.from(e.currentTarget.files || []);
                                 const currentFiles = formik.values.imageFiles || [];
                                 const combined = [...currentFiles, ...files];
+                                const maxAllowed = 3 - existingImages.length;
                                 const uniqueCombined = combined.filter((file, idx, self) =>
                                   self.findIndex(f => f.name === file.name && f.size === file.size) === idx
-                                ).slice(0, 3);
+                                ).slice(0, maxAllowed);
                                 formik.setFieldValue('imageFiles', uniqueCombined);
                               }}
                             />
@@ -794,7 +881,7 @@ export default function AdminProductsPage() {
                     className="flex-1 py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition text-sm shadow-lg shadow-orange-500/20 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {submitting && <Spinner className="size-4" />}
-                    <span>Publish Gadget</span>
+                    <span>{editingProduct ? 'Save Changes' : 'Publish Gadget'}</span>
                   </button>
                 </div>
               </form>

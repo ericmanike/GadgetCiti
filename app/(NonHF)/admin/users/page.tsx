@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { 
-  Users, Search, Filter, Loader2, Mail, Phone, Shield, Copy, Check, Sparkles 
+  Users, Search, Filter, Loader2, Mail, Phone, Shield, Copy, Check, Sparkles, Trash2 
 } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
+import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
 
 interface UserItem {
@@ -17,6 +19,9 @@ interface UserItem {
 export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserItem[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const { showToast } = useToast();
   
   // Filters & Lookups
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,6 +59,24 @@ export default function AdminUsersPage() {
     loadUsers();
   }, []);
 
+  // Delete user
+  const handleDeleteUser = async (id: string) => {
+    try {
+      setSubmitting(true);
+      const { error } = await supabase.from('users').delete().eq('id', id);
+      if (error) throw error;
+
+      showToast("User profile deleted successfully!", "success");
+      setUsers(users.filter(u => u.id !== id));
+      setDeletingId(null);
+    } catch (err: any) {
+      console.error("Error deleting user:", err);
+      showToast(err.message || "Failed to delete user.", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Quick Copy
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -77,7 +100,7 @@ export default function AdminUsersPage() {
       {/* Page Header */}
       <div className="border-b border-slate-200 pb-5">
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          Registered Accounts <Sparkles className="text-orange-500 w-5 h-5" />
+          Registered Accounts 
         </h1>
         <p className="text-slate-550 text-sm mt-0.5 font-medium">
           Inspect registered user profiles, search lookup contact lines, and audit system authorization credentials.
@@ -140,6 +163,7 @@ export default function AdminUsersPage() {
                   <th className="py-4 px-6">Phone Number</th>
                   <th className="py-4 px-6">Privilege Level</th>
                   <th className="py-4 px-6 text-center">User Identification Code</th>
+                  <th className="py-4 px-6 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
@@ -189,10 +213,50 @@ export default function AdminUsersPage() {
                         </button>
                       </div>
                     </td>
+                    <td className="py-4 px-6 text-center whitespace-nowrap">
+                      <div className="flex justify-center items-center gap-2">
+                        <button 
+                          onClick={() => setDeletingId(user.id)}
+                          className="p-2 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-slate-500 rounded-lg border border-slate-200 hover:border-rose-100 transition cursor-pointer shadow-xs"
+                          title="Delete User"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Modal */}
+      {deletingId && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-lg font-bold text-slate-900">Delete User Account</h3>
+            <p className="text-slate-550 text-sm leading-relaxed">
+              Are you sure you want to permanently delete this user profile? This will remove their record from the database.
+            </p>
+            <div className="flex gap-3 justify-end pt-2">
+              <button
+                disabled={submitting}
+                onClick={() => setDeletingId(null)}
+                className="px-4 py-2 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={submitting}
+                onClick={() => deletingId && handleDeleteUser(deletingId)}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition cursor-pointer shadow-lg shadow-red-500/20 disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {submitting ? <Spinner className="size-3.5" /> : <Trash2 size={14} />}
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

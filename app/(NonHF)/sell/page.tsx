@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { 
-  ShoppingBag, Tag, Package, ArrowUpRight, Plus, Eye, Loader2, Sparkles, TrendingUp, DollarSign
+  ShoppingBag, Tag, Package, ArrowUpRight, Plus, Edit, Loader2, Sparkles, TrendingUp, DollarSign
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
@@ -251,8 +251,8 @@ export default function SellerDashboard() {
                       </td>
                       <td className="py-4 text-right">
                         <Link href={`/products/${p.id}`}>
-                          <button className="p-1.5 bg-gray-50 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition cursor-pointer">
-                            <Eye size={16} />
+                          <button className="p-1.5 bg-gray-50 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition cursor-pointer" title="Edit Product">
+                            <Edit size={16} />
                           </button>
                         </Link>
                       </td>
