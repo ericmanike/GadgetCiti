@@ -96,6 +96,7 @@ export default function Home() {
                     src={cat.url}
                     alt={cat.title}
                     fill
+                    sizes="(max-width: 768px) 50vw, 20vw"
                     priority={true}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />

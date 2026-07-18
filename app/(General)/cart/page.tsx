@@ -48,9 +48,10 @@ export default function CartPage() {
                 <div key={item.product.id} className="bg-white rounded-xl shadow-sm p-4 flex gap-4 items-center animate-in fade-in slide-in-from-left-4 duration-300">
                   <Link href={`/products/${item.product.slug}`} className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100 hover:opacity-90 transition-opacity">
                     <Image
-                      src={item.product.images[0] || '/next.svg'}
+                      src={item.product.images[0] || 'https://placehold.co/800?text=photo+unavailable&font=roboto'}
                       alt={item.product.name}
                       fill
+                      sizes="96px"
                       className="object-cover"
                     />
                   </Link>

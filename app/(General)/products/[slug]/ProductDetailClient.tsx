@@ -5,14 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-
     Phone,
-    ShieldCheck,
-    Truck,
-    RotateCcw,
-    Store,
+    MapPin,
     Heart,
-
     ChevronRight,
     ChevronLeft,
     Minus,
@@ -108,6 +103,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     src={getImgSrc(activeImage)}
                                     alt={product.name}
                                     fill
+                                    sizes="(max-width: 1024px) 100vw, 33vw"
                                     unoptimized
                                     onError={() => setImgError(prev => ({ ...prev, [activeImage]: true }))}
                                     className="object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
@@ -166,7 +162,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 className={`relative w-14 h-14 rounded-full overflow-hidden border-2 transition-all shrink-0 snap-center ${activeImage === idx ? "border-slate-900  ring-slate-700 shadow-md scale-105" : "border-transparent bg-white hover:border-gray-200"
                                     }`}
                             >
-                                <Image src={getImgSrc(idx)} alt={`${product.name} thumbnail ${idx}`} fill unoptimized className="object-cover p-1 rounded-full" />
+                                <Image src={getImgSrc(idx)} alt={`${product.name} thumbnail ${idx}`} fill sizes="56px" unoptimized className="object-cover p-1 rounded-full" />
                             </button>
                         ))}
                     </div>
@@ -236,45 +232,20 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             </button>
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 p-4 rounded-2xl ">
-                            <ShieldCheck className="text-blue-600" size={18} />
-                            <div className="flex flex-col">
-                                <span className="text-xs font-black text-gray-900">Warranty</span>
-                                <span className="text-[10px] text-gray-500 font-medium">1 Year Official Warranty</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-4 rounded-2xl ">
-                            <RotateCcw className="text-orange-500" size={18} />
-                            <div className="flex flex-col">
-                                <span className="text-xs font-black text-gray-900">3 Days Return</span>
-                                <span className="text-[10px] text-gray-500 font-medium">Free return if damaged</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Right: Shipping & Seller Sidebar */}
                 <div className="lg:col-span-3 flex flex-col gap-6">
                     <div className="p-6 rounded-3xl bg-white shadow-lg flex flex-col gap-6">
                         <div>
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Delivery & Returns</h3>
+                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Seller Info</h3>
                             <div className="flex flex-col gap-5">
                                 <div className="flex gap-3">
                                     <div className="shrink-0 w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                                        <Truck size={18} className="text-gray-600" />
+                                        <MapPin size={18} className="text-gray-600" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <p className="text-[10px] text-gray-500 mt-1">Ready for delivery within 24 hours to Accra, Kumasi, Takoradi, Tema, and other major cities</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-3">
-                                    <div className="shrink-0 w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                                        <Store size={18} className="text-gray-600" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <p className="text-xs font-bold text-gray-900 leading-tight">Pick-up Station</p>
+                                        <p className="text-xs font-bold text-gray-900 leading-tight">Kumasi , KNUST</p>
                                       
                                     </div>
                                 </div>
@@ -282,7 +253,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         </div>
 
                         <div className="pt-6 border-t border-gray-50">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-2">Seller Info</h3>
+                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-2">Shop Name</h3>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
                                     <span className="text-xs font-black text-blue-600 uppercase">Gadget CITi Official Store</span>
