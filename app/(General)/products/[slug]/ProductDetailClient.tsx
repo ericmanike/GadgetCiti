@@ -18,8 +18,7 @@ import {
     Minus,
     Plus,
     CheckCircle2,
-    MessageSquare,
-    Sparkles
+    MessageSquare
 } from "lucide-react";
 import { Product, parseImageUrls } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
@@ -32,164 +31,14 @@ interface ProductDetailClientProps {
     relatedProducts: Product[];
 }
 
-interface UseCase {
-    title: string;
-    description: string;
-    matchScore: number;
-    category: string;
-}
-
-interface AIAnalysis {
-    suitabilityRating: { label: string; score: number }[];
-    useCases: UseCase[];
-    verdict: string;
-}
-
-function getAIRecommendations(product: Product): AIAnalysis {
-    const name = product.name.toLowerCase();
-    const desc = product.description.toLowerCase();
-    const category = product.category.toLowerCase();
-    const price = product.price;
-
-    const isLaptop = category.includes('laptop') || name.includes('laptop') || name.includes('macbook') || name.includes('notebook') || name.includes('computer');
-    const isPhone = category.includes('phone') || name.includes('phone') || name.includes('iphone') || name.includes('galaxy') || name.includes('pixel') || name.includes('android');
-
-    const specsStr = (product.specifications?.map(s => `${s.label} ${s.value}`).join(' ') || '') + ' ' + desc;
-    
-    const hasLowRam = specsStr.includes('3gb') || specsStr.includes('4gb') || specsStr.includes(' 3 gb') || specsStr.includes(' 4 gb');
-    
-    if (isLaptop) {
-        if (price < 3000 || hasLowRam) {
-            return {
-                suitabilityRating: [
-                    { label: "Value For Money", score: 95 },
-                    { label: "Portability", score: 85 },
-                    { label: "Battery Life", score: 80 }
-                ],
-                useCases: [
-                    {
-                        title: "📚 Academic Study & Research",
-                        description: "Excellent for students attending online lectures, typing papers, browsing the web, and preparing presentations.",
-                        matchScore: 95,
-                        category: "Education"
-                    },
-                    {
-                        title: "💼 Basic Office Administration",
-                        description: "Highly recommended for running Microsoft Office suite, handling emails, web browsing, and simple bookkeeping tasks.",
-                        matchScore: 90,
-                        category: "Business"
-                    }
-                ],
-                verdict: "An outstanding, cost-effective choice. Optimized for fluid daily administration, online lectures, and media streaming with quick boot times."
-            };
-        } else {
-            return {
-                suitabilityRating: [
-                    { label: "Processing Speed", score: 98 },
-                    { label: "Software Engineering", score: 95 },
-                    { label: "Creative Editing", score: 92 }
-                ],
-                useCases: [
-                    {
-                        title: "💻 Advanced Software Engineering",
-                        description: "Ideal for full-stack developers running multiple Docker containers, local databases, and heavy compilers simultaneously.",
-                        matchScore: 98,
-                        category: "Coding"
-                    },
-                    {
-                        title: "🎨 Creative Editing & 3D Design",
-                        description: "Excellent performance for high-end graphic design, 4K video editing, and complex rendering using Adobe Suite or Blender.",
-                        matchScore: 92,
-                        category: "Design"
-                    }
-                ],
-                verdict: "A high-performance powerhouse designed for demanding professionals, full-stack software development, and heavy creative production."
-            };
-        }
-    }
-
-    if (isPhone) {
-        if (price < 1500) {
-            return {
-                suitabilityRating: [
-                    { label: "Battery Endurance", score: 95 },
-                    { label: "Mobile Money & Banking", score: 92 },
-                    { label: "Daily Social Apps", score: 90 }
-                ],
-                useCases: [
-                    {
-                        title: "📱 Everyday Social & Communication",
-                        description: "Perfect for WhatsApp, Telegram, calls, email, and social media browsing with long-lasting battery life.",
-                        matchScore: 95,
-                        category: "Social"
-                    },
-                    {
-                        title: "💳 Mobile Banking & Payments",
-                        description: "Fast and secure execution of MoMo transactions, banking apps, and QR code payments.",
-                        matchScore: 92,
-                        category: "Finance"
-                    }
-                ],
-                verdict: "A solid entry-level smartphone focusing on communication, extended battery endurance, daily social apps, and fast mobile transactions."
-            };
-        } else {
-            return {
-                suitabilityRating: [
-                    { label: "Camera & Photography", score: 96 },
-                    { label: "Multi-tasking Speed", score: 95 },
-                    { label: "Display Quality", score: 98 }
-                ],
-                useCases: [
-                    {
-                        title: "📸 Professional Content Creation",
-                        description: "Stunning 4K video recording, advanced night-mode photography, and direct on-device social media content editing.",
-                        matchScore: 96,
-                        category: "Creative"
-                    },
-                    {
-                        title: "🚀 Power Multi-tasking",
-                        description: "Runs multiple heavy apps in split-screen, handles large documents, and processes information rapidly without lag.",
-                        matchScore: 94,
-                        category: "Business"
-                    }
-                ],
-                verdict: "A flagship device delivering top-tier processing speed, a stellar camera system, and a vibrant display for creators and power users."
-            };
-        }
-    }
-
-    return {
-        suitabilityRating: [
-            { label: "General Performance", score: 85 },
-            { label: "Value", score: 88 },
-            { label: "Reliability", score: 90 }
-        ],
-        useCases: [
-            {
-                title: "🏠 Home Utility & Entertainment",
-                description: "Excellent for regular home tasks, viewing media, playing music, and handling casual operations.",
-                matchScore: 90,
-                category: "General"
-            },
-            {
-                title: "💼 Light Productivity",
-                description: "Sufficient for checking schedules, taking notes, managing correspondence, and basic tasks.",
-                matchScore: 80,
-                category: "Utility"
-            }
-        ],
-        verdict: "A versatile electronic device built for daily convenience, dependable build quality, and smooth everyday productivity."
-    };
-}
-
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
     const [activeImage, setActiveImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const { toggleWishlist, isInWishlist } = useWishlist();
     const isSaved = isInWishlist(product.id);
-    const [activeTab, setActiveTab] = useState("ai");
+    const [activeTab, setActiveTab] = useState("overview");
+    const [isExpanded, setIsExpanded] = useState(false);
     const { addToCart } = useCart();
-    const aiAnalysis = getAIRecommendations(product);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -206,8 +55,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
         return images[idx] || "https://placehold.co/800?text=photo+unavailable&font=roboto";
     };
 
-
-
+    const discountPercent = product.discount != null && product.discount > 0
+        ? Math.round(product.discount)
+        : (product.oldPrice && product.oldPrice > product.price
+            ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+            : 0);
 
     return (
         <div className="flex flex-col gap-6 md:gap-10 pt-18 md:pt-8">
@@ -224,6 +76,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 {/* Left: Image Gallery */}
                 <div className="lg:col-span-4 flex flex-col gap-4">
                     <div className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group">
+                        {/* Discount Badge on Image Top Left */}
+                        {discountPercent > 0 && (
+                            <span className="absolute top-2.5 left-2.5 z-20 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-md">
+                                -{discountPercent}% OFF
+                            </span>
+                        )}
                         {/* Like / Heart Icon on Image Top Right */}
                         <button
                             type="button"
@@ -335,6 +193,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 {product.oldPrice && (
                                     <span className="text-sm md:text-lg text-gray-400 line-through">{formatCurrency(product.oldPrice)}</span>
                                 )}
+                             
                             </div>
                         </div>
 
@@ -465,28 +324,26 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="max-w-4xl">
                 <div className="flex gap-8 border-b border-gray-200">
                     <button
-                        onClick={() => setActiveTab("ai")}
-                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-1.5 ${activeTab === "ai" ? "text-black" : "text-gray-400 hover:text-purple-500"
-                            }`}
-                    >
-                        <Sparkles size={14} className={activeTab === "ai" ? "text-slate-900 animate-pulse" : ""} />
-                        AI Recommendation
-                        {activeTab === "ai" && (
-                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
-                        )}
-                    </button>
-                    <button
                         onClick={() => setActiveTab("overview")}
                         className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
                             }`}
                     >
-                        Product Overview
+                        About & Specification
                         {activeTab === "overview" && (
                             <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
                     </button>
-                
-                </div>
+                    <button
+                        onClick={() => setActiveTab("ai")}
+                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "specs" ? "text-slate-900" : "text-gray-400"
+                            }`}
+                    >
+                        Ai Review
+                        {activeTab === "ai" && (
+                            <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
+                        )}
+                    </button>
+                </div> 
 
                 <div className="py-8">
                     <AnimatePresence mode="wait">
@@ -499,15 +356,24 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                 className="flex flex-col gap-6"
                             >
                                 <div className="prose prose-slate max-w-none">
-                                    <p className="text-gray-600 leading-relaxed font-medium">
+                                    <p className={`text-gray-600 leading-relaxed font-medium transition-all ${isExpanded ? "" : "line-clamp-3"}`}>
                                         {product.description}
                                     </p>
+                                    {product.description && product.description.length > 100 && (
+                                        <button 
+                                            type="button"
+                                            onClick={() => setIsExpanded(!isExpanded)} 
+                                            className="mt-2 text-xs font-bold text-orange-500 hover:text-orange-600 transition cursor-pointer underline underline-offset-4"
+                                        >
+                                            {isExpanded ? "Show less" : "Show all"}
+                                        </button>
+                                    )}
                                 </div>
                                 {product.features && (
                                     <div className="flex flex-col gap-4">
                                         <h3 className="text-base font-black text-gray-900 uppercase tracking-widest">Key Features</h3>
                                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            {product.features.map((feature, i) => (
+                                            {product.features.toString()?.split(',').map((feature, i) => (
                                                 <li key={i} className="flex items-center gap-3 text-sm text-gray-600 font-medium">
                                                     <CheckCircle2 size={18} className="text-slate-900 shrink-0" />
                                                     {feature}
@@ -517,7 +383,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     </div>
                                 )}
                             </motion.div>
-                        ) : activeTab === "specs" ? (
+                        ) : activeTab === "ai" ? (
                             <motion.div
                                 key="specs"
                                 initial={{ opacity: 0, y: 10 }}
@@ -536,59 +402,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     <div className="p-8 text-center text-gray-400 font-medium uppercase text-xs tracking-[0.2em]">Contact seller for full specifications</div>
                                 )}
                             </motion.div>
-                        ) : (
-                            <motion.div
-                                key="ai"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="flex flex-col gap-6"
-                            >
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-                                    {/* Suitability Ratings */}
-                                    <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col gap-4 shadow-xs">
-                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Device Suitability Ratings</h4>
-                                        <div className="space-y-4">
-                                            {aiAnalysis.suitabilityRating.map((item, idx) => (
-                                                <div key={idx} className="space-y-1">
-                                                    <div className="flex justify-between text-xs font-bold text-slate-700">
-                                                        <span>{item.label}</span>
-                                                        <span>{item.score}%</span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                                                        <div 
-                                                            className="h-full bg-gradient-to-r from-red-500 to-red-900 rounded-full"
-                                                            style={{ width: `${item.score}%` }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Categorized Best Use Cases */}
-                                    <div className="flex flex-col gap-4">
-                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Top Recommended Use Cases</h4>
-                                        <div className="space-y-3">
-                                            {aiAnalysis.useCases.slice(0, 1).map((uc, idx) => (
-                                                <div key={idx} className="bg-white rounded-2xl border border-gray-150 p-4 shadow-xs hover:border-purple-200 transition-colors">
-                                                    <div className="flex justify-between items-start gap-2">
-                                                        <h5 className="text-xs sm:text-sm font-bold text-slate-900">{uc.title}</h5>
-                                                        <span className="text-[9px] bg-purple-50 text-purple-700 font-extrabold uppercase px-2 py-0.5 rounded-md flex-shrink-0">
-                                                            {uc.matchScore}% Match
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-xs text-gray-600 mt-1.5 leading-relaxed font-medium">
-                                                        {uc.description}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                
-                                </div>
-                            </motion.div>
-                        )}
+                        ) : null}
                     </AnimatePresence>
                 </div>
             </div>

@@ -21,6 +21,8 @@ interface ProductItem {
   name: string;
   brand: string;
   price: number;
+  oldPrice?: number;
+  discount?: number;
   stock: number;
   category: string;
   categoryId: string;
@@ -35,6 +37,7 @@ interface ProductFormValues {
   name: string;
   brand: string;
   price: string;
+  discount: string;
   stock: string;
   category: string;
   condition:string;
@@ -47,6 +50,7 @@ const validationSchema = Yup.object({
   name: Yup.string().required('Product name is required').min(3, 'Name is too short'),
   brand: Yup.string().required('Brand is required'),
   price: Yup.number().required('Price is required').positive('Price must be greater than 0'),
+  discount: Yup.number().min(0, 'Discount cannot be negative').max(99, 'Discount cannot exceed 99%').nullable().optional(),
   stock: Yup.number().required('Stock is required').min(0, 'Stock cannot be negative'),
   category: Yup.string().required('Category is required'),
   condition: Yup.string().required('Condition is required'),
@@ -92,7 +96,7 @@ export default function AdminProductsPage() {
       const { data: dbProducts, error } = await supabase
         .from('products')
         .select(`
-          id, name, brand, price, stock, condition, over_view,
+          id, name, brand, price, discount, stock, condition, over_view,
           categories(id, name),
           product_images(image_url)
         `);
@@ -106,11 +110,19 @@ export default function AdminProductsPage() {
         const overviewText = Array.isArray(row.over_view?.features) && row.over_view.features.length > 0
           ? row.over_view.features[0]
           : (row.over_view?.overview || '');
+        const oldPrice = row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined;
+        const priceNum = Number(row.price || 0);
+        const discountNum = oldPrice && oldPrice > priceNum
+          ? Math.round(((oldPrice - priceNum) / oldPrice) * 100)
+          : 0;
+
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",
           brand: row.brand || "Unbranded",
-          price: Number(row.price || 0),
+          price: priceNum,
+          oldPrice: oldPrice,
+          discount: discountNum,
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
           condition: row.condition || "New",
@@ -171,6 +183,7 @@ export default function AdminProductsPage() {
       name: '',
       brand: '',
       price: '',
+      discount: '',
       stock: '',
       category: '',
       overview: '',
@@ -258,6 +271,18 @@ export default function AdminProductsPage() {
         const finalImages = [...existingImages, ...uploadedUrls];
         const primaryImage = finalImages.length > 0 ? finalImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
 
+        const priceNum = Number(values.price);
+        const discountNum = values.discount ? Number(values.discount) : 0;
+        const calculatedOldPrice = discountNum > 0
+          ? Number((priceNum / (1 - discountNum / 100)).toFixed(2))
+          : undefined;
+
+        const overviewData = {
+          description: values.description,
+          features: [values.overview],
+          ...(calculatedOldPrice ? { oldPrice: calculatedOldPrice } : {})
+        };
+
         if (editingProduct) {
           // UPDATE PRODUCT
           const { error: updateError } = await supabase
@@ -267,12 +292,10 @@ export default function AdminProductsPage() {
               brand: values.brand,
               category_id: categoryId,
               condition: values.condition,
-              price: Number(values.price),
+              price: priceNum,
+              discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: {
-                description: values.description,
-                features: [values.overview]
-              }
+              over_view: overviewData
             })
             .eq('id', editingProduct.id);
 
@@ -296,12 +319,10 @@ export default function AdminProductsPage() {
               brand: values.brand,
               category_id: categoryId,
               condition: values.condition,
-              price: Number(values.price),
+              price: priceNum,
+              discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: {
-                description: values.description,
-                features: [values.overview]
-              }
+              over_view: overviewData
             })
             .select('id')
             .single();
@@ -337,6 +358,7 @@ export default function AdminProductsPage() {
       name: prod.name,
       brand: prod.brand,
       price: prod.price.toString(),
+      discount: prod.discount ? prod.discount.toString() : '',
       stock: prod.stock.toString(),
       category: prod.category,
       condition: prod.condition,
@@ -491,7 +513,14 @@ export default function AdminProductsPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <span className="font-bold text-slate-900">GHS {prod.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-900">GHS {prod.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                        {prod.oldPrice && prod.oldPrice > prod.price && (
+                          <span className="text-[10px] text-slate-400 line-through font-normal">
+                            GHS {prod.oldPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })} ({prod.discount}% OFF)
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
@@ -658,11 +687,10 @@ export default function AdminProductsPage() {
                   </div>
 
                   {/* Price & Stock row */}
-                  <div className="grid grid-cols-3 gap-4">
-
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 
                     <div>
-                      <label htmlFor="condition" className="block  text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="condition" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                         Condition *
                       </label>
                       <Field
@@ -681,7 +709,6 @@ export default function AdminProductsPage() {
                         </p>
                       )}
                     </div>
-
 
                     <div>
                       <label htmlFor="price" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -703,6 +730,26 @@ export default function AdminProductsPage() {
                     </div>
 
                     <div>
+                      <label htmlFor="discount" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                        Discount (%)
+                      </label>
+                      <Field
+                        type="number"
+                        id="discount"
+                        name="discount"
+                        min="0"
+                        max="99"
+                        placeholder="e.g. 10"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                      />
+                      {formik.touched.discount && formik.errors.discount && (
+                        <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
+                          {formik.errors.discount}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
                       <label htmlFor="stock" className="block text-[9px] md:text-sm font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                        Stock * 
                       </label>
@@ -715,7 +762,7 @@ export default function AdminProductsPage() {
                       />
                       {formik.touched.stock && formik.errors.stock && (
                         <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
-                         {formik.errors.stock}
+                          {formik.errors.stock}
                         </p>
                       )}
                     </div>

@@ -60,7 +60,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
                     .select(`
                         product_id,
                         products (
-                            id, name, brand, price, stock, over_view, specifications, created_at,
+                            id, name, brand, price, discount, stock, over_view, specifications, created_at,
                             categories(name),
                             product_images(image_url),
                             reviews(rating)

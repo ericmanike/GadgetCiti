@@ -297,7 +297,7 @@ export default function PaySmallSmallPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header Area */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-xl p-5 border border-gray-200 shadow-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-xl p-5 shadow-xs">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-950 flex items-center gap-2">
                         <Wallet className="text-orange-500" />
@@ -330,7 +330,7 @@ export default function PaySmallSmallPage() {
                     >
                         {/* Summary Cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="bg-white rounded-xl p-4 border border-gray-150 shadow-xs flex items-center gap-4">
+                            <div className="bg-white rounded-xl p-4 shadow-xs flex items-center gap-4">
                                 <div className="p-3 rounded-lg bg-orange-50 text-orange-500">
                                     <Smartphone className="w-6 h-6" />
                                 </div>
@@ -339,7 +339,7 @@ export default function PaySmallSmallPage() {
                                     <p className="text-xl font-extrabold text-slate-900 mt-0.5">{totalActivePlans}</p>
                                 </div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 border border-gray-150 shadow-xs flex items-center gap-4">
+                            <div className="bg-white rounded-xl p-4 shadow-xs flex items-center gap-4">
                                 <div className="p-3 rounded-lg bg-emerald-50 text-emerald-500">
                                     <TrendingUp className="w-6 h-6" />
                                 </div>
@@ -348,7 +348,7 @@ export default function PaySmallSmallPage() {
                                     <p className="text-xl font-extrabold text-slate-900 mt-0.5">{formatCurrency(totalPaid)}</p>
                                 </div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 border border-gray-150 shadow-xs flex items-center gap-4">
+                            <div className="bg-white rounded-xl p-4 shadow-xs flex items-center gap-4">
                                 <div className="p-3 rounded-lg bg-red-50 text-red-500">
                                     <Wallet className="w-6 h-6" />
                                 </div>
@@ -384,9 +384,9 @@ export default function PaySmallSmallPage() {
                                         const progressPercent = Math.min(100, Math.round((plan.paid_amount / plan.total_amount) * 100));
                                         
                                         return (
-                                            <div key={plan.id} className="bg-white rounded-xl border border-gray-200 shadow-xs hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+                                            <div key={plan.id} className="bg-white rounded-xl shadow-xs hover:shadow-md transition-shadow flex flex-col overflow-hidden">
                                                 {/* Header Status */}
-                                                <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+                                                <div className="px-4 py-2 flex items-center justify-between bg-gray-50">
                                                     <span className="text-[10px] text-gray-500 font-bold uppercase">Plan ID: #{plan.id.slice(0, 8)}</span>
                                                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                                                         plan.status === 'delivered'
@@ -400,7 +400,7 @@ export default function PaySmallSmallPage() {
                                                 </div>
 
                                                 <div className="p-4 flex gap-4 flex-1">
-                                                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0 flex items-center justify-center p-1">
+                                                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
                                                         <img src={plan.product_image} alt={plan.product_name} className="object-contain w-full h-full" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -438,10 +438,10 @@ export default function PaySmallSmallPage() {
                                                 </div>
 
                                                 {/* Footer Action buttons */}
-                                                <div className="p-3 bg-gray-50 border-t border-gray-100 flex gap-2">
+                                                <div className="p-3 bg-gray-50 flex gap-2">
                                                     <button
                                                         onClick={() => handleViewPlanDetails(plan.id)}
-                                                        className="flex-1 py-2 border border-gray-300 hover:border-orange-400 text-slate-700 hover:text-orange-500 rounded-lg text-xs font-bold transition-all text-center bg-white cursor-pointer"
+                                                        className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-slate-700 hover:text-orange-500 rounded-lg text-xs font-bold transition-all text-center cursor-pointer"
                                                     >
                                                         Details & History
                                                     </button>
@@ -479,7 +479,7 @@ export default function PaySmallSmallPage() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
-                        className="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
+                        className="bg-white rounded-xl shadow-sm p-6"
                     >
                         {/* Back navigation */}
                         <button
@@ -563,11 +563,11 @@ export default function PaySmallSmallPage() {
                                                     setSelectedProduct(prod);
                                                     setWizardStep(2);
                                                 }}
-                                                className={`border rounded-xl p-4 cursor-pointer hover:border-orange-500 transition-all flex items-center gap-3 ${
-                                                    selectedProduct?.id === prod.id ? 'border-orange-500 bg-orange-50/20' : 'border-gray-200 bg-white'
+                                                className={`rounded-xl p-4 cursor-pointer transition-all flex items-center gap-3 ${
+                                                    selectedProduct?.id === prod.id ? 'bg-orange-50/70 shadow-sm' : 'bg-gray-50/80 hover:bg-gray-100/80'
                                                 }`}
                                             >
-                                                <div className="w-14 h-14 bg-gray-50 rounded-lg overflow-hidden border border-gray-150 flex items-center justify-center p-1 flex-shrink-0">
+                                                <div className="w-14 h-14 bg-white rounded-lg overflow-hidden flex items-center justify-center p-1 flex-shrink-0 shadow-xs">
                                                     <img src={prod.images[0]} alt={prod.name} className="object-contain w-full h-full" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -666,12 +666,12 @@ export default function PaySmallSmallPage() {
                                 </div>
 
                                 {/* Plan Summary & Confirmation Preview */}
-                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex flex-col justify-between">
+                                <div className="bg-gray-50 rounded-xl p-5 flex flex-col justify-between shadow-xs">
                                     <div>
                                         <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Plan Breakdown</h4>
                                         
-                                        <div className="flex items-center gap-3 mb-4 bg-white border border-gray-150 p-3 rounded-lg">
-                                            <div className="w-10 h-10 bg-gray-50 border border-gray-100 rounded-md overflow-hidden p-1 flex-shrink-0 flex items-center justify-center">
+                                        <div className="flex items-center gap-3 mb-4 bg-white p-3 rounded-lg shadow-xs">
+                                            <div className="w-10 h-10 bg-gray-50 rounded-md overflow-hidden p-1 flex-shrink-0 flex items-center justify-center">
                                                 <img src={selectedProduct.images[0]} alt={selectedProduct.name} className="object-contain w-full h-full" />
                                             </div>
                                             <div className="min-w-0">
@@ -723,7 +723,7 @@ export default function PaySmallSmallPage() {
 
                         {/* STEP 3: DEPOSIT MOBILE MONEY PAYMENT */}
                         {wizardStep === 3 && selectedProduct && (
-                            <div className="max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                            <div className="max-w-md mx-auto bg-gray-50 rounded-2xl p-6 shadow-md">
                                 {paymentStatus === 'idle' && (
                                     <div className="space-y-5">
                                         <div className="text-center">
@@ -887,10 +887,10 @@ export default function PaySmallSmallPage() {
                         </div>
 
                         {/* Top Card Breakdown */}
-                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8">
+                        <div className="bg-white rounded-xl shadow-sm p-6 grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8">
                             <div className="space-y-6">
                                 <div className="flex gap-4">
-                                    <div className="w-20 h-20 bg-gray-50 border border-gray-150 rounded-lg overflow-hidden flex items-center justify-center p-1.5 flex-shrink-0">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center p-1.5 flex-shrink-0 shadow-xs">
                                         <img src={activePlan.product_image} alt={activePlan.product_name} className="object-contain w-full h-full" />
                                     </div>
                                     <div>
@@ -940,7 +940,7 @@ export default function PaySmallSmallPage() {
                             </div>
 
                             {/* Plan Term Details & Pay Installment Quick Box */}
-                            <div className="bg-gray-50 border border-gray-150 rounded-xl p-5 flex flex-col justify-between">
+                            <div className="bg-gray-50 rounded-xl p-5 flex flex-col justify-between shadow-xs">
                                 <div className="space-y-4">
                                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest border-b border-gray-200 pb-2">Plan Setup Details</h4>
                                     <div className="grid grid-cols-2 gap-4 text-xs">
@@ -987,7 +987,7 @@ export default function PaySmallSmallPage() {
 
                         {/* Payment Complete -> Product Delivery Timeline */}
                         {activePlan.status !== 'active' && (
-                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6">
+                            <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
                                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-gray-100 pb-3 flex items-center gap-2">
                                     <Truck className="text-orange-500" />
                                     Product Delivery Timeline
@@ -1053,7 +1053,7 @@ export default function PaySmallSmallPage() {
                         )}
 
                         {/* Payment History Log */}
-                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+                        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
                             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-gray-100 pb-3 flex items-center gap-2">
                                 <Calendar className="text-orange-500" />
                                 Payment Log
@@ -1101,7 +1101,7 @@ export default function PaySmallSmallPage() {
                     />
 
                     {/* Content Box */}
-                    <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-150 p-6 max-w-sm w-full space-y-5 overflow-hidden z-10">
+                    <div className="relative bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full space-y-5 overflow-hidden z-10">
                         {paymentStatus === 'idle' && (
                             <div className="space-y-4">
                                 <div className="text-center border-b border-gray-100 pb-3">

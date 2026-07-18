@@ -79,9 +79,11 @@ export default function WishlistPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                         <AnimatePresence>
                             {wishlist.map((product) => {
-                                const discountPercent = product.oldPrice && product.oldPrice > product.price
-                                    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-                                    : null;
+                                const discountPercent = product.discount != null && product.discount > 0
+                                    ? Math.round(product.discount)
+                                    : (product.oldPrice && product.oldPrice > product.price
+                                        ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+                                        : null);
 
                                 return (
                                     <motion.article
@@ -107,14 +109,14 @@ export default function WishlistPage() {
 
                                             {/* Out of Stock / Discount Badge */}
                                             <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+                                                {discountPercent && (
+                                                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
+                                                        -{discountPercent}% OFF
+                                                    </span>
+                                                )}
                                                 {!product.inStock && (
                                                     <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
                                                         Out of stock
-                                                    </span>
-                                                )}
-                                                {discountPercent && (
-                                                    <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
-                                                        -{discountPercent}% OFF
                                                     </span>
                                                 )}
                                             </div>

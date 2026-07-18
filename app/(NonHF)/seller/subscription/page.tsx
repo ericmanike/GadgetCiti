@@ -211,14 +211,14 @@ export default function SellerSubscriptionPage() {
       <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl -z-0 pointer-events-none" />
         <div className="relative z-10 space-y-3 max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 font-bold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-            <Crown size={14} className="text-orange-400" />
+          <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 font-bold text-[10px] md:text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+            <Crown size={12} className="text-orange-400" />
             Seller Membership Packages
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+          <h1 className="text-[12px] md:text-[20px] font-black tracking-tight text-white">
             Supercharge Your <span className="text-orange-500">Store Front</span>
           </h1>
-          <p className="text-slate-300 text-sm md:text-base font-medium leading-relaxed">
+          <p className="text-slate-300 text-[10px] md:text-[12px] font-medium leading-relaxed">
             Choose a plan tailored for your gadget business. Unlock 0% transaction commissions, priority buyer search placement, and premium seller tools.
           </p>
         </div>
@@ -238,31 +238,31 @@ export default function SellerSubscriptionPage() {
             >
               {/* Badge for Recommended Plan */}
               {plan.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-black px-4 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles size={12} />
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] md:text-xs font-black px-4 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles size={10} />
                   {plan.badge}
                 </div>
               )}
 
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-xl font-black text-gray-900">{plan.name}</h3>
+                  <h3 className="text-[12px] md:text-sm font-black text-gray-900">{plan.name}</h3>
                   {plan.isRecommended && (
                     <span className="p-2 bg-orange-50 rounded-2xl text-orange-500">
-                      <Zap size={20} />
+                      <Zap size={16} />
                     </span>
                   )}
                 </div>
 
-                <p className="text-xs text-gray-500 font-medium mb-6 min-h-[36px]">
+                <p className="text-[10px] md:text-[12px] text-gray-500 font-medium mb-6 min-h-[36px]">
                   {plan.description}
                 </p>
 
                 <div className="mb-6 flex items-baseline">
-                  <span className="text-4xl font-black text-gray-900 tracking-tight">
+                  <span className="text-[20px] md:text-2xl font-black text-gray-900 tracking-tight">
                     GHS {plan.priceGHS}
                   </span>
-                  <span className="text-gray-400 text-xs font-bold ml-2 uppercase">
+                  <span className="text-gray-400 text-[10px] md:text-xs font-bold ml-2 uppercase">
                     / {plan.period}
                   </span>
                 </div>
@@ -271,9 +271,9 @@ export default function SellerSubscriptionPage() {
 
                 <ul className="space-y-3.5 mb-8">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[11px] md:text-[14px] text-gray-700 font-medium">
+                    <li key={i} className="flex items-start gap-3 text-[10px] md:text-[12px] text-gray-700 font-medium">
                       <div className={`p-0.5 rounded-full mt-0.5 shrink-0 ${plan.isRecommended ? 'bg-orange-500 text-white' : 'bg-emerald-100 text-emerald-600'}`}>
-                        <Check size={12} strokeWidth={3} />
+                        <Check size={10} strokeWidth={3} />
                       </div>
                       <span>{feature}</span>
                     </li>
@@ -283,7 +283,7 @@ export default function SellerSubscriptionPage() {
 
               <button
                 onClick={() => openSubscribeModal(plan)}
-                className={`w-full py-3.5 px-6 rounded-2xl text-[11px] md:text-[14px] font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
+                className={`w-full py-2.5 px-5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${
                   plan.buttonVariant === 'primary'
                     ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/25 active:scale-98'
                     : plan.buttonVariant === 'dark'
@@ -292,7 +292,7 @@ export default function SellerSubscriptionPage() {
                 }`}
               >
                 <span>{plan.buttonText}</span>
-                {plan.priceGHS > 0 && <ArrowRight size={16} />}
+                {plan.priceGHS > 0 && <ArrowRight size={14} />}
               </button>
             </div>
           );
@@ -300,41 +300,41 @@ export default function SellerSubscriptionPage() {
       </div>
 
       {/* Feature Comparison Box */}
-      <div className="bg-white rounded-3xl p-8 shadow-xs space-y-6">
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-orange-50 text-orange-500 rounded-2xl">
-            <ShieldCheck size={24} />
+            <ShieldCheck size={20} />
           </div>
           <div>
-            <h3 className="text-lg font-black text-gray-900">Why Upgrade Your Seller Plan?</h3>
-            <p className="text-xs text-gray-500 font-medium">Verified seller benefits designed to maximize revenue and trust.</p>
+            <h3 className="text-[12px] md:text-sm font-black text-gray-900">Why Upgrade Your Seller Plan?</h3>
+            <p className="text-[10px] md:text-[12px] text-gray-500 font-medium">Verified seller benefits designed to maximize revenue and trust.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
           <div className="p-4 rounded-2xl bg-gray-50 space-y-2">
-            <h4 className="font-bold text-[11px] md:text-[14px] text-gray-900 flex items-center gap-2">
-              <Zap size={16} className="text-orange-500" /> 0% Transaction Fees
+            <h4 className="font-bold text-[10px] md:text-xs text-gray-900 flex items-center gap-2">
+              <Zap size={14} className="text-orange-500" /> 0% Transaction Fees
             </h4>
-            <p className="text-[11px] md:text-[14px] text-gray-500 leading-relaxed">
+            <p className="text-[10px] md:text-[12px] text-gray-500 leading-relaxed">
               Keep 100% of your earnings on every sale without paying high marketplace cut rates.
             </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-gray-50 space-y-2">
-            <h4 className="font-bold text-[11px] md:text-[14px] text-gray-900 flex items-center gap-2">
-              <Star size={16} className="text-amber-500" /> Priority Buyer Exposure
+            <h4 className="font-bold text-[10px] md:text-xs text-gray-900 flex items-center gap-2">
+              <Star size={14} className="text-amber-500" /> Priority Buyer Exposure
             </h4>
-            <p className="text-[11px] md:text-[14px] text-gray-500 leading-relaxed">
+            <p className="text-[10px] md:text-[12px] text-gray-500 leading-relaxed">
               Pro & Gold listings rank higher in search results, giving your gadgets 5x more buyer views.
             </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-gray-50 space-y-2">
-            <h4 className="font-bold text-[11px] md:text-[14px] text-gray-900 flex items-center gap-2">
-              <CreditCard size={16} className="text-emerald-500" /> Instant MoMo Payments
+            <h4 className="font-bold text-[10px] md:text-xs text-gray-900 flex items-center gap-2">
+              <CreditCard size={14} className="text-emerald-500" /> Instant MoMo Payments
             </h4>
-            <p className="text-[11px] md:text-[14px] text-gray-500 leading-relaxed">
+            <p className="text-[10px] md:text-[12px] text-gray-500 leading-relaxed">
               Subscribe easily via MTN Mobile Money, Telecel Cash, or AT Money with instant activation.
             </p>
           </div>

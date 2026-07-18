@@ -15,6 +15,7 @@ interface ProductCardProps {
     slug: string;
     description: string;
     price: number;
+    discount?: number;
     oldPrice?: number;
     brand: string;
     category: string;
@@ -38,6 +39,12 @@ export function ProductCard({ product }: ProductCardProps) {
     ? product.images[0]
     : "https://placehold.co/800?text=photo+unavailable&font=roboto";
 
+  const discountPercent = product.discount != null && product.discount > 0
+    ? Math.round(product.discount)
+    : (product.oldPrice && product.oldPrice > product.price
+        ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+        : 0);
+
   return (
     <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group">
       <Link href={`/products/${product.slug}`} className="relative block h-32 md:h-48 overflow-hidden">
@@ -49,11 +56,18 @@ export function ProductCard({ product }: ProductCardProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 768px) 50vw, 25vw"
         />
-        {!product.inStock && (
-          <span className="absolute left-2 top-2 rounded bg-red-500 px-2 py-0.5 text-xs font-semibold text-white z-10">
-            Out of stock
-          </span>
-        )}
+        <div className="absolute left-2 top-2 z-10 flex flex-col gap-1 items-start">
+          {discountPercent > 0 && (
+            <span className="rounded bg-red-600 px-2 py-0.5 text-[8px] md:text-xs font-bold text-white shadow-xs">
+              -{discountPercent}% OFF
+            </span>
+          )}
+          {!product.inStock && (
+            <span className="rounded bg-slate-900/90 px-2 py-0.5 text-[10px] md:text-xs font-semibold text-white shadow-xs backdrop-blur-xs">
+              Out of stock
+            </span>
+          )}
+        </div>
         <button
           onClick={(e) => {
             e.preventDefault();

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { 
-  Search, Plus, Trash2, Edit, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles, Upload 
+import {
+  Search, Plus, Trash2, Edit, X, AlertCircle, ShoppingBag, ArrowUpDown, Filter, Sparkles, Upload
 } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { useFormik, FormikProvider } from 'formik';
@@ -24,6 +24,8 @@ interface ProductItem {
   name: string;
   brand: string;
   price: number;
+  oldPrice?: number;
+  discount?: number;
   stock: number;
   category: string;
   condition: string;
@@ -38,6 +40,7 @@ interface ProductFormValues {
   name: string;
   brand: string;
   price: string;
+  discount: string;
   stock: string;
   category: string;
   condition: string;
@@ -50,6 +53,7 @@ const validationSchema = Yup.object({
   name: Yup.string().required('Product name is required').min(3, 'Name is too short'),
   brand: Yup.string().required('Brand is required'),
   price: Yup.number().required('Price is required').positive('Price must be greater than 0'),
+  discount: Yup.number().min(0, 'Discount cannot be negative').max(99, 'Discount cannot exceed 99%').nullable().optional(),
   stock: Yup.number().required('Stock is required').min(0, 'Stock cannot be negative'),
   category: Yup.string().required('Category is required'),
   condition: Yup.string().required('Condition is required'),
@@ -64,13 +68,13 @@ export default function SellerProductsPage() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  
+
   // Filtering & Sorting
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortField, setSortField] = useState<'name' | 'price' | 'stock'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  
+
   // Modals & UI States
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
@@ -84,7 +88,7 @@ export default function SellerProductsPage() {
 
     try {
       setLoading(true);
-      
+
       // 1. Fetch categories
       const { data: dbCategories } = await supabase
         .from('categories')
@@ -96,7 +100,7 @@ export default function SellerProductsPage() {
       const { data: dbProducts, error } = await supabase
         .from('products')
         .select(`
-          id, name, brand, price, stock, condition, over_view,
+          id, name, brand, price, discount, stock, condition, over_view,
           categories(id, name),
           product_images(image_url)
         `)
@@ -106,14 +110,22 @@ export default function SellerProductsPage() {
 
       const mappedProducts: ProductItem[] = dbProducts?.map((row: any) => {
         const images = parseImageUrls(row.product_images);
-        const overviewText = Array.isArray(row.over_view?.features) && row.over_view.features.length > 0 
-          ? row.over_view.features[0] 
+        const overviewText = Array.isArray(row.over_view?.features) && row.over_view.features.length > 0
+          ? row.over_view.features[0]
           : (row.over_view?.overview || '');
+        const oldPrice = row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined;
+        const priceNum = Number(row.price || 0);
+        const discountNum = oldPrice && oldPrice > priceNum
+          ? Math.round(((oldPrice - priceNum) / oldPrice) * 100)
+          : 0;
+
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",
           brand: row.brand || "Unbranded",
-          price: Number(row.price || 0),
+          price: priceNum,
+          oldPrice: oldPrice,
+          discount: discountNum,
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
           condition: row.condition || "New",
@@ -157,9 +169,9 @@ export default function SellerProductsPage() {
       await supabase.from('product_images').delete().eq('product_id', id);
       // Delete product
       const { error } = await supabase.from('products').delete().eq('id', id).eq('user_id', user?.id);
-      
+
       if (error) throw error;
-      
+
       showToast("Product deleted successfully.", "success");
       setProducts(products.filter(p => p.id !== id));
       setDeletingId(null);
@@ -177,6 +189,7 @@ export default function SellerProductsPage() {
       name: '',
       brand: '',
       price: '',
+      discount: '',
       stock: '',
       category: '',
       condition: '',
@@ -199,7 +212,7 @@ export default function SellerProductsPage() {
         // 1. Resolve or Create Category ID
         let categoryId = null;
         const matchingCat = categories.find(c => c.name.toLowerCase() === values.category.toLowerCase());
-        
+
         if (matchingCat) {
           categoryId = matchingCat.id;
         } else {
@@ -211,7 +224,7 @@ export default function SellerProductsPage() {
             })
             .select('id')
             .single();
-          
+
           if (catError) throw catError;
           if (newCat) {
             categoryId = newCat.id;
@@ -261,6 +274,18 @@ export default function SellerProductsPage() {
         const finalImages = [...existingImages, ...uploadedUrls];
         const primaryImage = finalImages.length > 0 ? finalImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
 
+        const priceNum = Number(values.price);
+        const discountNum = values.discount ? Number(values.discount) : 0;
+        const calculatedOldPrice = discountNum > 0
+          ? Number((priceNum / (1 - discountNum / 100)).toFixed(2))
+          : undefined;
+
+        const overviewData = {
+          description: values.description,
+          features: [values.overview],
+          ...(calculatedOldPrice ? { oldPrice: calculatedOldPrice } : {})
+        };
+
         if (editingProduct) {
           // UPDATE PRODUCT
           const { error: updateError } = await supabase
@@ -270,12 +295,10 @@ export default function SellerProductsPage() {
               brand: values.brand,
               category_id: categoryId,
               condition: values.condition,
-              price: Number(values.price),
+              price: priceNum,
+              discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: {
-                description: values.description,
-                features: [values.overview]
-              }
+              over_view: overviewData
             })
             .eq('id', editingProduct.id)
             .eq('user_id', user.id);
@@ -300,12 +323,10 @@ export default function SellerProductsPage() {
               category_id: categoryId,
               condition: values.condition,
               user_id: user.id,
-              price: Number(values.price),
+              price: priceNum,
+              discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: {
-                description: values.description,
-                features: [values.overview]
-              }
+              over_view: overviewData
             })
             .select('id')
             .single();
@@ -341,6 +362,7 @@ export default function SellerProductsPage() {
       name: p.name,
       brand: p.brand,
       price: p.price.toString(),
+      discount: p.discount ? p.discount.toString() : '',
       stock: p.stock.toString(),
       category: p.category,
       condition: p.condition,
@@ -384,14 +406,14 @@ export default function SellerProductsPage() {
 
   return (
     <div className="space-y-6 pb-16 animate-fade-in">
-      
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Your Products</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">Manage details, stock level, and listings of your products.</p>
         </div>
-        <button 
+        <button
           onClick={handleOpenAddDrawer}
           className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-5 rounded-2xl text-sm transition duration-200 cursor-pointer shadow-lg shadow-orange-500/20"
         >
@@ -402,7 +424,7 @@ export default function SellerProductsPage() {
 
       {/* Filter Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        
+
         {/* Search */}
         <div className="relative w-full md:max-w-md">
           <Search className="absolute left-3.5 top-3.5 text-gray-400 size-4.5" />
@@ -476,24 +498,32 @@ export default function SellerProductsPage() {
                     </td>
                     <td className="py-4 text-gray-600 font-semibold">{p.brand}</td>
                     <td className="py-4 text-gray-600 font-semibold">{p.category}</td>
-                    <td className="py-4 text-gray-900 font-black">{formatCurrency(p.price)}</td>
+                    <td className="py-4 font-black">
+                      <div className="flex flex-col">
+                        <span className="text-gray-900">{formatCurrency(p.price)}</span>
+                        {p.oldPrice && p.oldPrice > p.price && (
+                          <span className="text-[10px] text-gray-400 line-through font-normal">
+                            {formatCurrency(p.oldPrice)} ({p.discount}% OFF)
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
-                        p.stock > 5 ? 'bg-green-50 text-green-700' : p.stock > 0 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
-                      }`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${p.stock > 5 ? 'bg-green-50 text-green-700' : p.stock > 0 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+                        }`}>
                         {p.stock === 0 ? 'Out of stock' : `${p.stock} units`}
                       </span>
                     </td>
                     <td className="py-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        <button 
+                        <button
                           onClick={() => handleEditProduct(p)}
                           className="p-1.5 bg-gray-50 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition cursor-pointer"
                           title="Edit Product"
                         >
                           <Edit size={16} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => setDeletingId(p.id)}
                           className="p-1.5 bg-gray-50 text-gray-400 hover:text-red-655 hover:bg-red-50 rounded-lg transition cursor-pointer"
                         >
@@ -513,7 +543,7 @@ export default function SellerProductsPage() {
       <AnimatePresence>
         {isAddDrawerOpen && (
           <div className="fixed inset-0 z-50 flex justify-end">
-            
+
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -541,7 +571,7 @@ export default function SellerProductsPage() {
                     {editingProduct ? `Modify details for ${editingProduct.name}` : 'List a new electronic gadget to your store catalog'}
                   </p>
                 </div>
-                <button 
+                <button
                   onClick={() => setIsAddDrawerOpen(false)}
                   className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 transition cursor-pointer"
                 >
@@ -551,7 +581,7 @@ export default function SellerProductsPage() {
 
               <FormikProvider value={formik}>
                 <form onSubmit={formik.handleSubmit} className="space-y-5 flex-1 pb-10">
-                  
+
                   {/* Name */}
                   <div className="space-y-1">
                     <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Product Name</label>
@@ -608,7 +638,7 @@ export default function SellerProductsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Condition */}
                     <div className="space-y-1">
                       <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Condition *</label>
@@ -646,6 +676,25 @@ export default function SellerProductsPage() {
                       )}
                     </div>
 
+                    {/* Discount */}
+                    <div className="space-y-1">
+                      <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Discount (%)</label>
+                      <input
+                        name="discount"
+                        type="number"
+                        min="0"
+                        max="99"
+                        value={formik.values.discount}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="e.g. 10"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                      />
+                      {formik.touched.discount && formik.errors.discount && (
+                        <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.discount}</p>
+                      )}
+                    </div>
+
                     {/* Stock */}
                     <div className="space-y-1">
                       <label className="text-[9px] md:text-xs font-black text-gray-500 uppercase tracking-widest">Stock Count *</label>
@@ -669,7 +718,7 @@ export default function SellerProductsPage() {
                     <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">
                       Product Images (Up to 3)
                     </label>
-                    
+
                     <div className="space-y-4">
                       {/* Grid showing existing and newly selected images */}
                       {(existingImages.length > 0 || (formik.values.imageFiles && formik.values.imageFiles.length > 0)) && (
@@ -805,8 +854,8 @@ export default function SellerProductsPage() {
                     className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-sm transition duration-200 shadow-lg shadow-orange-500/20 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 mt-4"
                   >
                     {submitting && <Spinner className="size-4" />}
-                    {submitting 
-                      ? (editingProduct ? 'Saving changes...' : 'Creating listing...') 
+                    {submitting
+                      ? (editingProduct ? 'Saving changes...' : 'Creating listing...')
                       : (editingProduct ? 'Save Changes' : 'Upload Product to Store')}
                   </button>
 

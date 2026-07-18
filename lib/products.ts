@@ -6,6 +6,7 @@ export interface Product {
     slug: string;
     description: string;
     price: number;
+    discount?: number;
     oldPrice?: number;
     brand: string;
     category: string;
@@ -23,7 +24,7 @@ export async function fetchAllProducts(): Promise<Product[]> {
     const { data, error } = await supabase
         .from('products')
         .select(`
-            id, name, brand, price, stock, over_view, specifications, created_at,
+            id, name, brand, price, discount, stock, over_view, specifications, created_at,
             categories(name),
             product_images(image_url),
             reviews(rating)
@@ -45,7 +46,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
         const { data, error } = await supabase
             .from('products')
             .select(`
-                id, name, brand, price, stock, over_view, specifications, created_at,
+                id, name, brand, price, discount, stock, over_view, specifications, created_at,
                 categories(name),
                 product_images(image_url),
                 reviews(rating)
@@ -113,13 +114,20 @@ export function mapDBProductToClient(row: any): Product {
 
     const baseSlug = (row.name || "product").toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || "product";
 
+    const dbDiscount = row.discount != null ? Number(row.discount) : undefined;
+    const priceNum = Number(row.price || 0);
+    const calculatedOldPrice = row.over_view?.oldPrice
+        ? Number(row.over_view.oldPrice)
+        : (dbDiscount && dbDiscount > 0 ? Number((priceNum / (1 - dbDiscount / 100)).toFixed(2)) : undefined);
+
     return {
         id: row.id.toString(),
         name: row.name || "Unknown Product",
         slug: `${baseSlug}-${row.id}`, 
         description: row.over_view?.description || "No description available",
-        price: Number(row.price || 0),
-        oldPrice: row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined,
+        price: priceNum,
+        discount: dbDiscount,
+        oldPrice: calculatedOldPrice,
         brand: row.brand || "Unbranded",
         category: row.categories?.name || "Uncategorized",
         images: images.length > 0 ? images : ["https://placehold.co/800?text=photo+unavailable&font=roboto"],
