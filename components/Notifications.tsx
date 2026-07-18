@@ -91,7 +91,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
 
   return (
     <div
-      className={`${isOpen ? 'translate-x-0' : 'translate-x-full'} w-full md:w-[400px] h-screen flex flex-col bg-white fixed right-0 z-50 top-0 transition-all duration-300 ease-in-out shadow-2xl`}
+      className={`${isOpen ? 'translate-x-0' : 'translate-x-full'} w-full md:w-[400px] h-screen flex flex-col bg-white fixed right-0 z-[60] top-0 transition-all duration-300 ease-in-out shadow-2xl`}
       ref={panelRef}
     >
       {/* Header */}

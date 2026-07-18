@@ -23,7 +23,7 @@ export default function OrdersPage() {
 
 
     return (
-        <div className="bg-white rounded shadow-sm min-h-[calc(100vh-8rem)]">
+        <div className="bg-white rounded shadow-sm min-h-screen ">
             <div className="p-4 border-b border-gray-100">
                 <h1 className="text-xl font-bold text-slate-900">Orders</h1>
             </div>

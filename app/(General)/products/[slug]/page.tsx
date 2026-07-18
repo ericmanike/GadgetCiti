@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProductDetailClient from "./ProductDetailClient";
 import { Metadata } from "next";
 
+
 interface ProductPageProps {
     params: Promise<{ slug: string }>;
 }
@@ -27,6 +28,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         notFound();
     }
 
+  
+ 
     const relatedProducts = await getRelatedProducts(product);
 
     return (

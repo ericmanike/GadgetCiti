@@ -1,10 +1,19 @@
 
+'use client'
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+
+    const pathname = usePathname();
+    const hideFooter = pathname === '/checkout' || pathname.startsWith('/products');
+
+    if (hideFooter) {
+        return null;
+    } 
     return (
-        <footer className="bg-gray-800 text-gray-300 border-t border-gray-800 z-100">
+        <footer className="bg-gray-800 text-gray-300 border-t border-gray-800 z-0 ">
             <div className="container mx-auto px-4 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Section */}

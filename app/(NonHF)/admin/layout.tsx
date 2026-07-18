@@ -213,7 +213,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-sm tracking-wider">
             G
           </div>
-          <span className="font-black text-md text-white tracking-widest">SWAPPI ADMIN</span>
+          <span className="font-black text-md text-white tracking-widest">CITi ADMIN</span>
         </div>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 

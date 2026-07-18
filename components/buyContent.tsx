@@ -1,11 +1,10 @@
 'use client';
-import { motion } from "framer-motion";
-import { Filter, Check, X, ScanSearch } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Filter, Check, X, ScanSearch, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "./ProductCard";
 import { formatCurrency } from "@/lib/utils";
-import SkeletonCards from "./SkeletonCards";
+import SkeletonCards from "./SkeletonCards"; 
 
 import { fetchAllProducts, Product } from "@/lib/products";
 
@@ -23,11 +22,13 @@ export default function BuyPage() {
   const [sortBy, setSortBy] = useState('newest');
   const searchParams = useSearchParams();
   const router = useRouter();
+  const productGridRef = useRef<HTMLDivElement>(null);
 
   const categoryParam = searchParams.get("category") || "";
   const priceRange = searchParams.get("priceRange") || "";
   const brandParam = searchParams.get("brand") || "";
   const conditionParam = searchParams.get("condition") || "";
+  const pageParam = Number(searchParams.get("page")) || 1;
 
   const selectedCategories = categoryParam ? categoryParam.split(",") : [];
   const selectedBrands = brandParam ? brandParam.split(",") : [];
@@ -40,12 +41,14 @@ export default function BuyPage() {
     } else {
       params.delete("category");
     }
+    params.delete("page");
     router.push(`?${params.toString()}`);
   };
 
   const priceRangeFilter = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("priceRange", value);
+    params.delete("page");
     router.push(`?${params.toString()}`);
   };
 
@@ -56,6 +59,7 @@ export default function BuyPage() {
     } else {
       params.delete("brand");
     }
+    params.delete("page");
     router.push(`?${params.toString()}`);
   };
 
@@ -66,8 +70,9 @@ export default function BuyPage() {
     } else {
       params.delete("condition");
     }
+    params.delete("page");
     router.push(`?${params.toString()}`);
-  }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -130,6 +135,39 @@ export default function BuyPage() {
 
     setDisplayProducts(updated);
   }, [allProducts, categoryParam, priceRange, brandParam, conditionParam, sortBy]);
+
+  // Pagination calculation
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(displayProducts.length / itemsPerPage);
+  const currentPage = Math.max(1, pageParam);
+  const validCurrentPage = totalPages > 0 ? Math.min(currentPage, totalPages) : 1;
+
+  const startIndex = (validCurrentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = displayProducts.slice(startIndex, endIndex);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages || newPage === validCurrentPage) return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", newPage.toString());
+    router.push(`?${params.toString()}`, { scroll: false });
+    productGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const getPageNumbers = (current: number, total: number) => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [];
+    if (current <= 4) {
+      pages.push(1, 2, 3, 4, 5, '...', total);
+    } else if (current >= total - 3) {
+      pages.push(1, '...', total - 4, total - 3, total - 2, total - 1, total);
+    } else {
+      pages.push(1, '...', current - 1, current, current + 1, '...', total);
+    }
+    return pages;
+  };
 
   return (
     <div className="min-h-screen font-sans w-full md:mt-30 mt-15 bg-gray-50">
@@ -344,23 +382,35 @@ export default function BuyPage() {
 
 
         </div>
-        <div className="flex-1 p-2 md:p-4 overflow-hidden w-full flex flex-col gap-4">
+        <div ref={productGridRef} className="flex-1 p-2 md:p-4 overflow-hidden w-full flex flex-col gap-4">
           {!loading && (
-            <div className="flex items-center justify-between px-2 mb-2 w-full">
-              <span className="flex flex-row gap-1">
-                 < Filter onClick={()=>setIsFilterOpen(!isFilterOpen)}  className="md:hidden"/> 
-                  <span className="md:hidden">filter</span> 
-              </span>
+            <div className="flex items-center justify-between px-2 mb-2 w-full flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 active:scale-95 transition shadow-xs"
+                >
+                  <Filter size={14} className="text-orange-500" />
+                  <span>Filters</span>
+                </button>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider hidden sm:inline">Sort By:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className=" border-gray-800 bg-white border border-gray-255 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-gray-800 cursor-pointer shadow-xs transition"
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.delete("page");
+                    router.push(`?${params.toString()}`);
+                  }}
+                  className="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-orange-500 cursor-pointer shadow-xs transition"
                 >
                   <option value="newest">Newest First</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="popularity">Most Popular</option>
                 </select>
               </div>
             </div>
@@ -370,11 +420,64 @@ export default function BuyPage() {
             <SkeletonCards cols={4} rows={2} />
           ) : (
             displayProducts.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center w-full">
-                {displayProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 justify-items-center w-full">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200 w-full px-2">
+                  <p className="text-xs font-semibold text-gray-500">
+                    Page <span className="font-bold text-gray-900">{validCurrentPage}</span> of <span className="font-bold text-gray-900">{totalPages}</span>
+                  </p>
+
+                  {totalPages >= 1 && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => handlePageChange(validCurrentPage - 1)}
+                        disabled={validCurrentPage === 1}
+                        className="p-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-gray-600 disabled:hover:border-gray-200 disabled:cursor-not-allowed transition cursor-pointer flex items-center justify-center shadow-xs"
+                        title="Previous Page"
+                      >
+                       Previous   
+                        <ChevronLeft size={16} />
+                      </button>
+
+                      {getPageNumbers(validCurrentPage, totalPages).map((p, idx) => (
+                        typeof p === 'number' ? (
+                          <button
+                            key={idx}
+                            onClick={() => handlePageChange(p)}
+                            className={`w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center cursor-pointer ${
+                              p === validCurrentPage
+                                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
+                                : 'bg-white border border-gray-200 text-gray-700 hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200'
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        ) : (
+                          <span key={idx} className="px-1 text-xs font-bold text-gray-400 select-none">
+                            ...
+                          </span>
+                        )
+                      ))}
+
+                      <button
+                        onClick={() => handlePageChange(validCurrentPage + 1)}
+                        disabled={validCurrentPage === totalPages}
+                        className="p-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-gray-600 disabled:hover:border-gray-200 disabled:cursor-not-allowed transition cursor-pointer flex items-center justify-center shadow-xs"
+                        title="Next Page"
+                      >
+
+                        <ChevronRight size={16} />Next
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center py-24 text-center w-full gap-4">
                 <ScanSearch size={48} className="text-gray-300 stroke-[1.5]" />

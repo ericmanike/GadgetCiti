@@ -142,7 +142,7 @@ export default function AdminUsersPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 bg-white border border-slate-200 rounded-3xl shadow-sm">
           <div className="loader w-10 h-10 mb-2" />
-          <p className="text-slate-500 font-semibold">Updating user directory accounts...</p>
+          <p className="text-slate-500 font-semibold ">loading user accounts...</p>
         </div>
       ) : filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white border border-slate-200 rounded-3xl text-center space-y-3 shadow-sm">
@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
           </div>
         </div>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-[10px] overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
@@ -164,7 +164,7 @@ export default function AdminUsersPage() {
                   <th className="py-4 px-6">Email Address</th>
                   <th className="py-4 px-6">Phone Number</th>
                   <th className="py-4 px-6">Privilege Level</th>
-                  <th className="py-4 px-6 text-center">User Identification Code</th>
+
                   <th className="py-4 px-6 text-center">Actions</th>
                 </tr>
               </thead>
@@ -204,17 +204,7 @@ export default function AdminUsersPage() {
                         {user.role}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-center whitespace-nowrap">
-                      <div className="flex justify-center items-center gap-2 font-mono text-xs">
-                        <span className="text-slate-500 truncate max-w-[120px]">{user.id}</span>
-                        <button 
-                          onClick={() => copyToClipboard(user.id, `id-${user.id}`)}
-                          className="p-1.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg transition border border-slate-200 cursor-pointer shadow-xs"
-                        >
-                          {copiedId === `id-${user.id}` ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
-                        </button>
-                      </div>
-                    </td>
+                  
                     <td className="py-4 px-6 text-center whitespace-nowrap">
                       <div className="flex justify-center items-center gap-2">
                         <button 

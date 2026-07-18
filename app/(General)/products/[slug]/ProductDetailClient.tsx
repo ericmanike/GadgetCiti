@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 
-     Phone ,
+    Phone,
     ShieldCheck,
     Truck,
     RotateCcw,
@@ -191,6 +191,10 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const { addToCart } = useCart();
     const aiAnalysis = getAIRecommendations(product);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [product.id]);
+
     const validImages = parseImageUrls(product?.images);
     const images = validImages.length > 0 ? validImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
     const [imgError, setImgError] = useState<Record<number, boolean>>({});
@@ -201,6 +205,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
         }
         return images[idx] || "https://placehold.co/800?text=photo+unavailable&font=roboto";
     };
+
+
+
 
     return (
         <div className="flex flex-col gap-6 md:gap-10 pt-18 md:pt-8">

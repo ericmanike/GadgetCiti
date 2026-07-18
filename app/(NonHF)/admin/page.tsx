@@ -217,19 +217,19 @@ export default function AdminDashboard() {
       </div>
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2  lg:grid-cols-4 gap-6">
         {statCards.map((card, idx) => (
-          <div key={idx} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition duration-250">
+          <div key={idx} className="bg-white border border-slate-200 rounded-[10px] p-4 shadow-xs relative overflow-hidden group hover:border-slate-300 transition duration-250">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{card.title}</p>
+                <p className=" text-[12px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{card.title}</p>
                 <h3 className="text-3xl font-black text-slate-900">{card.value}</h3>
               </div>
               <div className={`p-3 rounded-2xl border ${card.bgColor}`}>
-                <card.icon size={22} strokeWidth={2} />
+                <card.icon size={12} strokeWidth={2} />
               </div>
             </div>
-            <p className="text-xs text-slate-500 font-medium">{card.description}</p>
+            <p className="text-[10px] md:text-xs text-slate-500 font-medium">{card.description}</p>
           </div>
         ))}
       </div>
