@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Menu, X, LayoutDashboard, ShoppingBag, Store, LogOut, KeyRound, Loader2, ClipboardList, Crown
+  Menu, X, LayoutDashboard, ShoppingBag, Store, LogOut, KeyRound, Loader2, ClipboardList, Crown, Wallet
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 
@@ -23,10 +23,11 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
 
   const menuItems: MenuItem[] = [
     { name: 'Dashboard', href: '/seller', icon: LayoutDashboard },
-    { name: 'Store Profile', href: '/seller/store', icon: Store },
     { name: 'Products', href: '/seller/products', icon: ShoppingBag },
     { name: 'Orders', href: '/seller/orders', icon: ClipboardList },
+    { name: 'Wallet', href: '/seller/wallet', icon: Wallet },
     { name: 'Subscription', href: '/seller/subscription', icon: Crown },
+    { name: 'Store Profile', href: '/seller/store', icon: Store },
   ];
 
   // Handle Logout

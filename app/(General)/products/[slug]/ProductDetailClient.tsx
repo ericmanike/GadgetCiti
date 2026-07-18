@@ -241,13 +241,14 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Seller Info</h3>
                             <div className="flex flex-col gap-5">
                                 <div className="flex gap-3">
-                                    <div className="shrink-0 w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                                        <MapPin size={18} className="text-gray-600" />
+                                    <div className="shrink-0 rounded-lg bg-gray-50 flex items-center justify-center">
+                                        <MapPin size={16} className="text-gray-600" />
                                     </div>
-                                    <div className="flex flex-col">
+                                    <div className="flex ">
                                         <p className="text-xs font-bold text-gray-900 leading-tight">Kumasi , KNUST</p>
                                       
                                     </div>
+
                                 </div>
                             </div>
                         </div>

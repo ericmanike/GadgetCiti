@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { 
-  Check, ShieldCheck, Zap, Crown, Sparkles, X, CreditCard, Star, ArrowRight, Building2, HelpCircle 
+  Check, ShieldCheck, Zap, Crown, X, CreditCard, Star, ArrowRight, Building2, HelpCircle 
 } from 'lucide-react';
 import { useToast } from '@/components/toastProvider';
 import { useAuth } from '@/components/AuthContext';
@@ -239,7 +239,6 @@ export default function SellerSubscriptionPage() {
               {/* Badge for Recommended Plan */}
               {plan.badge && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] md:text-xs font-black px-4 py-1 rounded-full shadow-md uppercase tracking-wider flex items-center gap-1">
-                  <Sparkles size={10} />
                   {plan.badge}
                 </div>
               )}

@@ -115,16 +115,20 @@ export default function SellerProductsPage() {
           : (row.over_view?.overview || '');
         const oldPrice = row.over_view?.oldPrice ? Number(row.over_view.oldPrice) : undefined;
         const priceNum = Number(row.price || 0);
-        const discountNum = oldPrice && oldPrice > priceNum
+        const dbDiscount = row.discount != null ? Number(row.discount) : undefined;
+        const discountNum = dbDiscount ?? (oldPrice && oldPrice > priceNum
           ? Math.round(((oldPrice - priceNum) / oldPrice) * 100)
-          : 0;
+          : 0);
+        const calculatedOldPrice = oldPrice ?? (dbDiscount && dbDiscount > 0
+          ? Number((priceNum / (1 - dbDiscount / 100)).toFixed(2))
+          : undefined);
 
         return {
           id: row.id.toString(),
           name: row.name || "Unknown Product",
           brand: row.brand || "Unbranded",
           price: priceNum,
-          oldPrice: oldPrice,
+          oldPrice: calculatedOldPrice,
           discount: discountNum,
           stock: Number(row.stock || 0),
           category: row.categories?.name || "Uncategorized",
