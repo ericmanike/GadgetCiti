@@ -84,8 +84,8 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-zinc-100 text-slate-950 flex flex-col md:flex-row font-sans">
       
-      {/* Desktop Sidebar - Always Visible on md+ */}
-      <aside className="hidden md:flex md:w-64 bg-white border-r border-gray-200 flex-col p-6 space-y-8 min-h-screen shadow-sm shrink-0">
+      {/* Desktop Sidebar - Sticky on md+ */}
+      <aside className="hidden md:flex md:w-64 bg-white border-r border-gray-200 flex-col p-6 space-y-8 h-screen sticky top-0 shadow-sm shrink-0">
         <div className="flex items-center space-x-3 pb-6 border-b border-gray-150">
           <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-lg tracking-wider shadow-lg shadow-orange-500/30">
             S
@@ -95,13 +95,13 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
           </span>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-6">
           {menuItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/seller' && pathname.startsWith(item.href));
             return (
               <Link key={item.href} href={item.href}>
                 <button
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  className={`w-full flex items-center space-x-4 px-4 py-3 mb-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                     isActive 
                       ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -171,7 +171,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
               </button>
             </div>
             
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-3.5">
               {menuItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/seller' && pathname.startsWith(item.href));
                 return (

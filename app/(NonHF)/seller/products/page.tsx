@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, deleteCloudinaryImage } from '@/lib/utils';
 import { parseImageUrls } from '@/lib/products';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -169,6 +169,13 @@ export default function SellerProductsPage() {
   const handleDeleteProduct = async (id: string) => {
     try {
       setSubmitting(true);
+
+      const targetProduct = products.find(p => p.id === id);
+      if (targetProduct && targetProduct.images && targetProduct.images.length > 0) {
+        // Permanently delete images from Cloudinary
+        await Promise.all(targetProduct.images.map(imgUrl => deleteCloudinaryImage(imgUrl)));
+      }
+
       // Delete images first
       await supabase.from('product_images').delete().eq('product_id', id);
       // Delete product
@@ -738,7 +745,10 @@ export default function SellerProductsPage() {
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-150 flex items-center justify-center">
                                 <button
                                   type="button"
-                                  onClick={() => setExistingImages(prev => prev.filter((_, i) => i !== idx))}
+                                  onClick={() => {
+                                    deleteCloudinaryImage(url);
+                                    setExistingImages(prev => prev.filter((_, i) => i !== idx));
+                                  }}
                                   className="p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full transition cursor-pointer"
                                 >
                                   <X size={14} />

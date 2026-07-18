@@ -150,7 +150,7 @@ export default function StoreProfilePage() {
         <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden space-y-6">
           
           {/* Banner Decoration */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 to-amber-500" />
+          <div className="absolute top-0 left-0 right-0 h-2 bg-slate-900" />
           
           <h2 className="text-base font-black text-slate-900 border-b border-gray-100 pb-3">Basic Information</h2>
             
@@ -166,7 +166,7 @@ export default function StoreProfilePage() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="e.g. Gadget CITi Tech Hub"
-              className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 transition text-sm font-semibold text-gray-900"
             />
             {formik.touched.storeName && formik.errors.storeName && (
               <p className="text-xs font-bold text-red-500">{formik.errors.storeName}</p>
@@ -185,7 +185,7 @@ export default function StoreProfilePage() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="Describe your tech store, specialties, and support values..."
-              className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 transition text-sm font-semibold text-gray-900"
             />
             {formik.touched.storeDescription && formik.errors.storeDescription && (
               <p className="text-xs font-bold text-red-500">{formik.errors.storeDescription}</p>
@@ -206,7 +206,7 @@ export default function StoreProfilePage() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="e.g. +233 XX XXX XXXX"
-                className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 transition text-sm font-semibold text-gray-900"
               />
               {formik.touched.storePhone && formik.errors.storePhone && (
                 <p className="text-xs font-bold text-red-500">{formik.errors.storePhone}</p>
@@ -225,7 +225,7 @@ export default function StoreProfilePage() {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="store@gadgetciti.com"
-                className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 transition text-sm font-semibold text-gray-900"
               />
               {formik.touched.storeEmail && formik.errors.storeEmail && (
                 <p className="text-xs font-bold text-red-500">{formik.errors.storeEmail}</p>
@@ -246,7 +246,7 @@ export default function StoreProfilePage() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="e.g. Ring Road Central, Accra"
-              className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 transition text-sm font-semibold text-gray-900"
             />
             {formik.touched.storeAddress && formik.errors.storeAddress && (
               <p className="text-xs font-bold text-red-500">{formik.errors.storeAddress}</p>
@@ -272,7 +272,7 @@ export default function StoreProfilePage() {
               type="button"
               onClick={() => formik.setFieldValue('payoutMethod', 'momo')}
               className={`py-3 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center ${
-                formik.values.payoutMethod === 'momo' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                formik.values.payoutMethod === 'momo' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Mobile Money
@@ -281,7 +281,7 @@ export default function StoreProfilePage() {
               type="button"
               onClick={() => formik.setFieldValue('payoutMethod', 'bank')}
               className={`py-3 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center ${
-                formik.values.payoutMethod === 'bank' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                formik.values.payoutMethod === 'bank' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Bank Account
@@ -296,7 +296,7 @@ export default function StoreProfilePage() {
                   name="momoNetwork"
                   value={formik.values.momoNetwork}
                   onChange={formik.handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900 bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900 bg-white"
                 >
                   <option value="MTN Mobile Money">MTN Mobile Money</option>
                   <option value="Telecel Cash">Telecel Cash</option>
@@ -314,7 +314,7 @@ export default function StoreProfilePage() {
                     value={formik.values.momoNumber}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900"
                   />
                   {formik.touched.momoNumber && formik.errors.momoNumber && (
                     <p className="text-xs font-bold text-red-500">{formik.errors.momoNumber}</p>
@@ -330,7 +330,7 @@ export default function StoreProfilePage() {
                     value={formik.values.momoName}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900"
                   />
                   {formik.touched.momoName && formik.errors.momoName && (
                     <p className="text-xs font-bold text-red-500">{formik.errors.momoName}</p>
@@ -346,7 +346,7 @@ export default function StoreProfilePage() {
                   name="bankName"
                   value={formik.values.bankName}
                   onChange={formik.handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900 bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900 bg-white"
                 >
                   <option value="GCB Bank">GCB Bank</option>
                   <option value="Ecobank Ghana">Ecobank Ghana</option>
@@ -367,7 +367,7 @@ export default function StoreProfilePage() {
                     value={formik.values.bankAccountNo}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900"
                   />
                   {formik.touched.bankAccountNo && formik.errors.bankAccountNo && (
                     <p className="text-xs font-bold text-red-500">{formik.errors.bankAccountNo}</p>
@@ -383,7 +383,7 @@ export default function StoreProfilePage() {
                     value={formik.values.bankAccountName}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-250 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-gray-900"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-900 outline-none focus:ring-0 text-sm font-semibold text-gray-900"
                   />
                   {formik.touched.bankAccountName && formik.errors.bankAccountName && (
                     <p className="text-xs font-bold text-red-500">{formik.errors.bankAccountName}</p>
@@ -401,7 +401,7 @@ export default function StoreProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition duration-200 shadow-lg shadow-orange-500/20 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+              className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition duration-200 shadow-lg shadow-slate-900/10 disabled:opacity-50 cursor-pointer flex items-center gap-2"
             >
               {saving && <Spinner className="size-4" />}
               {saving ? 'Saving Profile...' : 'Save Store & Payment Details'}
