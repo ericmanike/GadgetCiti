@@ -401,7 +401,7 @@ export default function SellerProductsPage() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white border border-gray-150 rounded-3xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xs">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         
         {/* Search */}
         <div className="relative w-full md:max-w-md">
@@ -433,7 +433,7 @@ export default function SellerProductsPage() {
       </div>
 
       {/* Products Grid / Table */}
-      <div className="bg-white border border-gray-150 rounded-3xl p-6 shadow-xs">
+      <div className="bg-white rounded-3xl p-6 shadow-xs">
         {filteredProducts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center text-gray-400">
             <ShoppingBag size={52} className="mb-3 text-gray-300" />

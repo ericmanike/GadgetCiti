@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Menu, X, LayoutDashboard, ShoppingBag, Store, LogOut, KeyRound, Loader2, ClipboardList
+  Menu, X, LayoutDashboard, ShoppingBag, Store, LogOut, KeyRound, Loader2, ClipboardList, Crown
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 
@@ -22,10 +22,11 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuItems: MenuItem[] = [
-    { name: 'Dashboard', href: '/sell', icon: LayoutDashboard },
-    { name: 'Store Profile', href: '/sell/store', icon: Store },
-    { name: 'Products', href: '/sell/products', icon: ShoppingBag },
-    { name: 'Orders', href: '/sell/orders', icon: ClipboardList },
+    { name: 'Dashboard', href: '/seller', icon: LayoutDashboard },
+    { name: 'Store Profile', href: '/seller/store', icon: Store },
+    { name: 'Products', href: '/seller/products', icon: ShoppingBag },
+    { name: 'Orders', href: '/seller/orders', icon: ClipboardList },
+    { name: 'Subscription', href: '/seller/subscription', icon: Crown },
   ];
 
   // Handle Logout
@@ -95,7 +96,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
 
         <nav className="flex-1 space-y-2">
           {menuItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/sell' && pathname.startsWith(item.href));
+            const isActive = pathname === item.href || (item.href !== '/seller' && pathname.startsWith(item.href));
             return (
               <Link key={item.href} href={item.href}>
                 <button
@@ -171,7 +172,7 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
             
             <nav className="flex-1 space-y-2">
               {menuItems.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/sell' && pathname.startsWith(item.href));
+                const isActive = pathname === item.href || (item.href !== '/seller' && pathname.startsWith(item.href));
                 return (
                   <Link key={item.href} href={item.href}>
                     <button

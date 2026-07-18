@@ -323,7 +323,7 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Lookup Controls */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center shadow-xs">
+      <div className="flex flex-col md:flex-row gap-4 items-center">
         {/* Search */}
         <div className="relative w-full md:flex-1">
           <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />

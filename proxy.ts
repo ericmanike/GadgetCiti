@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function proxy(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
 
-  const protectedRoutes = ["/sell", "/customer", "/chat", "/admin", "/cart/checkout"];
+  const protectedRoutes = ["/seller", "/customer", "/chat", "/admin", "/cart/checkout"];
 
   const isProtected = protectedRoutes.some((route) =>
     req.nextUrl.pathname.startsWith(route)
@@ -21,7 +21,7 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/sell/:path*",
+    "/seller/:path*",
     "/customer/:path*",
     "/chat/:path*",
     "/admin/:path*",

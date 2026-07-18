@@ -98,7 +98,7 @@ export default function StoreProfilePage() {
       </div>
 
       {/* Main Settings Card */}
-      <div className="bg-white border border-gray-150 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden">
         
         {/* Banner Decoration */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 to-amber-500" />

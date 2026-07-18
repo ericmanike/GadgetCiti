@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { 
-  ShoppingBag, Tag, Package, ArrowUpRight, Plus, Edit, Loader2, Sparkles, TrendingUp, DollarSign
+  ShoppingBag, Tag, Package, ArrowUpRight, Plus, Edit, Loader2, Sparkles, TrendingUp, DollarSign, Crown
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
@@ -146,7 +146,7 @@ export default function SellerDashboard() {
     <div className="space-y-8 animate-fade-in pb-16">
       
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden bg-white border border-gray-150 rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div className="relative overflow-hidden bg-white rounded-3xl p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="absolute top-0 right-0 w-[40%] h-[150%] bg-radial-gradient from-orange-500/10 to-transparent blur-3xl -z-10" />
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-orange-600 font-black text-xs uppercase tracking-widest">
@@ -160,16 +160,17 @@ export default function SellerDashboard() {
             Manage listings, fulfill customer purchases, and check your storefront statistics in real-time.
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
-          <Link href="/sell/products">
-            <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-5 rounded-2xl text-sm transition duration-200 cursor-pointer shadow-lg shadow-orange-500/20">
-              <Plus size={18} />
-              Add Product
+        <div className="flex flex-wrap gap-3 shrink-0">
+          <Link href="/seller/subscription">
+            <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-5 rounded-2xl text-sm transition duration-200 cursor-pointer shadow-lg shadow-orange-500/20">
+              <Crown size={18} />
+              Upgrade Membership
             </button>
           </Link>
-          <Link href="/sell/store">
-            <button className="flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold py-3 px-5 rounded-2xl text-sm transition duration-200 cursor-pointer border border-gray-250">
-              Edit Store Profile
+          <Link href="/seller/products">
+            <button className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-5 rounded-2xl text-sm transition duration-200 cursor-pointer shadow-sm">
+              <Plus size={18} />
+              Add Product
             </button>
           </Link>
         </div>
@@ -178,7 +179,7 @@ export default function SellerDashboard() {
       {/* Stats Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, idx) => (
-          <div key={idx} className="bg-white rounded-3xl border border-gray-150 p-6 flex flex-col justify-between shadow-xs relative overflow-hidden group hover:shadow-md transition duration-250">
+          <div key={idx} className="bg-white rounded-3xl p-6 flex flex-col justify-between shadow-xs relative overflow-hidden group hover:shadow-md transition duration-250">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{card.title}</p>
@@ -195,13 +196,13 @@ export default function SellerDashboard() {
 
       {/* Main Grid: Recent Products */}
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-white border border-gray-150 rounded-3xl p-6 shadow-xs flex flex-col">
+        <div className="bg-white rounded-3xl p-6 shadow-xs flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
             <div>
               <h3 className="font-black text-gray-900 text-lg">Your Recent Listings</h3>
               <p className="text-xs text-gray-400 font-medium">Quick view of your last uploaded items</p>
             </div>
-            <Link href="/sell/products">
+            <Link href="/seller/products">
               <button className="flex items-center gap-1.5 text-xs font-black text-orange-500 hover:text-orange-600 transition cursor-pointer select-none bg-orange-50 px-3 py-2 rounded-xl">
                 Manage Products <ArrowUpRight size={14} />
               </button>
@@ -213,7 +214,7 @@ export default function SellerDashboard() {
               <Package size={48} className="mb-3 text-gray-300 animate-bounce" />
               <p className="font-bold text-gray-600">No products uploaded yet</p>
               <p className="text-xs text-gray-400 max-w-xs mt-1">Upload products to start selling tech gadgets on Electronics Mart.</p>
-              <Link href="/sell/products" className="mt-4">
+              <Link href="/seller/products" className="mt-4">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-xl text-xs transition cursor-pointer shadow-sm">
                   Upload Product Now
                 </button>

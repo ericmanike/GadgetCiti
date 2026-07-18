@@ -172,7 +172,7 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/sell">
+            <ActiveLink href="/seller">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingCart size={18} className="group-hover:text-orange-500" />
                 <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Start Selling </span>

@@ -87,8 +87,8 @@ export default function SellerOrdersPage() {
         <p className="text-sm text-gray-500 mt-1 font-medium">Track customer orders containing items from your store.</p>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white border border-gray-150 rounded-3xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xs">
+      {/* Toolbar / Search & Filter */}
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         
         {/* Search */}
         <div className="relative w-full md:max-w-md">
@@ -116,7 +116,7 @@ export default function SellerOrdersPage() {
               className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition select-none ${
                 statusFilter === opt.value 
                   ? 'bg-orange-500 text-white shadow-md' 
-                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-150'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
               }`}
             >
               {opt.label}
@@ -126,8 +126,8 @@ export default function SellerOrdersPage() {
 
       </div>
 
-      {/* Orders Grid */}
-      <div className="bg-white border border-gray-150 rounded-3xl p-6 shadow-xs">
+      {/* Orders Table Card */}
+      <div className="bg-white rounded-3xl p-6 shadow-xs">
         {filteredOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center text-gray-400">
             <ClipboardList size={52} className="mb-3 text-gray-300" />

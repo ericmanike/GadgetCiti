@@ -2,9 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product, mapDBProductToClient } from "@/lib/products";
-import { toast } from "sonner";
+
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/components/AuthContext";
+import { useToast } from "./toastProvider";
 
 export interface CartItem {
     product: Product;
@@ -28,7 +29,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [isMounted, setIsMounted] = useState(false);
     const { user } = useAuth();
     const [isCartLoadedFromDB, setIsCartLoadedFromDB] = useState(false);
-
+    const { showToast } = useToast(); 
     // Initial local storage load
     useEffect(() => {
         setIsMounted(true);
@@ -219,7 +220,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return [...prev, { product, quantity: newQuantity }];
         });
 
-        toast.success(`Added ${product.name} to cart!`);
+        showToast(`Added ${product.name} to cart!`, "success");
 
         if (user) {
             await syncItemToSupabase(product, newQuantity);

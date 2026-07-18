@@ -71,15 +71,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${outfit.variable} font-sans bg-slate-50 overflow-x-hidden min-h-screen`}>
         <AuthProvider>
+          <ToastProvider>
           <CartProvider>
             <WishlistProvider>
-              <ToastProvider>
                 <ScrollToTop />
                 {children}
                 <FirstVisitPopup />
-              </ToastProvider>
             </WishlistProvider>
           </CartProvider>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
