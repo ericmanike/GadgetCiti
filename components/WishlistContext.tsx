@@ -2,9 +2,9 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { Product, mapDBProductToClient } from "@/lib/products";
-import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./toastProvider";
 
 interface WishlistContextType {
     wishlist: Product[];
@@ -21,6 +21,7 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
+    const { showToast } = useToast();
     const [wishlist, setWishlist] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -108,11 +109,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     }, [wishlist, isMounted, user]);
 
     const addToWishlist = async (product: Product) => {
-        setWishlist((prev) => {
-            if (prev.some((item) => item.id === product.id)) return prev;
-            return [...prev, product];
-        });
-        toast.success(`${product.name} saved to your wishlist!`);
+        if (wishlist.some((item) => item.id === product.id)) return;
+        setWishlist((prev) => [...prev, product]);
+        showToast(`${product.name} saved to your wishlist!`, "success");
 
         if (user) {
             const prodId = parseInt(product.id, 10);
@@ -132,13 +131,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     };
 
     const removeFromWishlist = async (productId: string) => {
-        setWishlist((prev) => {
-            const existing = prev.find((item) => item.id === productId);
-            if (existing) {
-                toast.info(`${existing.name} removed from your wishlist.`);
-            }
-            return prev.filter((item) => item.id !== productId);
-        });
+        const existing = wishlist.find((item) => item.id === productId);
+        if (existing) {
+            showToast(`${existing.name} removed from your wishlist.`, "info");
+        }
+        setWishlist((prev) => prev.filter((item) => item.id !== productId));
 
         if (user) {
             const prodId = parseInt(productId, 10);
@@ -169,7 +166,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
     const clearWishlist = async () => {
         setWishlist([]);
-        toast.info("Wishlist cleared.");
+        showToast("Wishlist cleared.", "info");
 
         if (user) {
             const { error } = await supabase
