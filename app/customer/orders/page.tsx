@@ -17,11 +17,6 @@ export default function OrdersPage() {
 
 
 
-
-
-
-
-
     return (
         <div className="bg-white rounded shadow-sm min-h-screen ">
             <div className="p-4 border-b border-gray-100">

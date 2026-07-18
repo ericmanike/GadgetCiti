@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 export default function Footer() {
 
     const pathname = usePathname();
-    const hideFooter = pathname === '/checkout' || pathname.startsWith('/products');
+    const hideFooter = pathname === '/checkout' 
 
     if (hideFooter) {
         return null;
