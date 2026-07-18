@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group">
-      <Link href={`/products/${product.slug}`} className="relative block h-48 md:h-48 overflow-hidden">
+      <Link href={`/products/${product.slug}`} className="relative block h-50 md:h-48 overflow-hidden">
         <Image
           src={mainImage}
           alt={product.name}
