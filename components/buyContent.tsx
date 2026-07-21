@@ -171,7 +171,7 @@ export default function BuyPage() {
 
   return (
     <div className="min-h-screen font-sans w-full md:mt-30 mt-15 bg-gray-50">
-      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 py-10 w-full max-w-7xl mx-auto px-4 md:px-6 relative">
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 py-10 w-full w-full  mx-auto px-4 md:px-6 relative">
         <div className="md:sticky md:top-36 h-fit flex-shrink-0">
           {/* Mobile Backdrop */}
           {isFilterOpen && (
@@ -192,9 +192,9 @@ export default function BuyPage() {
 
           <div 
             className={`
-              bg-white text-gray-900 p-6 shadow-lg z-[60] transition-all duration-300 md:max-h-[70vh] overflow-y-auto thin-scrollbar
+              bg-white text-gray-900 p-6 shadow-lg z-[60] transition-all duration-300 md:max-h-[90vh] overflow-y-auto thin-scrollbar
               ${isFilterOpen 
-                ? 'fixed inset-x-4 top-28 bottom-6 max-h-[75vh] block rounded-[20px] border border-gray-150 space-y-6' 
+                ? 'fixed inset-x-4 top-28 bottom-6 max-h-[85vh] block rounded-[20px] border border-gray-150 space-y-6' 
                 : 'hidden md:block md:relative md:space-y-6 md:m-3 md:rounded-[5px]'
               }
             `}

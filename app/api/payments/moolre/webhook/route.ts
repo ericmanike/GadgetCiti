@@ -4,5 +4,5 @@ export async function POST() {
 
 
   
-  return NextResponse.json({ message: 'Moolre API disabled' });
+  return NextResponse.json({ message: 'Moolre Webhook disabled' });
 }

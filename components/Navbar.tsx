@@ -31,6 +31,25 @@ const Navbar = () => {
 
   const router = useRouter();
 
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Auto-hide navbar on scroll down, show on scroll up
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 150) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   // Load products on mount
   useEffect(() => {
     fetchAllProducts().then(setAllProducts);
@@ -74,7 +93,7 @@ const Navbar = () => {
   return (
     <>
 
-      <nav className="w-full bg-gray-400 shadow-md fixed top-0 left-0 z-50">
+      <nav className={`w-full bg-gray-400 shadow-md fixed top-0 left-0 z-50 transition-transform duration-600 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <Marquee />
 
         {/* Top Row: Menu, Logo, Search, and Actions */}
