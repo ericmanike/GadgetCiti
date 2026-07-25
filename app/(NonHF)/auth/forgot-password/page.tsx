@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
 
       <div className="mb-6 space-y-1">
         <h1 className="text-[22px] font-bold text-[#0f172a] tracking-tight">Forgot Password?</h1>
-        <p className="text-[13px] font-medium text-slate-500">
+        <p className="text-[14px] font-medium text-slate-500">
           Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
+            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
             placeholder="Email Address"
           />
         </div>
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={loading || !email}
-          className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-sm font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
+          className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-[16px] font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
         >
           {loading ? (
             <>

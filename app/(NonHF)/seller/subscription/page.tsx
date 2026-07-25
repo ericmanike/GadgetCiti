@@ -35,6 +35,7 @@ export default function SellerSubscriptionPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [otpRef, setOtpRef] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [otpSessionId, setOtpSessionId] = useState('');
 
   const plans: Plan[] = [
     {
@@ -103,44 +104,7 @@ export default function SellerSubscriptionPage() {
     );
   }
 
-  const pollPaymentStatus = async (ref: string, attempt = 1) => {
-    if (attempt > 20) {
-      setPaymentStatus('timeout');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/payments/moolre', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'status', externalref: ref }),
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        if (result.status === 'success') {
-          setPaymentStatus('success');
-          showToast(`🎉 Subscription to ${selectedPlan?.name || 'Pro'} activated successfully!`, 'success');
-          setTimeout(() => {
-            setIsModalOpen(false);
-            setPaymentStatus('idle');
-            router.push('/seller');
-          }, 2500);
-        } else if (result.status === 'failed') {
-          setPaymentStatus('failed');
-          setErrorMessage(result.error || 'Transaction failed');
-        } else {
-          setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
-        }
-      } else {
-        setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
-      }
-    } catch (err) {
-      setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
-    }
-  };
-
-  const handlePayment = async (otp?: string, customRef?: string) => {
+  const handlePayment = async (otp?: string, customRef?: string, customSessionId?: string) => {
     if (!user) {
       showToast('Please sign in to subscribe.', 'error');
       router.push('/auth/login');
@@ -157,6 +121,7 @@ export default function SellerSubscriptionPage() {
     
     const amountStr = selectedPlan ? selectedPlan.priceGHS.toFixed(2) : '49.00';
     const ref = customRef || `sub-${user.id}-${Date.now()}`;
+    const sessionIdToUse = customSessionId || otpSessionId;
 
     try {
       const res = await fetch('/api/payments/moolre', {
@@ -169,6 +134,7 @@ export default function SellerSubscriptionPage() {
           amount: amountStr,
           externalref: ref,
           ...(otp ? { otpcode: otp } : {}),
+          ...(sessionIdToUse ? { sessionid: sessionIdToUse } : {}),
         }),
       });
       const result = await res.json();
@@ -177,14 +143,25 @@ export default function SellerSubscriptionPage() {
         if (result.code === 'TP14') {
           setPaymentStatus('otp_required');
           setOtpRef(ref);
+          if (result.sessionid || result.data?.sessionid) {
+            setOtpSessionId(result.sessionid || result.data?.sessionid);
+          }
         } else {
-          setPaymentStatus('pending');
-          pollPaymentStatus(ref);
+          setPaymentStatus('success');
+          showToast(`🎉 Subscription to ${selectedPlan?.name || 'Pro'} activated successfully!`, 'success');
+          setTimeout(() => {
+            setIsModalOpen(false);
+            setPaymentStatus('idle');
+            router.push('/seller');
+          }, 2500);
         }
       } else {
         if (result.code === 'TP14') {
           setPaymentStatus('otp_required');
           setOtpRef(ref);
+          if (result.sessionid || result.data?.sessionid) {
+            setOtpSessionId(result.sessionid || result.data?.sessionid);
+          }
         } else {
           setPaymentStatus('failed');
           setErrorMessage(result.error || 'Failed to initiate payment.');
@@ -454,7 +431,7 @@ export default function SellerSubscriptionPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-center font-bold tracking-widest text-lg"
                     />
                     <button
-                      onClick={() => handlePayment(otpCode, otpRef)}
+                      onClick={() => handlePayment(otpCode, otpRef, otpSessionId)}
                       className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
                     >
                       Verify OTP & Activate

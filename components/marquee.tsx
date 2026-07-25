@@ -26,7 +26,7 @@ const Marquee = () => {
         showCursor
         cursorCharacter="|"
         deletingSpeed={50}
-        className="text-[10px] sm:text-sm md:text-lg font-semibold m-1"
+        className="text-base sm:text-sm md:text-lg font-semibold m-1"
         cursorBlinkDuration={0.5}
       />
 
@@ -36,7 +36,7 @@ const Marquee = () => {
       <div className="text-xs sm:text-sm md:text-md m-1">
         <Link href="/customer/pay-small-small" className="text-orange-500 hover:text-orange-400 flex items-center justify-center gap-2 hover:underline font-bold transition-colors whitespace-nowrap">
         <BanknoteArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-          <span className="text-[10px] sm:text-sm md:text-base">Pay Small Small</span>
+          <span className="text-base sm:text-sm md:text-base">Pay Small Small</span>
           <ArrowUpRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
         </Link>
       </div>

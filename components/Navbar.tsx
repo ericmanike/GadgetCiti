@@ -8,8 +8,7 @@ import Sidebar from './Sidebar';
 import ActiveLink from './ActiveLink';
 import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
-import logo from '@/public/logo.png';
-import Image from 'next/image';
+
 
 import Marquee from './marquee';
 
@@ -31,24 +30,9 @@ const Navbar = () => {
 
   const router = useRouter();
 
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+ 
 
-  // Auto-hide navbar on scroll down, show on scroll up
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 150) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      setLastScrollY(currentScrollY);
-    };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
 
   // Load products on mount
   useEffect(() => {
@@ -93,7 +77,7 @@ const Navbar = () => {
   return (
     <>
 
-      <nav className={`w-full bg-gray-400 shadow-md fixed top-0 left-0 z-50 transition-transform duration-600 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <nav className={`w-full bg-gray-400 shadow-md  top-0 left-0 z-50 transition-transform duration-600 `}>
         <Marquee />
 
         {/* Top Row: Menu, Logo, Search, and Actions */}
@@ -110,7 +94,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */} 
-          <div className="w-full order-last mt-2 md:order-none md:flex-1 md:w-auto md:mt-0 max-w-2xl px-0 md:px-2">
+          <div className="w-full order-last py-3 md:py-0 mt-1 md:mt-0 md:order-none md:flex-1 md:w-auto max-w-2xl px-0 md:px-2">
             <div className="relative" ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="flex w-full">
                 <div className="relative flex-1">
@@ -124,7 +108,7 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className="w-full h-10 md:h-12 pl-10 md:pl-11 pr-8 py-1.5 md:py-2 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
+                    className="w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 py-2 md:py-2 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (
                     <button
@@ -139,7 +123,7 @@ const Navbar = () => {
                 </div>
                 <button
                   type="submit"
-                  className="h-10 md:h-12 px-3 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-full flex items-center justify-center transition-colors"
+                  className="h-11 md:h-12 px-4 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-full flex items-center justify-center transition-colors"
                 >
                   <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
                 </button>

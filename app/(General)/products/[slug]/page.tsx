@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     const relatedProducts = await getRelatedProducts(product);
 
     return (
-        <main className="min-h-screen bg-slate-50 w-full overflow-x-hidden pt-24 md:pt-28 pb-20">
+        <main className="min-h-screen bg-slate-50 w-full overflow-x-hidden pt-4 md:pt-8 pb-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2">
                 <ProductDetailClient product={product} relatedProducts={relatedProducts} />
             </div>

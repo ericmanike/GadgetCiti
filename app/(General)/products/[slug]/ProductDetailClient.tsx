@@ -57,9 +57,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             : 0);
 
     return (
-        <div className="flex flex-col gap-6 md:gap-10 pt-18 md:pt-8">
+        <div className="flex flex-col gap-2 md:gap-8 mt-8 md:mt-2 px-6 md:px-0 ">
             {/* Breadcrumbs */}
-            <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-500 font-medium">
+            <nav className="flex items-center gap-2 text-[12px] md:text-[16px] md:text-sm text-gray-500 font-medium">
                 <Link href="/" className="hover:text-blue-600">Home</Link>
                 <ChevronRight size={12} />
                 <Link href="/buy" className="hover:text-blue-600">Shop now</Link>
@@ -220,7 +220,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                             <button
-                                className="bg-orange-600 hover:bg-orange-700 text-white font-black text-xs md:text-sm py-2.5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md disabled:bg-gray-300"
+                                className="bg-orange-600 hover:bg-orange-700 text-white font-black text-xs md:text-sm py-2.5 px-4 rounded-xl flex 
+                                items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md
+                                 disabled:bg-gray-300  px-4"
                                 disabled={!product.inStock}
                                 onClick={() => addToCart(product, quantity)}
                             >

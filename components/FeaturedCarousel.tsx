@@ -99,12 +99,12 @@ export default function FeaturedCarousel({ items, linkHref, autoSlide = true, sh
                             <h3 className="text-white text-xl md:text-3xl font-black mb-1 md:mb-1 uppercase tracking-tighter">
                                 {item.title}
                             </h3>
-                            <p className="text-blue-400 font-bold text-[10px] md:text-base mb-3 max-w-sm">
+                            <p className="text-blue-400 font-bold text-base mb-3 max-w-sm">
                                 {item.description}
                             </p>
                             <Link
                                 href={linkHref}
-                                className="w-fit bg-white text-black px-4 py-1.5 rounded-full font-black text-[10px] md:text-xs uppercase hover:bg-blue-500 hover:text-white transition-colors"
+                                className="w-fit bg-white text-black px-4 py-1.5 rounded-full font-black text-sm md:text-xs uppercase hover:bg-blue-500 hover:text-white transition-colors"
                             >
                                 Shop Collection
                             </Link>

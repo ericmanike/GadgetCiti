@@ -7,14 +7,12 @@ import { formatCurrency } from '@/lib/utils';
 
 
 
-const ORDER_ITEMS = [
-    { id: '1', name: 'iPhone 15 Pro Max', price: 1199.99, quantity: 1, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80' },
-    { id: '2', name: 'AirPods Pro (2nd Generation)', price: 249.00, quantity: 2, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80' },
-];
+import { useCart } from '@/components/CartContext';
 
 const STEPS = ['Delivery', 'Payment', 'Review'];
 
 export default function CheckoutPage() {
+    const { cart, clearCart, totalPrice } = useCart();
     const [step, setStep] = useState(0);
     const [placed, setPlaced] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'mt'>('card');
@@ -25,6 +23,7 @@ export default function CheckoutPage() {
     const [errorMessage, setErrorMessage] = useState('');
     const [otpRef, setOtpRef] = useState('');
     const [otpCode, setOtpCode] = useState('');
+    const [otpSessionId, setOtpSessionId] = useState('');
 
     const [form, setForm] = useState({
         fullName: '', email: '', phone: '',
@@ -32,53 +31,52 @@ export default function CheckoutPage() {
         cardNumber: '', expiry: '', cvv: '', cardName: '',
     });
 
-    const subtotal = ORDER_ITEMS.reduce((s, i) => s + i.price * i.quantity, 0);
+    const displayItems = cart ? cart.map(item => ({
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80'
+    })) : [];
+
+    const subtotal = totalPrice;
     const shipping = 15;
     const total = subtotal + shipping;
 
     const update = (field: string, val: string) => setForm(f => ({ ...f, [field]: val }));
 
-    // Poll payment status
-    const pollPaymentStatus = async (ref: string, attempt = 1) => {
-        if (attempt > 20) {
-            setPaymentStatus('timeout');
+    const sendOrderConfirmationSMS = async (customerName: string, phone: string, orderTotal: number) => {
+        const targetPhone = phone || momoNumber;
+        if (!targetPhone) {
+            console.warn('[CHECKOUT SMS] Skipped SMS: No recipient phone number provided.');
             return;
         }
-
+        console.log('[CHECKOUT SMS] Sending confirmation SMS to:', targetPhone);
         try {
-            const res = await fetch('/api/payments/moolre', {
+            const res = await fetch('/api/sms/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'status', externalref: ref }),
+                body: JSON.stringify({
+                    recipient: targetPhone,
+                    message: `Hi ${customerName || 'Valued Customer'}, your order of GHS ${orderTotal.toFixed(2)} at Gadget's CITi has been confirmed! Thank you for shopping with us.`,
+                    senderid: 'GadgetCiti'
+                })
             });
-            const result = await res.json();
-
-            if (result.success) {
-                if (result.status === 'success') {
-                    setPaymentStatus('success');
-                    setPlaced(true);
-                } else if (result.status === 'failed') {
-                    setPaymentStatus('failed');
-                    setErrorMessage(result.error || 'Transaction failed');
-                } else {
-                    // Still pending, check again in 3 seconds
-                    setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
-                }
-            } else {
-                setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
-            }
-        } catch (err) {
-            setTimeout(() => pollPaymentStatus(ref, attempt + 1), 3000);
+            const data = await res.json();
+            console.log('[CHECKOUT SMS RESULT]', data);
+        } catch (e) {
+            console.error('[CHECKOUT SMS ERROR] Failed to send SMS confirmation:', e);
         }
     };
 
     // Moolre MoMo handler
-    const payWithMoMo = async (otp?: string, customRef?: string) => {
+    const payWithMoMo = async (otp?: string, customRef?: string, customSessionId?: string) => {
         setPaymentStatus('initiating');
         setErrorMessage('');
         
         const ref = customRef || `gadgetciti-${Date.now()}`;
         const numberToCharge = momoNumber || form.phone;
+        const sessionIdToUse = customSessionId || otpSessionId;
 
         try {
             const res = await fetch('/api/payments/moolre', {
@@ -91,6 +89,7 @@ export default function CheckoutPage() {
                     amount: total.toFixed(2),
                     externalref: ref,
                     ...(otp ? { otpcode: otp } : {}),
+                    ...(sessionIdToUse ? { sessionid: sessionIdToUse } : {}),
                 }),
             });
             const result = await res.json();
@@ -99,14 +98,22 @@ export default function CheckoutPage() {
                 if (result.code === 'TP14') {
                     setPaymentStatus('otp_required');
                     setOtpRef(ref);
+                    if (result.sessionid || result.data?.sessionid) {
+                        setOtpSessionId(result.sessionid || result.data?.sessionid);
+                    }
                 } else {
-                    setPaymentStatus('pending');
-                    pollPaymentStatus(ref);
+                    setPaymentStatus('success');
+                    setPlaced(true);
+                    clearCart();
+                    sendOrderConfirmationSMS(form.fullName, numberToCharge, total);
                 }
             } else {
                 if (result.code === 'TP14') {
                     setPaymentStatus('otp_required');
                     setOtpRef(ref);
+                    if (result.sessionid || result.data?.sessionid) {
+                        setOtpSessionId(result.sessionid || result.data?.sessionid);
+                    }
                 } else {
                     setPaymentStatus('failed');
                     setErrorMessage(result.error || 'Failed to initiate payment.');
@@ -123,6 +130,8 @@ export default function CheckoutPage() {
             payWithMoMo();
         } else {
             setPlaced(true);
+            clearCart();
+            sendOrderConfirmationSMS(form.fullName, form.phone, total);
         }
     };
 
@@ -314,7 +323,7 @@ export default function CheckoutPage() {
                                 <motion.div key="review" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
                                     <h2 className="text-base font-black text-gray-900">Review Your Order</h2>
                                     <div className="space-y-3">
-                                        {ORDER_ITEMS.map(item => (
+                                        {displayItems.map(item => (
                                             <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
                                                 <img src={item.image} alt={item.name} className="w-14 h-14 object-cover rounded-lg" />
                                                 <div className="flex-1 min-w-0">
@@ -354,7 +363,7 @@ export default function CheckoutPage() {
                         <div className="bg-white rounded-2xl shadow-sm p-5">
                             <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Order Summary</h3>
                             <div className="space-y-3 mb-4">
-                                {ORDER_ITEMS.map(item => (
+                                {displayItems.map(item => (
                                     <div key={item.id} className="flex justify-between text-sm">
                                         <span className="text-gray-600 truncate mr-2">{item.name} <span className="text-gray-400">×{item.quantity}</span></span>
                                         <span className="font-bold text-gray-900 shrink-0">{formatCurrency(item.price * item.quantity)}</span>
@@ -409,9 +418,8 @@ export default function CheckoutPage() {
                             {paymentStatus === 'pending' && (
                                 <div className="py-6 space-y-4">
                                     <div className="loader w-12 h-12 mx-auto" />
-                                    <h3 className="text-lg font-black text-gray-900">USSD Prompt Sent! 📲</h3>
-                                    <p className="text-gray-600 text-sm font-semibold">
-                                        Please check your phone for a Mobile Money prompt.
+                                    <p className="text-gray-600 text-lg font-bold">
+                                        Please check your phone to approve the payment 📲.
                                     </p>
                                     <p className="text-gray-500 text-xs">
                                         Authorize the payment of <span className="font-bold text-gray-800">{formatCurrency(total)}</span> by entering your MoMo PIN on your device. We are waiting for your approval...
@@ -434,14 +442,17 @@ export default function CheckoutPage() {
                                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none text-center font-bold tracking-widest text-lg"
                                         />
                                         <button
-                                            onClick={() => payWithMoMo(otpCode, otpRef)}
-                                            className="w-full bg-orange-50 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
+                                            onClick={() => payWithMoMo(otpCode, otpRef, otpSessionId)}
+                                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
                                         >
                                             Verify OTP & Pay
                                         </button>
+                                        <p className="text-[11px] text-gray-500 text-center">
+                                            If a USSD prompt does not appear, dial <strong className="text-gray-800">*170#</strong> &gt; Option 6 (My Wallet) &gt; Option 3 (My Approvals).
+                                        </p>
                                         <button
                                             onClick={() => setPaymentStatus('idle')}
-                                            className="w-full text-center text-xs font-semibold text-gray-400 hover:text-gray-655 transition cursor-pointer"
+                                            className="w-full text-center text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
                                         >
                                             Cancel
                                         </button>

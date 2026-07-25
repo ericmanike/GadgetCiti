@@ -76,7 +76,7 @@ function LoginForm() {
         <h1 className="text-[22px] font-bold tracking-tight text-[#0f172a]">
           Welcome back
         </h1>
-        <p className="text-[13px] font-medium text-slate-500">
+        <p className="text-[14px] font-medium text-slate-500">
           Sign in to your account
         </p>
       </div>
@@ -97,13 +97,13 @@ function LoginForm() {
             <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z" />
             <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
           </svg>
-          <span className="text-sm font-semibold text-gray-700">
+          <span className="text[14px] font-semibold text-gray-700">
             {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
           </span>
         </motion.button>
         <div className="relative flex items-center py-3">
           <div className="grow border-t border-gray-200"></div>
-          <span className="shrink mx-4 text-gray-400 text-[10px] uppercase tracking-[0.2em] font-bold">or</span>
+          <span className="shrink mx-4 text-gray-400 text-[14px] uppercase tracking-[0.2em] font-bold">or</span>
           <div className="grow border-t border-gray-200"></div>
         </div>
       </div>
@@ -123,7 +123,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
+            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
           />
         </div>
 
@@ -139,7 +139,7 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
+            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-slate-400 focus:bg-white focus:ring-1 focus:ring-slate-400"
           />
           {/* Password Visibility Toggle */}
           <button

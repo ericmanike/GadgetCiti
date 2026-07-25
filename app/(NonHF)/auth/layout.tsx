@@ -27,12 +27,12 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </Link>
       </div>
 
-      <div className="w-full max-w-[430px]">
+      <div className="w-full max-w-[430px] px-8 ">
         {children}
       </div>
 
       {/* Footer */}
-      <div className="mt-6 flex flex-col items-center gap-3.5 text-center text-xs">
+      <div className="mt-6 flex flex-col items-center gap-3.5 text-center text-[16px">
         <Link
           href="/help"
           className="inline-flex items-center gap-1.5 font-medium text-slate-500 hover:text-slate-700 transition-colors"
@@ -40,7 +40,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <HelpCircle className="h-4 w-4 text-slate-400" strokeWidth={2} />
           Need help? Watch how to log in
         </Link>
-        <span className="text-[11px] text-slate-400 font-medium">
+        <span className="text-[14pxpx] text-slate-400 font-medium">
           © {new Date().getFullYear()} Gadget's CITi
         </span>
       </div>

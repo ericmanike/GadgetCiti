@@ -3,7 +3,6 @@ import { ProductCard } from '@/components/ProductCard';
 import Link from "next/link";
 import FramerMultiSlideCarousel from '@/components/multicouresel';
 
-import HeroSlider from '@/components/HeroSlider';
 import Image from 'next/image';
 
 import { fetchAllProducts, Product } from '@/lib/products';
@@ -133,11 +132,11 @@ export default function Home() {
         {/* Sponsored Gadgets - Carousel */}
         <section className="w-full">
           <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h2 className="text-[10px] md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
+            <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
               For You
             </h2>
             {!loading && SPONSORED_GADGETS.length > 0 && (
-              <Link href="/buy" className="text-orange-500 font-bold text-[12px] md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+              <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
                 View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </Link>
             )}
@@ -155,11 +154,11 @@ export default function Home() {
         {/* Trending Now - Carousel */}
         <section className="w-full overflow-hidden pb-10">
           <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h2 className="text-[10px] md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
+            <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
               Most Popular
             </h2>
             {!loading && RECOMMENDED_GADGETS.length > 0 && (
-              <Link href="/buy" className="text-orange-500 font-bold text-[12px] md:text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+              <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
                 View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </Link>
             )}

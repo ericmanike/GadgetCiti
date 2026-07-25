@@ -65,7 +65,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
 
   return (
 
-    <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} w-[75%] md:w-[280px] h-screen overflow-y-auto bg-[#fcfcfc] fixed 
+    <div className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} w-[65%] md:w-[280px] h-screen overflow-y-auto bg-[#fcfcfc] fixed 
     scrollbar-hide z-50 top-0 transition-all duration-300 ease-in-out shadow-2xl flex flex-col border-r border-slate-100`} ref={sidebarRef}>
 
 
@@ -92,7 +92,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         {menuSections.map((section, sIdx) => (
           <div key={sIdx} className="w-full flex flex-col">
             {/* Section title */}
-            <div className="px-5 py-1 text-[9px] md:text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            <div className="px-5 py-1 text-[10px] md:text-[10px] font-black tracking-widest text-slate-400 uppercase">
               {section.title}
             </div>
             
@@ -106,7 +106,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
                   className="flex items-center gap-3.5 px-5 py-3 hover:bg-slate-50 transition-colors group cursor-pointer text-slate-700 hover:text-orange-500 select-none"
                 >
                   <menu.icon className="text-orange-500 w-5 h-5 transition-transform group-hover:scale-105" strokeWidth={2} />
-                  <span className="text-xs md:text-sm font-bold tracking-wide leading-none">{menu.name}</span>
+                  <span className="text-base md:text-sm font-bold tracking-wide leading-none">{menu.name}</span>
                 </Link>
               ))}
             </div>
