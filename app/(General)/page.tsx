@@ -37,35 +37,18 @@ export default function Home() {
   const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
 
   return (
-    <main className="w-full bg-slate-50 min-h-screen pt-24 pb-20 overflow-x-hidden">
-      
+    <main className="w-full bg-slate-50 min-h-screen pt-6 pb-2 overflow-x-hidden">
+  
       <div className="relative  z-10 px-4 md:px-10 space-y-24">
           <Pattern/>
         {/* Shop by Category - Carousel */}
-        <section className="w-full  py-6 md:p-10 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
+        <section className="w-full  py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
        
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-            {/* Featured: Computers & IT Gadgets - Interactive Carousel */}
-            <div className="col-span-full h-[fit-content] relative group  rounded-[9px] shadow-lg mt-15 md:mt-1">
-              {/* <HeroSlider
-                slides={
-                  COMPUTER_SLIDES.map((slide) => ({
-                    id: slide.id,
-                    title: slide.title,
-                    backgroundImage: slide.url,
-                    description: slide.description,
-                    ctaLink: "/buy",
-                    ctaText: "Shop Now",
-
-
-                  }))}
-                autoplay={true}
-                autoplayInterval={3000}
-              /> */}
-            </div>
+          
 
             {/* Section Header Text */}
-            <div className="col-span-full mt-6 mb-2">
+            <div className="col-span-full  ">
               <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight uppercase">
                 Shop by Category
               </h2>
@@ -108,21 +91,22 @@ export default function Home() {
             ))}
 
             {/* View All Button */}
-            <div className="col-span-full flex justify-center mt-6">
+            <div className="col-span-full flex justify-center mt-2">
               <Link
                 href="/categories"
                 className="
                 flex  items-center justify-between gap-3 
                 px-8 py-3 bg-orange-500 
                 hover:bg-orange-600 text-white rounded-xl
-                font-bold text-sm md:text-1xl tracking-wide 
+                font-bold text-sm md:text-1xl uppercase tracking-wider
                 transition-all duration-200 shadow-md
                 hover:shadow-lg
                 hover:scale-102 active:scale-98
                 cursor-pointer select-none"
+                
               >
                 Explore All
-                <ChevronDown className="w-3.5 h-3.5 ml-1" /> 
+                <ChevronDown className="w-3.5 h-3.5 " /> 
               </Link>
             </div>
           </div>

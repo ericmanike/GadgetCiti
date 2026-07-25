@@ -185,9 +185,9 @@ export default function BuyPage() {
         
           <div 
             className={`
-              bg-white text-gray-900 p-6 shadow-lg z-[60] transition-all duration-300 md:max-h-[90vh] overflow-y-auto thin-scrollbar
+              bg-white text-gray-900 p-6 shadow-lg z-[60] transition-all duration-300 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
               ${isFilterOpen 
-                ? 'fixed inset-x-4 top-28 bottom-6 max-h-[85vh] block rounded-[20px] border border-gray-150 space-y-6' 
+                ? 'fixed inset-x-4 top-28 bottom-6 max-h-fit block rounded-[20px] border border-gray-150 space-y-6 py-20' 
                 : 'hidden md:block md:relative md:space-y-6 md:m-3 md:rounded-[5px]'
               }
             `}
