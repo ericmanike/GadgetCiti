@@ -141,7 +141,7 @@ const itemVariants = {
 
 export default function CategoriesPage() {
   return (
-    <main className="w-full bg-slate-50 min-h-screen pt-28 pb-24 overflow-x-hidden relative">
+    <main className="w-full bg-slate-50 min-h-screen pt-8 pb-24 overflow-x-hidden relative">
       <Pattern />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -157,7 +157,7 @@ export default function CategoriesPage() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/75 backdrop-blur-md border border-orange-500/20 text-orange-600 text-[10px] md:text-xs font-black uppercase tracking-widest shadow-xs shadow-orange-500/5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping" />
+
             Explore Departments
           </motion.div>
           
