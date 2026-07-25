@@ -30,7 +30,7 @@ const Navbar = () => {
 
   const router = useRouter();
 
- 
+
 
 
 
@@ -88,12 +88,12 @@ const Navbar = () => {
               <Menu size={24} className="text-black" strokeWidth={2} />
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
-           
-            <span className="text-2xl font-extrabold text-gray-800 logo">Gadget's CITi</span>
-            </Link>  
+
+              <span className="text-2xl font-extrabold text-gray-800 logo">Gadget's CITi</span>
+            </Link>
           </div>
 
-          {/* Search Bar */} 
+          {/* Search Bar */}
           <div className="w-full order-last py-3 md:py-0 mt-1 md:mt-0 md:order-none md:flex-1 md:w-auto max-w-2xl px-0 md:px-2">
             <div className="relative" ref={searchRef}>
               <form onSubmit={handleSearchSubmit} className="flex w-full">
@@ -108,7 +108,7 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className="w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 py-2 md:py-2 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
+                    className="w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 py-6 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (
                     <button
@@ -123,7 +123,7 @@ const Navbar = () => {
                 </div>
                 <button
                   type="submit"
-                  className="h-11 md:h-12 px-4 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-full flex items-center justify-center transition-colors"
+                  className="self-stretch px-4 md:px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-r-full flex items-center justify-center transition-colors"
                 >
                   <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
                 </button>
@@ -142,7 +142,7 @@ const Navbar = () => {
 
           {/* Right Section: Profile, Cart, Notifications */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
-          
+
             <DropdownProfile />
 
             <Link href="/cart" className="relative p-2 admd:p-2 hover:bg-gray-100 rounded-lg transition">
@@ -215,7 +215,7 @@ const Navbar = () => {
       </nav>
 
       {/* Floating Notification Button */}
-      <button 
+      <button
         className="fixed bottom-6 right-6 z-50 p-3.5 bg-white border border-gray-200 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer flex items-center justify-center"
         onClick={() => setIsNotificationsOpen(true)}
       >

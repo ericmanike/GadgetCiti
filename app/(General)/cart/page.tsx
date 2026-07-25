@@ -13,7 +13,7 @@ export default function CartPage() {
   const total = subtotal + shipping;
 
   return (
-    <div className="min-h-screen mt-20 bg-gray-100 pt-28 pb-12 px-4 md:px-8">
+    <div className="min-h-screen bg-gray-100 pt-6 pb-8 px-4 md:px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-2 mb-8">
           <Link href="/buy" className="text-orange-500 hover:text-orange-600 transition-colors">

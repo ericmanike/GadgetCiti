@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <main className="w-full bg-slate-50 min-h-screen pt-6 pb-2 overflow-x-hidden">
   
-      <div className="relative  z-10 px-4 md:px-10 space-y-24">
+      <div className="relative  z-10 px-4 md:px-10 space-y-10">
           <Pattern/>
         {/* Shop by Category - Carousel */}
         <section className="w-full  py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
@@ -115,7 +115,7 @@ export default function Home() {
 
         {/* Sponsored Gadgets - Carousel */}
         <section className="w-full">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
               For You
             </h2>
@@ -137,7 +137,7 @@ export default function Home() {
 
         {/* Trending Now - Carousel */}
         <section className="w-full overflow-hidden pb-10">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
               Most Popular
             </h2>
