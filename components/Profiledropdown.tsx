@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react"
-import { LogOut, User, Store, ChevronDown, ChevronUp, ShoppingBag, Heart } from "lucide-react"
+import { LogOut, User,Banknote, ChevronDown, ChevronUp, ShoppingBag, Heart } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -98,8 +98,8 @@ export default function DropdownProfile() {
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 focus:bg-slate-50 focus:text-gray-700 cursor-pointer transition-colors outline-hidden border-none" 
           onClick={() => router.push('/customer/account')}
         >
-          <User className="size-4 text-gray-500" strokeWidth={1.5} />
-          <span className="font-semibold text-[12px]">Account </span>
+          <Banknote className="size-4 text-gray-500" strokeWidth={1.5} />
+          <span className="font-semibold text-[12px]"> Installment </span>
         </DropdownMenuItem>
 
       
