@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { 
-  ShoppingBag, Tag, Users, Package, ArrowUpRight, Plus, Edit, Eye, Loader2, Sparkles, Trash2
+  ShoppingBag, Tag, Users, Package, ArrowUpRight, Plus, Edit, Eye, Loader2, Sparkles, Trash2, Store
 } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/components/toastProvider';
@@ -34,6 +34,13 @@ interface RecentUser {
   created_at?: string;
 }
 
+interface ShopItem {
+  userId: string;
+  name: string;
+  email: string;
+  productCount: number;
+}
+
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
@@ -47,6 +54,7 @@ export default function AdminDashboard() {
   });
   const [recentProducts, setRecentProducts] = useState<RecentProduct[]>([]);
   const [recentUsers, setRecentUsers] = useState<RecentUser[]>([]);
+  const [shops, setShops] = useState<ShopItem[]>([]);
 
   async function fetchDashboardData() {
     try {
@@ -119,6 +127,33 @@ export default function AdminDashboard() {
       })) || [];
 
       setRecentUsers(mappedUsers);
+
+      // 4. Fetch all shops (sellers with products)
+      const { data: sellerRows } = await supabase
+        .from('products')
+        .select('user_id')
+        .not('user_id', 'is', null);
+
+      const countMap: Record<string, number> = {};
+      sellerRows?.forEach((r: any) => {
+        countMap[r.user_id] = (countMap[r.user_id] || 0) + 1;
+      });
+
+      const sellerIds = Object.keys(countMap);
+      if (sellerIds.length > 0) {
+        const { data: sellerUsers } = await supabase
+          .from('users')
+          .select('id, name, email')
+          .in('id', sellerIds);
+
+        const mappedShops: ShopItem[] = (sellerUsers || []).map((u: any) => ({
+          userId: u.id,
+          name: u.name || 'Unknown Seller',
+          email: u.email || 'No Email',
+          productCount: countMap[u.id] || 0,
+        }));
+        setShops(mappedShops);
+      }
 
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
@@ -348,6 +383,49 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+      </div>
+
+      {/* All Shops Section */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <Store size={18} className="text-orange-500" />
+              All Shops
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">Sellers who have listed products on the marketplace</p>
+          </div>
+          <span className="text-xs font-black bg-orange-50 border border-orange-100 text-orange-600 px-3 py-1 rounded-full">
+            {shops.length} {shops.length === 1 ? 'shop' : 'shops'}
+          </span>
+        </div>
+
+        {shops.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400 text-sm">
+            <Store className="w-10 h-10 mb-2 opacity-40 text-orange-400" />
+            <p>No shops found yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {shops.map((shop) => (
+              <div
+                key={shop.userId}
+                className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:border-orange-200 hover:bg-orange-50/40 transition-all group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-black text-lg shrink-0 shadow-sm">
+                  {shop.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="truncate flex-1">
+                  <p className="text-sm font-bold text-slate-900 truncate group-hover:text-orange-600 transition-colors">{shop.name}</p>
+                  <p className="text-[11px] text-slate-500 truncate">{shop.email}</p>
+                  <span className="inline-block mt-1 text-[10px] font-bold bg-white border border-slate-200 text-slate-600 px-2 py-0.5 rounded-full">
+                    {shop.productCount} {shop.productCount === 1 ? 'product' : 'products'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Delete User Modal */}

@@ -96,7 +96,7 @@ export default function DropdownProfile() {
 
         <DropdownMenuItem 
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 focus:bg-slate-50 focus:text-gray-700 cursor-pointer transition-colors outline-hidden border-none" 
-          onClick={() => router.push('/customer/account')}
+          onClick={() => router.push('/customer/pay-small-small')}
         >
           <Banknote className="size-4 text-gray-500" strokeWidth={1.5} />
           <span className="font-semibold text-[12px]"> Installment </span>

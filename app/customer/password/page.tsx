@@ -127,7 +127,7 @@ export default function ChangePasswordPage() {
                                 type={showCurrent ? 'text' : 'password'}
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
-                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-sm font-medium transition focus:outline-none placeholder-slate-400"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-base font-medium transition focus:outline-none placeholder-slate-400"
                                 placeholder="Enter current password"
                             />
                             <button
@@ -151,7 +151,7 @@ export default function ChangePasswordPage() {
                                 type={showNew ? 'text' : 'password'}
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-sm font-medium transition focus:outline-none placeholder-slate-400"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-base font-medium transition focus:outline-none placeholder-slate-400"
                                 placeholder="Min. 6 characters"
                             />
                             <button
@@ -175,7 +175,7 @@ export default function ChangePasswordPage() {
                                 type={showConfirm ? 'text' : 'password'}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-sm font-medium transition focus:outline-none placeholder-slate-400"
+                                className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 focus:border-orange-500 focus:bg-white rounded-xl text-base font-medium transition focus:outline-none placeholder-slate-400"
                                 placeholder="Re-enter new password"
                             />
                             <button

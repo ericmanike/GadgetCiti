@@ -112,7 +112,7 @@ export default function AddressBookPage() {
 
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { error ,data } = await supabase
         .from('users')
         .update({
           address: addressData.address,
@@ -126,6 +126,7 @@ export default function AddressBookPage() {
       if (error) throw error;
 
       showToast('Address details saved successfully!', 'success');
+      console.log('address details',data);
       setOriginalData(addressData);
       setIsEditing(false);
     } catch (err: any) {

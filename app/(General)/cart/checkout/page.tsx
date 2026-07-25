@@ -15,7 +15,7 @@ export default function CheckoutPage() {
     const { cart, clearCart, totalPrice } = useCart();
     const [step, setStep] = useState(0);
     const [placed, setPlaced] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'card' | 'mt'>('card');
+    const paymentMethod = 'mt';
 
     const [momoNetwork, setMomoNetwork] = useState('13'); // '13' = MTN, '6' = Telecel, '7' = AT
     const [momoNumber, setMomoNumber] = useState('');
@@ -28,7 +28,6 @@ export default function CheckoutPage() {
     const [form, setForm] = useState({
         fullName: '', email: '', phone: '',
         address: '', city: '', region: '', zip: '',
-        cardNumber: '', expiry: '', cvv: '', cardName: '',
     });
 
     const displayItems = cart ? cart.map(item => ({
@@ -126,13 +125,7 @@ export default function CheckoutPage() {
     };
 
     const handlePlaceOrder = () => {
-        if (paymentMethod === 'mt') {
-            payWithMoMo();
-        } else {
-            setPlaced(true);
-            clearCart();
-            sendOrderConfirmationSMS(form.fullName, form.phone, total);
-        }
+        payWithMoMo();
     };
 
     if (placed) {
@@ -231,83 +224,38 @@ export default function CheckoutPage() {
                             {/* Step 1 — Payment */}
                             {step === 1 && (
                                 <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
-                                    <h2 className="text-base font-black text-gray-900">Payment Method</h2>
+                                    <h2 className="text-base font-black text-gray-900">Mobile Money Payment</h2>
 
-                                    {/* Payment method tabs */}
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => setPaymentMethod('card')}
-                                            className={`flex-1 flex items-center justify-center py-3 rounded-xl border-2 font-bold text-sm transition-all ${paymentMethod === 'card'
-                                                ? 'border-orange-500 bg-orange-50 text-orange-600'
-                                                : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            Card
-                                        </button>
-                                        <button
-                                            onClick={() => setPaymentMethod('mt')}
-                                            className={`flex-1 flex items-center justify-center py-3 rounded-xl border-2 font-bold text-sm transition-all ${paymentMethod === 'mt'
-                                                ? 'border-orange-500 bg-orange-50 text-orange-600'
-                                                : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                                                }`}
-                                        >
-                                            Mobile Transfer
-                                        </button>
+                                    <div className="space-y-4">
+                                        <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
+                                            <p className="text-sm text-orange-800 font-medium">
+                                                Payments are securely processed by <span className="font-bold">Moolre Mobile Money</span>. You'll receive a prompt on your device to enter your MoMo PIN.
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Network</label>
+                                            <select
+                                                value={momoNetwork}
+                                                onChange={e => setMomoNetwork(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm cursor-pointer"
+                                            >
+                                                <option value="13">MTN Mobile Money</option>
+                                                <option value="6">Telecel Cash</option>
+                                                <option value="7">AT Money</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Number</label>
+                                            <input
+                                                value={momoNumber}
+                                                onChange={e => setMomoNumber(e.target.value)}
+                                                placeholder={form.phone || '+233 XX XXX XXXX'}
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
+                                            />
+                                        </div>
                                     </div>
-
-                                    <AnimatePresence mode="wait">
-                                        {paymentMethod === 'card' ? (
-                                            <motion.div key="card-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="grid grid-cols-1 gap-4">
-                                                {[
-                                                    { field: 'cardName', label: 'Name on Card', placeholder: 'John Doe' },
-                                                    { field: 'cardNumber', label: 'Card Number', placeholder: '1234 5678 9012 3456' },
-                                                    { field: 'expiry', label: 'Expiry', placeholder: 'MM/YY' },
-                                                    { field: 'cvv', label: 'CVV', placeholder: '•••' },
-                                                ].map(({ field, label, placeholder }) => (
-                                                    <div key={field}>
-                                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
-                                                        <input
-                                                            value={(form as any)[field]}
-                                                            onChange={e => update(field, e.target.value)}
-                                                            placeholder={placeholder}
-                                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </motion.div>
-                                        ) : (
-                                            <motion.div key="mt-fields" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-4">
-                                                <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
-                                                    <p className="text-sm text-orange-850 font-medium">
-                                                        Payments are securely processed by <span className="font-bold">Moolre Mobile Money</span>. You'll receive a prompt on your device to enter your MoMo PIN.
-                                                    </p>
-                                                </div>
-
-                                                <div>
-                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Network</label>
-                                                    <select
-                                                        value={momoNetwork}
-                                                        onChange={e => setMomoNetwork(e.target.value)}
-                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm cursor-pointer"
-                                                    >
-                                                        <option value="13">MTN Mobile Money</option>
-                                                        <option value="6">Telecel Cash</option>
-                                                        <option value="7">AT Money</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Number</label>
-                                                    <input
-                                                        value={momoNumber}
-                                                        onChange={e => setMomoNumber(e.target.value)}
-                                                        placeholder={form.phone || '+233 XX XXX XXXX'}
-                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
-                                                    />
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
 
                                     <div className="flex gap-3 mt-2">
                                         <button onClick={() => setStep(0)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
@@ -338,10 +286,7 @@ export default function CheckoutPage() {
                                         <p className="font-bold text-gray-700">📍 {form.address || 'N/A'}, {form.city || 'N/A'}</p>
                                         <p className="text-gray-500">{form.fullName} · {form.phone}</p>
                                         <p className="text-gray-500">
-                                            {paymentMethod === 'mt'
-                                                ? `Mobile Money (${momoNetwork === '13' ? 'MTN' : momoNetwork === '6' ? 'Telecel' : 'AT'}) - ${momoNumber || form.phone}`
-                                                : `Card ending in ${form.cardNumber.slice(-4) || '****'}`
-                                            }
+                                            {`Mobile Money (${momoNetwork === '13' ? 'MTN' : momoNetwork === '6' ? 'Telecel' : 'AT'}) - ${momoNumber || form.phone}`}
                                         </p>
                                     </div>
                                     <div className="flex gap-3 mt-2">
@@ -350,7 +295,7 @@ export default function CheckoutPage() {
                                             onClick={handlePlaceOrder}
                                             className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all"
                                         >
-                                            {paymentMethod === 'mt' ? 'Pay with MoMo' : 'Place Order 🚀'}
+                                            Pay with MoMo
                                         </button>
                                     </div>
                                 </motion.div>

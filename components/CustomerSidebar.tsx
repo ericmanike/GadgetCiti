@@ -94,7 +94,7 @@ const CustomerSidebar = () => {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
+                            className={`flex items-center gap-3 px-4 py-3 text-base transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
                                 isActive ? 'text-orange-500 bg-orange-50/50 font-bold border-r-4 border-orange-500' : 'text-slate-700'
                             }`}
                         >
@@ -112,7 +112,7 @@ const CustomerSidebar = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`block px-4 py-3 text-sm font-semibold hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
+                                className={`block px-4 py-3 text-base font-semibold hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
                                     isActive ? 'text-orange-500 bg-orange-50/60 font-bold' : 'text-slate-700'
                                 }`}
                             >
