@@ -29,7 +29,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [isMounted, setIsMounted] = useState(false);
     const { user } = useAuth();
     const [isCartLoadedFromDB, setIsCartLoadedFromDB] = useState(false);
-    const { showToast } = useToast(); 
+    const [isLoadingCart, setIsLoadingCart] = useState(false);
+    const { showToast } = useToast();
+
     // Initial local storage load
     useEffect(() => {
         setIsMounted(true);
@@ -72,10 +74,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    // Retrieve from DB when user logs in
+    // Retrieve from DB when user logs in; merge any local guest items into DB
     useEffect(() => {
         if (user) {
             const fetchDBCart = async () => {
+                setIsLoadingCart(true);
                 try {
                     const { data: cartData, error: cartError } = await supabase
                         .from('carts')
@@ -107,28 +110,84 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             return;
                         }
 
-                        if (itemsData) {
-                            const items: CartItem[] = itemsData.map((row: any) => {
+                        if (itemsData && itemsData.length > 0) {
+                            // DB has items — use those as the source of truth
+                            const dbItems: CartItem[] = itemsData.map((row: any) => {
                                 if (!row.products) return null;
                                 return {
                                     product: mapDBProductToClient(row.products),
                                     quantity: Number(row.quantity) || 1
                                 };
                             }).filter((item): item is CartItem => item !== null);
-                            setCart(items);
+
+                            // Merge any local guest items that aren't already in DB
+                            const localCart = (() => {
+                                try {
+                                    const raw = localStorage.getItem("gadgetciti-cart");
+                                    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+                                } catch { return []; }
+                            })();
+
+                            const merged = [...dbItems];
+                            for (const localItem of localCart) {
+                                const alreadyInDB = dbItems.find(i => i.product.id === localItem.product.id);
+                                if (!alreadyInDB) {
+                                    merged.push(localItem);
+                                    // Persist merged guest item to DB
+                                    syncItemToSupabaseRaw(cartData.id, localItem.product, localItem.quantity);
+                                }
+                            }
+                            setCart(merged);
+                        } else {
+                            // DB cart exists but is empty — migrate local guest items into it
+                            const localCart = (() => {
+                                try {
+                                    const raw = localStorage.getItem("gadgetciti-cart");
+                                    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+                                } catch { return []; }
+                            })();
+
+                            if (localCart.length > 0) {
+                                setCart(localCart);
+                                for (const item of localCart) {
+                                    syncItemToSupabaseRaw(cartData.id, item.product, item.quantity);
+                                }
+                            } else {
+                                setCart([]);
+                            }
                         }
                     } else {
-                        setCart([]);
+                        // No DB cart at all — migrate local guest items into a new DB cart
+                        const localCart = (() => {
+                            try {
+                                const raw = localStorage.getItem("gadgetciti-cart");
+                                return raw ? (JSON.parse(raw) as CartItem[]) : [];
+                            } catch { return []; }
+                        })();
+
+                        if (localCart.length > 0) {
+                            setCart(localCart);
+                            const cartId = await getOrCreateCart(user.id);
+                            if (cartId) {
+                                for (const item of localCart) {
+                                    syncItemToSupabaseRaw(cartId, item.product, item.quantity);
+                                }
+                            }
+                        } else {
+                            setCart([]);
+                        }
                     }
                 } catch (err) {
                     console.error("Supabase cart load error:", err);
                 } finally {
                     setIsCartLoadedFromDB(true);
+                    setIsLoadingCart(false);
                 }
             };
             fetchDBCart();
         } else {
             setIsCartLoadedFromDB(false);
+            setIsLoadingCart(false);
         }
     }, [user]);
 
@@ -139,12 +198,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     }, [cart, isMounted]);
 
-    const syncItemToSupabase = async (product: Product, quantity: number) => {
-        if (!user) return;
+    // Sync a single item using an already-known cartId (used during login merge)
+    const syncItemToSupabaseRaw = async (cartId: string | number, product: Product, quantity: number) => {
         try {
-            const cartId = await getOrCreateCart(user.id);
-            if (!cartId) return;
-
             const { data } = await supabase.from('cart_items')
                 .select('id')
                 .eq('cart_id', cartId)
@@ -158,13 +214,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 if (error) console.error("Update cart item error:", error.message);
             } else {
                 const { error } = await supabase.from('cart_items')
-                    .insert({
-                        cart_id: cartId,
-                        product_id: Number(product.id),
-                        quantity
-                    });
+                    .insert({ cart_id: cartId, product_id: Number(product.id), quantity });
                 if (error) console.error("Insert cart item error:", error.message);
             }
+        } catch (err) {
+            console.error("Supabase cart sync (raw) exception:", err);
+        }
+    };
+
+    const syncItemToSupabase = async (product: Product, quantity: number) => {
+        if (!user) return;
+        try {
+            const cartId = await getOrCreateCart(user.id);
+            if (!cartId) return;
+            await syncItemToSupabaseRaw(cartId, product, quantity);
         } catch (err) {
             console.error("Supabase cart sync exception:", err);
         }

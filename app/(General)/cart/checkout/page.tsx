@@ -1,33 +1,31 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, Truck, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ChevronRight, CheckCircle2, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
-
-
-
 import { useCart } from '@/components/CartContext';
+import { useRouter } from 'next/navigation';
 
-const STEPS = ['Delivery', 'Payment', 'Review'];
+const STEPS = ['Delivery', 'Review & Pay'];
+
+
 
 export default function CheckoutPage() {
     const { cart, clearCart, totalPrice } = useCart();
     const [step, setStep] = useState(0);
     const [placed, setPlaced] = useState(false);
-    const paymentMethod = 'mt';
-
-    const [momoNetwork, setMomoNetwork] = useState('13'); // '13' = MTN, '6' = Telecel, '7' = AT
-    const [momoNumber, setMomoNumber] = useState('');
-    const [paymentStatus, setPaymentStatus] = useState<'idle' | 'initiating' | 'otp_required' | 'pending' | 'success' | 'failed' | 'timeout'>('idle');
+    const [isPaying, setIsPaying] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [otpRef, setOtpRef] = useState('');
-    const [otpCode, setOtpCode] = useState('');
-    const [otpSessionId, setOtpSessionId] = useState('');
-
+    const router = useRouter();
     const [form, setForm] = useState({
-        fullName: '', email: '', phone: '',
-        address: '', city: '', region: '', zip: '',
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        region: '',
+        zip: '',
     });
 
     const displayItems = cart ? cart.map(item => ({
@@ -39,24 +37,23 @@ export default function CheckoutPage() {
     })) : [];
 
     const subtotal = totalPrice;
-    const shipping = 15;
+    const shipping = 0;
     const total = subtotal + shipping;
 
     const update = (field: string, val: string) => setForm(f => ({ ...f, [field]: val }));
 
     const sendOrderConfirmationSMS = async (customerName: string, phone: string, orderTotal: number) => {
-        const targetPhone = phone || momoNumber;
-        if (!targetPhone) {
+        if (!phone) {
             console.warn('[CHECKOUT SMS] Skipped SMS: No recipient phone number provided.');
             return;
         }
-        console.log('[CHECKOUT SMS] Sending confirmation SMS to:', targetPhone);
+        console.log('[CHECKOUT SMS] Sending confirmation SMS to:', phone);
         try {
             const res = await fetch('/api/sms/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    recipient: targetPhone,
+                    recipient: phone,
                     message: `Hi ${customerName || 'Valued Customer'}, your order of GHS ${orderTotal.toFixed(2)} at Gadget's CITi has been confirmed! Thank you for shopping with us.`,
                     senderid: 'GadgetCiti'
                 })
@@ -68,69 +65,95 @@ export default function CheckoutPage() {
         }
     };
 
-    // Moolre MoMo handler
-    const payWithMoMo = async (otp?: string, customRef?: string, customSessionId?: string) => {
-        setPaymentStatus('initiating');
+    // Paystack Inline Transaction Handler
+    const handlePaystackPayment = async () => {
         setErrorMessage('');
-        
-        const ref = customRef || `gadgetciti-${Date.now()}`;
-        const numberToCharge = momoNumber || form.phone;
-        const sessionIdToUse = customSessionId || otpSessionId;
+
+        if (!form.email) {
+            setErrorMessage('Please enter your email address in Step 1 (Delivery Information).');
+            setStep(0);
+            return;
+        }
+
+        if (!form.fullName || !form.phone) {
+            setErrorMessage('Please complete your name and phone number before proceeding.');
+            setStep(0);
+            return;
+        }
+
+        setIsPaying(true);
+
+        const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
+        const reference = `gadgetciti-${Date.now()}`;
 
         try {
-            const res = await fetch('/api/payments/moolre', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'initiate',
-                    channel: momoNetwork,
-                    payer: numberToCharge,
-                    amount: total.toFixed(2),
-                    externalref: ref,
-                    ...(otp ? { otpcode: otp } : {}),
-                    ...(sessionIdToUse ? { sessionid: sessionIdToUse } : {}),
-                }),
-            });
-            const result = await res.json();
+            const PaystackPop = (await import('@paystack/inline-js')).default;
+            const paystack = new PaystackPop();
+            paystack.newTransaction({ 
+                key: paystackPublicKey,
+                email: form.email,
+                amount: Math.round(total * 100), // Amount in pesewas (GHS * 100)
+                currency: 'GHS',
+                reference: reference,
+                ref: reference,
+                firstname: form.fullName.split(' ')[0] || '',
+                lastname: form.fullName.split(' ').slice(1).join(' ') || '',
+                phone: form.phone,
+                metadata: {
+                    custom_fields: [
+                        { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
+                        { display_name: 'Phone Number', variable_name: 'phone_number', value: form.phone },
+                        { display_name: 'Delivery Address', variable_name: 'delivery_address', value: `${form.address}, ${form.city}, ${form.region}` }
+                    ]
+                },
+                onSuccess: async (transaction: any) => {
+                    console.log('[Paystack Payment Success]', transaction);
+                    const txRef = transaction.reference || transaction.trxref || reference;
+                    try {
+                        const verifyRes = await fetch('/api/payments/paystack/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reference: txRef }),
+                        });
+                        const verifyData = await verifyRes.json();
+                        console.log('[Paystack Verified Result]', verifyData);
 
-            if (result.success) {
-                if (result.code === 'TP14') {
-                    setPaymentStatus('otp_required');
-                    setOtpRef(ref);
-                    if (result.sessionid || result.data?.sessionid) {
-                        setOtpSessionId(result.sessionid || result.data?.sessionid);
+                        if (verifyData.success) {
+                            setPlaced(true);
+                         
+                            sendOrderConfirmationSMS(form.fullName, form.phone, total);
+                        } else {
+                            setErrorMessage(verifyData.error || 'Payment verification failed.');
+                        }
+                    } catch (err: any) {
+                        console.error('[Verify API Error]', err);
+                        setPlaced(true);
+                        clearCart();
+                        sendOrderConfirmationSMS(form.fullName, form.phone, total);
+                    } finally {
+                        setIsPaying(false);
                     }
-                } else {
-                    setPaymentStatus('success');
-                    setPlaced(true);
-                    clearCart();
-                    sendOrderConfirmationSMS(form.fullName, numberToCharge, total);
+                },
+                onCancel: () => {
+                    console.log('[Paystack Payment Cancelled]');
+                    setIsPaying(false);
+                },
+                onError: (error: any) => {
+                    console.error('[Paystack Payment Error]', error);
+                    setIsPaying(false);
+                    setErrorMessage(error?.message || 'Payment initiation failed. Please check your Paystack API key or try again.');
                 }
-            } else {
-                if (result.code === 'TP14') {
-                    setPaymentStatus('otp_required');
-                    setOtpRef(ref);
-                    if (result.sessionid || result.data?.sessionid) {
-                        setOtpSessionId(result.sessionid || result.data?.sessionid);
-                    }
-                } else {
-                    setPaymentStatus('failed');
-                    setErrorMessage(result.error || 'Failed to initiate payment.');
-                }
-            }
+            } as any);
         } catch (err: any) {
-            setPaymentStatus('failed');
-            setErrorMessage(err.message || 'An error occurred during payment.');
+            console.error('[Paystack Popup Error]', err);
+            setIsPaying(false);
+            setErrorMessage(err.message || 'Could not launch Paystack payment popup.');
         }
-    };
-
-    const handlePlaceOrder = () => {
-        payWithMoMo();
     };
 
     if (placed) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 mt-20">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-3">
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -142,18 +165,26 @@ export default function CheckoutPage() {
                     </div>
                     <h1 className="text-2xl font-black text-gray-900 mb-2">Order Placed! 🎉</h1>
                     <p className="text-gray-500 text-sm mb-6">
-                        Thank you for shopping with <span className="font-bold text-orange-500">Electronics Mart</span>.<br />
+                        Thank you for shopping with <span className="font-bold text-orange-500">Gadget's CITi</span>.<br />
                         Your order is being processed and you'll receive a confirmation shortly.
                     </p>
                     <p className="text-xs font-black tracking-widest text-gray-400 uppercase mb-1">Order Total</p>
                     <p className="text-3xl font-black text-gray-900 mb-8">{formatCurrency(total)}</p>
                     <div className="flex flex-col gap-3">
-                        <Link href="/customer/orders" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl transition-all">
-                            Track My Order
-                        </Link>
-                        <Link href="/buy" className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
+                       
+                        <button onClick={()=>{clearCart();
+                            router.push('/customer/orders');
+                        }
+                        }  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl transition-all">
+                          Track My Order
+                        </button>
+                        <button
+                        onClick={()=>{clearCart();
+                            router.push('/buy');
+                        }
+                        }  className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
                             Continue Shopping
-                        </Link>
+                        </button>
                     </div>
                 </motion.div>
             </div>
@@ -161,7 +192,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 mt-20 pt-28 md:pt-32 pb-16 px-4 md:px-8">
+        <div className="min-h-screen bg-gray-50 mt-5 pb-16 px-4 md:px-8">
             <div className="max-w-5xl mx-auto">
 
                 {/* Header */}
@@ -187,6 +218,12 @@ export default function CheckoutPage() {
                     ))}
                 </div>
 
+                {errorMessage && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-xs font-semibold">
+                        ⚠️ {errorMessage}
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left: Form */}
                     <div className="lg:col-span-2">
@@ -202,7 +239,6 @@ export default function CheckoutPage() {
                                             { field: 'phone', label: 'Phone Number', placeholder: '+233 XX XXX XXXX', col: 1 },
                                             { field: 'address', label: 'Street Address', placeholder: '123 Main Street', col: 2 },
                                             { field: 'city', label: 'City', placeholder: 'Accra', col: 1 },
-                                            { field: 'region', label: 'Region', placeholder: 'Greater Accra', col: 1 },
                                         ].map(({ field, label, placeholder, col }) => (
                                             <div key={field} className={col === 2 ? 'sm:col-span-2' : ''}>
                                                 <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
@@ -210,64 +246,48 @@ export default function CheckoutPage() {
                                                     value={(form as any)[field]}
                                                     onChange={e => update(field, e.target.value)}
                                                     placeholder={placeholder}
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
+                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-300/50 outline-none transition text-[16px]"
                                                 />
                                             </div>
                                         ))}
+
+                                        {/* Region — Select dropdown */}
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Region</label>
+                                            <select
+                                                value={form.region}
+                                                onChange={e => update('region', e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-300/50 outline-none transition text-[16px] cursor-pointer"
+                                            >
+                                                <option value="" disabled>Select your region</option>
+                                                <option value="Greater Accra">Greater Accra</option>
+                                                <option value="Ashanti">Ashanti</option>
+                                                <option value="Western">Western</option>
+                                                <option value="Central">Central</option>
+                                                <option value="Eastern">Eastern</option>
+                                                <option value="Volta">Volta</option>
+                                                <option value="Northern">Northern</option>
+                                                <option value="Upper East">Upper East</option>
+                                                <option value="Upper West">Upper West</option>
+                                                <option value="Brong-Ahafo">Brong-Ahafo</option>
+                                                <option value="Bono">Bono</option>
+                                                <option value="Bono East">Bono East</option>
+                                                <option value="Ahafo">Ahafo</option>
+                                                <option value="Savannah">Savannah</option>
+                                                <option value="North East">North East</option>
+                                                <option value="Oti">Oti</option>
+                                                <option value="Western North">Western North</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <button onClick={() => setStep(1)} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 mt-2">
-                                        Continue to Payment <ChevronRight size={18} />
+                                        Continue to Review & Pay <ChevronRight size={18} />
                                     </button>
                                 </motion.div>
                             )}
 
-                            {/* Step 1 — Payment */}
+                            {/* Step 1 — Review & Pay */}
                             {step === 1 && (
-                                <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
-                                    <h2 className="text-base font-black text-gray-900">Mobile Money Payment</h2>
-
-                                    <div className="space-y-4">
-                                        <div className="p-4 bg-orange-50 border border-orange-100 rounded-xl">
-                                            <p className="text-sm text-orange-800 font-medium">
-                                                Payments are securely processed by <span className="font-bold">Moolre Mobile Money</span>. You'll receive a prompt on your device to enter your MoMo PIN.
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Network</label>
-                                            <select
-                                                value={momoNetwork}
-                                                onChange={e => setMomoNetwork(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm cursor-pointer"
-                                            >
-                                                <option value="13">MTN Mobile Money</option>
-                                                <option value="6">Telecel Cash</option>
-                                                <option value="7">AT Money</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mobile Money Number</label>
-                                            <input
-                                                value={momoNumber}
-                                                onChange={e => setMomoNumber(e.target.value)}
-                                                placeholder={form.phone || '+233 XX XXX XXXX'}
-                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-3 mt-2">
-                                        <button onClick={() => setStep(0)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
-                                        <button onClick={() => setStep(2)} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2">
-                                            Review Order <ChevronRight size={18} />
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {/* Step 2 — Review */}
-                            {step === 2 && (
                                 <motion.div key="review" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
                                     <h2 className="text-base font-black text-gray-900">Review Your Order</h2>
                                     <div className="space-y-3">
@@ -282,20 +302,28 @@ export default function CheckoutPage() {
                                             </div>
                                         ))}
                                     </div>
+
                                     <div className="p-4 bg-gray-50 rounded-xl space-y-1 text-sm">
-                                        <p className="font-bold text-gray-700">📍 {form.address || 'N/A'}, {form.city || 'N/A'}</p>
-                                        <p className="text-gray-500">{form.fullName} · {form.phone}</p>
-                                        <p className="text-gray-500">
-                                            {`Mobile Money (${momoNetwork === '13' ? 'MTN' : momoNetwork === '6' ? 'Telecel' : 'AT'}) - ${momoNumber || form.phone}`}
-                                        </p>
+                                        <p className="font-bold text-gray-700">📍 {form.address || 'N/A'}, {form.city || 'N/A'}, {form.region}</p>
+                                        <p className="text-gray-500">{form.fullName} · {form.phone} · {form.email}</p>
                                     </div>
+
                                     <div className="flex gap-3 mt-2">
-                                        <button onClick={() => setStep(1)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
+                                        <button onClick={() => setStep(0)} className="flex-1 border border-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl hover:bg-gray-50 transition-all">Back</button>
                                         <button
-                                            onClick={handlePlaceOrder}
-                                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all"
+                                            onClick={handlePaystackPayment}
+                                            disabled={isPaying}
+                                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                                         >
-                                            Pay with MoMo
+                                            <Lock size={16} />
+                                            {isPaying ? (
+                                                'Opening Paystack...'
+                                            ) : (
+                                                <span className="flex items-center gap-1.5">
+                                                    <span>Pay {formatCurrency(total)}</span>
+                                                    <span className="text-orange-100 font-normal text-xs opacity-90">with Paystack</span>
+                                                </span>
+                                            )}
                                         </button>
                                     </div>
                                 </motion.div>
@@ -306,136 +334,24 @@ export default function CheckoutPage() {
                     {/* Right: Order Summary */}
                     <div className="space-y-4">
                         <div className="bg-white rounded-2xl shadow-sm p-5">
-                            <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Order Summary</h3>
+                            <h3 className="text-[16px] font-black text-gray-900 uppercase tracking-widest mb-4">Order Summary</h3>
                             <div className="space-y-3 mb-4">
                                 {displayItems.map(item => (
-                                    <div key={item.id} className="flex justify-between text-sm">
+                                    <div key={item.id} className="flex justify-between text-[16px]">
                                         <span className="text-gray-600 truncate mr-2">{item.name} <span className="text-gray-400">×{item.quantity}</span></span>
                                         <span className="font-bold text-gray-900 shrink-0">{formatCurrency(item.price * item.quantity)}</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className="border-t border-gray-100 pt-3 space-y-2 text-sm">
+                            <div className="border-t border-gray-100 pt-3 space-y-2 text-[16px]">
                                 <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
                                 <div className="flex justify-between text-gray-500"><span>Shipping</span><span>{formatCurrency(shipping)}</span></div>
-                                <div className="flex justify-between font-black text-gray-900 text-base pt-1 border-t border-gray-100"><span>Total</span><span>{formatCurrency(total)}</span></div>
+                                <div className="flex justify-between font-black text-gray-900 text-[18px] pt-1 border-t border-gray-100"><span>Total</span><span>{formatCurrency(total)}</span></div>
                             </div>
-                        </div>
-
-                        {/* Trust badges */}
-                        <div className="bg-white rounded-2xl shadow-sm p-5 space-y-3">
-                            {[
-                                { icon: ShieldCheck, text: 'Secure checkout', sub: '256-bit SSL encryption' },
-                                { icon: Truck, text: 'Fast delivery', sub: 'Delivered in 2–5 business days' },
-                            ].map(({ icon: Icon, text, sub }) => (
-                                <div key={text} className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-                                        <Icon size={16} className="text-orange-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs font-bold text-gray-900">{text}</p>
-                                        <p className="text-[10px] text-gray-400">{sub}</p>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>
             </div>
-            {/* Moolre Payment Status Modal */}
-            <AnimatePresence>
-                {paymentStatus !== 'idle' && (
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-[999]">
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center relative overflow-hidden"
-                        >
-                            {paymentStatus === 'initiating' && (
-                                <div className="py-6 space-y-4">
-                                    <div className="loader w-12 h-12 mx-auto" />
-                                    <h3 className="text-lg font-black text-gray-900">Initiating Payment</h3>
-                                    <p className="text-gray-500 text-sm">Connecting to Moolre Mobile Money gateway...</p>
-                                </div>
-                            )}
-
-                            {paymentStatus === 'pending' && (
-                                <div className="py-6 space-y-4">
-                                    <div className="loader w-12 h-12 mx-auto" />
-                                    <p className="text-gray-600 text-lg font-bold">
-                                        Please check your phone to approve the payment 📲.
-                                    </p>
-                                    <p className="text-gray-500 text-xs">
-                                        Authorize the payment of <span className="font-bold text-gray-800">{formatCurrency(total)}</span> by entering your MoMo PIN on your device. We are waiting for your approval...
-                                    </p>
-                                </div>
-                            )}
-
-                            {paymentStatus === 'otp_required' && (
-                                <div className="py-6 space-y-4 text-left">
-                                    <div className="text-center">
-                                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto text-orange-600 text-xl mb-2">🔑</div>
-                                        <h3 className="text-lg font-black text-gray-900">Verification Required</h3>
-                                        <p className="text-gray-500 text-sm mt-1">Please enter the validation OTP code sent to your phone via SMS.</p>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <input
-                                            value={otpCode}
-                                            onChange={e => setOtpCode(e.target.value)}
-                                            placeholder="Enter OTP Code"
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none text-center font-bold tracking-widest text-lg"
-                                        />
-                                        <button
-                                            onClick={() => payWithMoMo(otpCode, otpRef, otpSessionId)}
-                                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
-                                        >
-                                            Verify OTP & Pay
-                                        </button>
-                                        <p className="text-[11px] text-gray-500 text-center">
-                                            If a USSD prompt does not appear, dial <strong className="text-gray-800">*170#</strong> &gt; Option 6 (My Wallet) &gt; Option 3 (My Approvals).
-                                        </p>
-                                        <button
-                                            onClick={() => setPaymentStatus('idle')}
-                                            className="w-full text-center text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {paymentStatus === 'failed' && (
-                                <div className="py-6 space-y-4">
-                                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 text-xl font-black">✕</div>
-                                    <h3 className="text-lg font-black text-gray-900">Payment Failed</h3>
-                                    <p className="text-red-500 text-sm">{errorMessage}</p>
-                                    <button
-                                        onClick={() => setPaymentStatus('idle')}
-                                        className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition"
-                                    >
-                                        Try Again
-                                    </button>
-                                </div>
-                            )}
-
-                            {paymentStatus === 'timeout' && (
-                                <div className="py-6 space-y-4">
-                                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto text-yellow-600 text-xl font-black">!</div>
-                                    <h3 className="text-lg font-black text-gray-900">Payment Timeout</h3>
-                                    <p className="text-gray-500 text-sm">We did not receive confirmation in time. Please check your phone or try again.</p>
-                                    <button
-                                        onClick={() => setPaymentStatus('idle')}
-                                        className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition"
-                                    >
-                                        Try Again
-                                    </button>
-                                </div>
-                            )}
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
         </div>
     );
 }

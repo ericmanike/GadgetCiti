@@ -26,3 +26,10 @@ declare module '@paystack/inline-js' {
 
     export default PaystackPop;
 }
+
+declare global {
+    interface Window {
+        PaystackPop?: any;
+    }
+}
+
