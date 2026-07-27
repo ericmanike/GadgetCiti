@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
 export async function POST(request: Request) {
+
   try {
     const body = await request.json();
     const { reference } = body;
@@ -25,7 +26,8 @@ export async function POST(request: Request) {
     });
 
     const data = await res.json();
-    console.log('[Paystack Verify Response]', data);
+
+    console.log('[Paystack Verify Response]' , data) ;
 
     if (data.status && data.data?.status === 'success') {
       return NextResponse.json({

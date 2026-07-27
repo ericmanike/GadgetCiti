@@ -100,10 +100,13 @@ export default function CheckoutPage() {
                 lastname: form.fullName.split(' ').slice(1).join(' ') || '',
                 phone: form.phone,
                 metadata: {
+                    cart_items:cart,
                     custom_fields: [
+                    
                         { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
                         { display_name: 'Phone Number', variable_name: 'phone_number', value: form.phone },
                         { display_name: 'Delivery Address', variable_name: 'delivery_address', value: `${form.address}, ${form.city}, ${form.region}` }
+                        
                     ]
                 },
                 onSuccess: async (transaction: any) => {
@@ -120,6 +123,7 @@ export default function CheckoutPage() {
 
                         if (verifyData.success) {
                             setPlaced(true);
+                            console.log('cart_items', cart);
                          
                             sendOrderConfirmationSMS(form.fullName, form.phone, total);
                         } else {
