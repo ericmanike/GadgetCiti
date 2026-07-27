@@ -29,13 +29,8 @@ export default function SellerSubscriptionPage() {
 
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [momoNetwork, setMomoNetwork] = useState('13'); // '13' = MTN, '6' = Telecel, '7' = AT
-  const [momoNumber, setMomoNumber] = useState('');
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'initiating' | 'otp_required' | 'pending' | 'success' | 'failed' | 'timeout'>('idle');
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'initiating' | 'success' | 'failed'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [otpRef, setOtpRef] = useState('');
-  const [otpCode, setOtpCode] = useState('');
-  const [otpSessionId, setOtpSessionId] = useState('');
 
   const plans: Plan[] = [
     {
@@ -59,7 +54,7 @@ export default function SellerSubscriptionPage() {
       name: 'Pro Merchant',
       badge: 'Most Popular',
       isRecommended: true,
-      priceGHS: 49,
+      priceGHS: 150,
       period: 'per month',
       description: 'Built for active sellers looking to scale fast with zero commissions.',
       features: [
@@ -104,72 +99,81 @@ export default function SellerSubscriptionPage() {
     );
   }
 
-  const handlePayment = async (otp?: string, customRef?: string, customSessionId?: string) => {
+  const handlePaystackPayment = async () => {
     if (!user) {
       showToast('Please sign in to subscribe.', 'error');
       router.push('/auth/login');
       return;
     }
 
-    if (!momoNumber) {
-      showToast('Please enter your Mobile Money number.', 'error');
-      return;
-    }
+    if (!selectedPlan) return;
 
     setPaymentStatus('initiating');
     setErrorMessage('');
-    
-    const amountStr = selectedPlan ? selectedPlan.priceGHS.toFixed(2) : '49.00';
-    const ref = customRef || `sub-${user.id}-${Date.now()}`;
-    const sessionIdToUse = customSessionId || otpSessionId;
+
+    const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
+    const reference = `sub-${user.id}-${Date.now()}`;
 
     try {
-      const res = await fetch('/api/payments/moolre', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'initiate',
-          channel: momoNetwork,
-          payer: momoNumber,
-          amount: amountStr,
-          externalref: ref,
-          ...(otp ? { otpcode: otp } : {}),
-          ...(sessionIdToUse ? { sessionid: sessionIdToUse } : {}),
-        }),
-      });
-      const result = await res.json();
-
-      if (result.success) {
-        if (result.code === 'TP14') {
-          setPaymentStatus('otp_required');
-          setOtpRef(ref);
-          if (result.sessionid || result.data?.sessionid) {
-            setOtpSessionId(result.sessionid || result.data?.sessionid);
+      const PaystackPop = (await import('@paystack/inline-js')).default;
+      const paystack = new PaystackPop();
+      paystack.newTransaction({
+        key: paystackPublicKey,
+        email: user.email || 'seller@example.com',
+        amount: Math.round(selectedPlan.priceGHS * 100),
+        currency: 'GHS',
+        reference: reference,
+        ref: reference,
+        metadata: {
+          plan_id: selectedPlan.id,
+          user_id: user.id,
+          custom_fields: [
+            { display_name: 'Plan Name', variable_name: 'plan_name', value: selectedPlan.name }
+          ]
+        },
+        onSuccess: async (transaction: any) => {
+          console.log('[Paystack Payment Success]', transaction);
+          const txRef = transaction.reference || transaction.trxref || reference;
+          try {
+            const verifyRes = await fetch('/api/payments/paystack/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ reference: txRef }),
+            });
+            const verifyData = await verifyRes.json();
+            
+            if (verifyData.success) {
+              setPaymentStatus('success');
+              showToast(`🎉 Subscription to ${selectedPlan.name} activated successfully!`, 'success');
+              setTimeout(() => {
+                setIsModalOpen(false);
+                setPaymentStatus('idle');
+                router.push('/seller');
+              }, 2500);
+            } else {
+              setPaymentStatus('failed');
+              setErrorMessage(verifyData.error || 'Payment verification failed.');
+            }
+          } catch (err: any) {
+             console.error('[Verify API Error]', err);
+             setPaymentStatus('failed');
+             setErrorMessage(err.message || 'Payment verification failed.');
           }
-        } else {
-          setPaymentStatus('success');
-          showToast(`🎉 Subscription to ${selectedPlan?.name || 'Pro'} activated successfully!`, 'success');
-          setTimeout(() => {
-            setIsModalOpen(false);
-            setPaymentStatus('idle');
-            router.push('/seller');
-          }, 2500);
-        }
-      } else {
-        if (result.code === 'TP14') {
-          setPaymentStatus('otp_required');
-          setOtpRef(ref);
-          if (result.sessionid || result.data?.sessionid) {
-            setOtpSessionId(result.sessionid || result.data?.sessionid);
-          }
-        } else {
+        },
+        onCancel: () => {
+          console.log('[Paystack Payment Cancelled]');
+          setPaymentStatus('idle');
+        },
+        onError: (error: any) => {
+          console.error('[Paystack Payment Error]', error);
           setPaymentStatus('failed');
-          setErrorMessage(result.error || 'Failed to initiate payment.');
+          setErrorMessage(error?.message || 'Payment initiation failed.');
         }
-      }
+      } as any);
     } catch (err: any) {
+      console.error('[Paystack Popup Error]', err);
       setPaymentStatus('failed');
-      setErrorMessage(err.message || 'An error occurred during payment.');
+      setErrorMessage(err.message || 'Could not launch Paystack payment popup.');
     }
   };
 
@@ -185,7 +189,7 @@ export default function SellerSubscriptionPage() {
   return (
     <div className="space-y-10 pb-12">
       {/* Page Header */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-white rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden">
+      <div className="relative bg-[#1E293B] text-white rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl -z-0 pointer-events-none" />
         <div className="relative z-10 space-y-3 max-w-2xl">
           <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 font-bold text-[10px] md:text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
@@ -308,10 +312,10 @@ export default function SellerSubscriptionPage() {
 
           <div className="p-4 rounded-2xl bg-gray-50 space-y-2">
             <h4 className="font-bold text-[10px] md:text-xs text-gray-900 flex items-center gap-2">
-              <CreditCard size={14} className="text-emerald-500" /> Instant MoMo Payments
+              <CreditCard size={14} className="text-emerald-500" /> Paystack Secure Payments
             </h4>
             <p className="text-[10px] md:text-[12px] text-gray-500 leading-relaxed">
-              Subscribe easily via MTN Mobile Money, Telecel Cash, or AT Money with instant activation.
+              Subscribe easily via Cards, Bank Transfer or Mobile Money using Paystack with instant activation.
             </p>
           </div>
         </div>
@@ -348,41 +352,16 @@ export default function SellerSubscriptionPage() {
                     </p>
                   </div>
 
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Select Network Provider</label>
-                      <select
-                        value={momoNetwork}
-                        onChange={e => setMomoNetwork(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm font-semibold cursor-pointer"
-                      >
-                        <option value="13">MTN Mobile Money</option>
-                        <option value="6">Telecel Cash</option>
-                        <option value="7">AT Money</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Mobile Money Phone Number</label>
-                      <input
-                        value={momoNumber}
-                        onChange={e => setMomoNumber(e.target.value)}
-                        placeholder="e.g. 024XXXXXXX"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-medium"
-                      />
-                    </div>
-                  </div>
-
                   <button
-                    onClick={() => handlePayment()}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-orange-500/20 active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                    onClick={handlePaystackPayment}
+                    className="w-full bg-[#0ba4db] hover:bg-[#0991c2] text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-[#0ba4db]/20 active:scale-98 cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>Pay GHS {selectedPlan.priceGHS.toFixed(2)}</span>
+                    <span>Pay with Paystack</span>
                     <ArrowRight size={18} />
                   </button>
 
                   <p className="text-center text-gray-400 text-[11px]">
-                    Instant activation via Moolre Gateway. Cancel anytime.
+                    Instant activation via Paystack Gateway. Cancel anytime.
                   </p>
                 </div>
               )}
@@ -391,20 +370,7 @@ export default function SellerSubscriptionPage() {
                 <div className="py-8 text-center space-y-4">
                   <div className="loader w-12 h-12 mx-auto" />
                   <h3 className="text-lg font-black text-gray-900">Initiating Payment</h3>
-                  <p className="text-gray-500 text-xs">Connecting to Mobile Money payment gateway...</p>
-                </div>
-              )}
-
-              {paymentStatus === 'pending' && (
-                <div className="py-8 text-center space-y-4">
-                  <div className="loader w-12 h-12 mx-auto" />
-                  <h3 className="text-lg font-black text-gray-900">USSD Prompt Sent! 📲</h3>
-                  <p className="text-slate-700 text-sm font-bold">
-                    Check your mobile phone for authorization prompt.
-                  </p>
-                  <p className="text-gray-500 text-xs px-2 leading-relaxed">
-                    Authorize payment of <span className="font-bold text-gray-900">GHS {selectedPlan.priceGHS.toFixed(2)}</span> by entering your PIN on your mobile device.
-                  </p>
+                  <p className="text-gray-500 text-xs">Opening Paystack checkout...</p>
                 </div>
               )}
 
@@ -416,55 +382,11 @@ export default function SellerSubscriptionPage() {
                 </div>
               )}
 
-              {paymentStatus === 'otp_required' && (
-                <div className="py-6 space-y-4 text-left">
-                  <div className="text-center">
-                    <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto text-orange-600 text-xl mb-2">🔑</div>
-                    <h3 className="text-lg font-black text-gray-900">OTP Code Required</h3>
-                    <p className="text-gray-500 text-xs mt-1">Enter the verification SMS code sent to your phone.</p>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      value={otpCode}
-                      onChange={e => setOtpCode(e.target.value)}
-                      placeholder="Enter OTP Code"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-center font-bold tracking-widest text-lg"
-                    />
-                    <button
-                      onClick={() => handlePayment(otpCode, otpRef, otpSessionId)}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer"
-                    >
-                      Verify OTP & Activate
-                    </button>
-                    <button
-                      onClick={() => setPaymentStatus('idle')}
-                      className="w-full text-center text-xs font-semibold text-gray-400 hover:text-gray-600 transition cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {paymentStatus === 'failed' && (
                 <div className="py-6 text-center space-y-4">
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600 text-xl font-black">✕</div>
                   <h3 className="text-lg font-black text-gray-900">Payment Failed</h3>
                   <p className="text-red-500 text-xs">{errorMessage}</p>
-                  <button
-                    onClick={() => setPaymentStatus('idle')}
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition cursor-pointer"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              )}
-
-              {paymentStatus === 'timeout' && (
-                <div className="py-6 text-center space-y-4">
-                  <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-amber-600 text-xl font-black">!</div>
-                  <h3 className="text-lg font-black text-gray-900">Payment Timeout</h3>
-                  <p className="text-gray-500 text-xs px-2">Payment confirmation took too long. Check your device or try again.</p>
                   <button
                     onClick={() => setPaymentStatus('idle')}
                     className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition cursor-pointer"

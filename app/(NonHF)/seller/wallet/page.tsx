@@ -230,7 +230,7 @@ export default function SellerWalletPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
-      <div className="relative bg-slate-900 text-white rounded-3xl p-6 md:p-10 shadow-xl overflow-hidden">
+      <div className="relative bg-[#1E293B] text-white rounded-3xl p-6 md:p-10 shadow-xl overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
@@ -376,18 +376,18 @@ export default function SellerWalletPage() {
         </div>
 
         {/* Payout Security Note */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg flex flex-col justify-between space-y-4">
+        <div className="bg-white border border-gray-100 text-slate-900 p-6 rounded-3xl shadow-lg flex flex-col justify-between space-y-4">
           <div className="space-y-2">
-            <span className="inline-block bg-white/10 text-orange-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md">
+            <span className="inline-block bg-orange-50 text-orange-500 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md">
               Fast Payout Processing
             </span>
-            <h4 className="text-sm font-black">Same-Day Transfer Guaranteed</h4>
-            <p className="text-xs text-slate-300 font-medium leading-relaxed">
+            <h4 className="text-sm font-black text-slate-900">Same-Day Transfer Guaranteed</h4>
+            <p className="text-xs text-gray-500 font-medium leading-relaxed">
               Mobile Money payouts are typically processed within 15 to 30 minutes. Bank transfers settle within 24 business hours.
             </p>
           </div>
-          <div className="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
-            <ShieldCheck size={14} className="text-emerald-400" /> Protected by Letronix Escrow Guarantee
+          <div className="text-[10px] text-gray-500 font-semibold flex items-center gap-1">
+            <ShieldCheck size={14} className="text-emerald-500" /> Protected by Letronix Escrow Guarantee
           </div>
         </div>
 

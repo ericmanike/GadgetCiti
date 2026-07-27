@@ -35,6 +35,7 @@ interface ProductItem {
   images: string[];
   overview: string;
   description: string;
+  variants?: string[];
 }
 
 interface ProductFormValues {
@@ -102,7 +103,7 @@ export default function SellerProductsPage() {
       const { data: dbProducts, error } = await supabase
         .from('products')
         .select(`
-          id, name, brand, price, discount, stock, condition, over_view,
+          id, name, brand, price, discount, stock, condition, over_view, variants,
           categories(id, name),
           product_images(image_url)
         `)
@@ -139,7 +140,8 @@ export default function SellerProductsPage() {
           imageUrl: images.length > 0 ? images[0] : "https://placehold.co/800?text=photo+unavailable&font=roboto",
           images: images,
           overview: overviewText,
-          description: row.over_view?.description || ""
+          description: row.over_view?.description || "",
+          variants: row.variants || []
         };
       }) || [];
 
@@ -311,7 +313,8 @@ export default function SellerProductsPage() {
               price: priceNum,
               discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: overviewData
+              over_view: overviewData,
+              variants: selectedColors
             })
             .eq('id', editingProduct.id)
             .eq('user_id', user.id);
@@ -339,7 +342,8 @@ export default function SellerProductsPage() {
               price: priceNum,
               discount: discountNum > 0 ? discountNum : 0,
               stock: Number(values.stock),
-              over_view: overviewData
+              over_view: overviewData,
+              variants: selectedColors
             })
             .select('id')
             .single();
@@ -371,7 +375,7 @@ export default function SellerProductsPage() {
   const handleEditProduct = (p: ProductItem) => {
     setEditingProduct(p);
     setExistingImages(p.images || (p.imageUrl ? [p.imageUrl] : []));
-    setSelectedColors([]);
+    setSelectedColors(p.variants || []);
     formik.setValues({
       name: p.name,
       brand: p.brand,

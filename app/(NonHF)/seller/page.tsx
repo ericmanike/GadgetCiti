@@ -146,14 +146,14 @@ export default function SellerDashboard() {
     <div className="space-y-8 animate-fade-in pb-16">
       
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden bg-white rounded-[10px] p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div className="absolute top-0 right-0 w-[40%] h-[150%] bg-radial-gradient from-orange-500/10 to-transparent blur-3xl -z-10" />
+      <div className="relative overflow-hidden bg-[#1E293B] text-white rounded-[10px] p-6 md:p-8 shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="absolute top-0 right-0 w-[40%] h-[150%] bg-radial-gradient from-orange-500/20 to-transparent blur-3xl -z-10" />
         <div className="space-y-2">
           
-          <h1 className="text-[12px] md:text-[20px] font-black text-slate-900 tracking-tight">
-            Welcome to Your Dashboard, <span className="text-orange-500">{user?.user_metadata?.store_name || user?.user_metadata?.full_name || 'Seller'}</span>!
+          <h1 className="text-[12px] md:text-[20px] font-black text-white tracking-tight">
+            Shop Dashboard
           </h1> 
-          <p className="text-slate-500 text-sm max-w-xl font-medium">
+          <p className="text-slate-300 text-sm max-w-xl font-medium">
             Manage listings, fulfill customer purchases, and check your storefront statistics in real-time.
           </p>
         </div>

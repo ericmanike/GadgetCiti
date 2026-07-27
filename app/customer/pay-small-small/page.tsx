@@ -133,128 +133,161 @@ export default function PaySmallSmallPage() {
 
     // Simulated Moolre Payment flow for Down Payment
     const handleInitiateDownPayment = async () => {
-        if (!momoNumber || momoNumber.length < 9) {
-            toast.error("Please enter a valid Mobile Money number");
-            return;
-        }
         if (!selectedProduct || !user) return;
 
         setPaymentStatus('initiating');
         
-        // Simulate API call to Moolre Payment Gateway
-        setTimeout(() => {
-            const mockRef = `PSS-REF-${Math.floor(Math.random() * 9000000 + 1000000)}`;
-            setSimulatedRef(mockRef);
-            setPaymentStatus('pending_otp');
-            toast.info("OTP sent to your phone. Check your messages!");
-        }, 1800);
-    };
+        const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
+        const reference = `pss-down-${user.id}-${Date.now()}`;
 
-    const handleConfirmOtp = async () => {
-        if (!otpCode || otpCode.length < 4) {
-            toast.error("Please enter the 4-digit OTP code");
-            return;
+        try {
+            const PaystackPop = (await import('@paystack/inline-js')).default;
+            const paystack = new PaystackPop();
+            paystack.newTransaction({
+                key: paystackPublicKey,
+                email: user.email || 'customer@example.com',
+                amount: Math.round(calcDownPayment * 100),
+                currency: 'GHS',
+                reference: reference,
+                ref: reference,
+                onSuccess: async (transaction: any) => {
+                    const txRef = transaction.reference || transaction.trxref || reference;
+                    try {
+                        const verifyRes = await fetch('/api/payments/paystack/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reference: txRef }),
+                        });
+                        const verifyData = await verifyRes.json();
+                        
+                        if (verifyData.success) {
+                            const newPlan = await createSmallSmallPlan(user.id, {
+                                product_id: selectedProduct.id,
+                                product_name: selectedProduct.name,
+                                product_brand: selectedProduct.brand,
+                                product_image: selectedProduct.images[0] || "https://placehold.co/800?text=photo+unavailable&font=roboto",
+                                total_amount: selectedProduct.price,
+                                down_payment: calcDownPayment,
+                                frequency: frequency,
+                                installments_count: installmentsCount,
+                                payment_reference: txRef
+                            });
+
+                            setPlans(prev => [newPlan, ...prev]);
+                            setPaymentStatus('success');
+                            toast.success("Down payment successful! Plan created.");
+                            
+                            setTimeout(() => {
+                                setSelectedPlanId(newPlan.id);
+                                setCurrentView('detail');
+                            }, 1500);
+                        } else {
+                            setPaymentStatus('failed');
+                            toast.error(verifyData.error || 'Payment verification failed.');
+                        }
+                    } catch (err: any) {
+                         console.error('[Verify API Error]', err);
+                         setPaymentStatus('failed');
+                         toast.error(err.message || 'Payment verification failed.');
+                    }
+                },
+                onCancel: () => {
+                    setPaymentStatus('idle');
+                },
+                onError: (error: any) => {
+                    setPaymentStatus('failed');
+                    toast.error(error?.message || 'Payment initiation failed.');
+                }
+            } as any);
+        } catch (err: any) {
+            setPaymentStatus('failed');
+            toast.error(err.message || 'Could not launch Paystack payment popup.');
         }
-        if (!selectedProduct || !user) return;
-
-        setPaymentStatus('initiating');
-
-        // Simulate OTP verification and payment confirmation
-        setTimeout(async () => {
-            try {
-                const newPlan = await createSmallSmallPlan(user.id, {
-                    product_id: selectedProduct.id,
-                    product_name: selectedProduct.name,
-                    product_brand: selectedProduct.brand,
-                    product_image: selectedProduct.images[0] || "https://placehold.co/800?text=photo+unavailable&font=roboto",
-                    total_amount: selectedProduct.price,
-                    down_payment: calcDownPayment,
-                    frequency: frequency,
-                    installments_count: installmentsCount,
-                    payment_reference: simulatedRef
-                });
-
-                setPlans(prev => [newPlan, ...prev]);
-                setPaymentStatus('success');
-                toast.success("Down payment successful! Plan created.");
-                
-                setTimeout(() => {
-                    setSelectedPlanId(newPlan.id);
-                    setCurrentView('detail');
-                }, 1500);
-            } catch (err) {
-                console.error(err);
-                setPaymentStatus('failed');
-                toast.error("Could not create plan. Please try again.");
-            }
-        }, 2000);
     };
 
     // Quick Installment Payment Flow
     const handleOpenPaymentModal = (plan: PaySmallSmallPlan) => {
         setPaymentPlan(plan);
         setPaymentAmount(plan.installment_amount < plan.balance_amount ? plan.installment_amount : plan.balance_amount);
-        setMomoNumber('');
         setPaymentStatus('idle');
         setIsPaymentModalOpen(true);
     };
 
     const handlePayInstallment = async () => {
-        if (!momoNumber || momoNumber.length < 9) {
-            toast.error("Please enter a valid Mobile Money number");
+        if (!paymentPlan || !user) return;
+        if (paymentAmount <= 0) {
+            toast.error("Please enter a valid amount");
             return;
         }
-        if (!paymentPlan || !user) return;
 
         setPaymentStatus('initiating');
 
-        setTimeout(() => {
-            const mockRef = `PSS-INST-${Math.floor(Math.random() * 9000000 + 1000000)}`;
-            setSimulatedRef(mockRef);
-            setPaymentStatus('pending_otp');
-        }, 1500);
-    };
+        const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
+        const reference = `pss-inst-${user.id}-${Date.now()}`;
 
-    const handleConfirmInstallmentOtp = async () => {
-        if (!otpCode || otpCode.length < 4) {
-            toast.error("Please enter the 4-digit OTP code");
-            return;
-        }
-        if (!paymentPlan || !user) return;
+        try {
+            const PaystackPop = (await import('@paystack/inline-js')).default;
+            const paystack = new PaystackPop();
+            paystack.newTransaction({
+                key: paystackPublicKey,
+                email: user.email || 'customer@example.com',
+                amount: Math.round(paymentAmount * 100),
+                currency: 'GHS',
+                reference: reference,
+                ref: reference,
+                onSuccess: async (transaction: any) => {
+                    const txRef = transaction.reference || transaction.trxref || reference;
+                    try {
+                        const verifyRes = await fetch('/api/payments/paystack/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reference: txRef }),
+                        });
+                        const verifyData = await verifyRes.json();
+                        
+                        if (verifyData.success) {
+                            const updatedPlan = await addInstallmentPayment(
+                                user.id,
+                                paymentPlan.id,
+                                paymentAmount,
+                                txRef
+                            );
 
-        setPaymentStatus('initiating');
+                            setPlans(prev => prev.map(p => p.id === updatedPlan.id ? updatedPlan : p));
+                            
+                            if (selectedPlanId === updatedPlan.id) {
+                                setSelectedPlanId(updatedPlan.id);
+                            }
 
-        setTimeout(async () => {
-            try {
-                const updatedPlan = await addInstallmentPayment(
-                    user.id,
-                    paymentPlan.id,
-                    paymentAmount,
-                    simulatedRef
-                );
+                            setPaymentStatus('success');
+                            toast.success("Installment payment received!");
 
-                // Update state list
-                setPlans(prev => prev.map(p => p.id === updatedPlan.id ? updatedPlan : p));
-                
-                // If viewing details, update selection
-                if (selectedPlanId === updatedPlan.id) {
-                    setSelectedPlanId(updatedPlan.id);
-                }
-
-                setPaymentStatus('success');
-                toast.success("Installment payment received!");
-
-                setTimeout(() => {
-                    setIsPaymentModalOpen(false);
+                            setTimeout(() => {
+                                setIsPaymentModalOpen(false);
+                                setPaymentStatus('idle');
+                            }, 1500);
+                        } else {
+                            setPaymentStatus('failed');
+                            toast.error(verifyData.error || 'Payment verification failed.');
+                        }
+                    } catch (err: any) {
+                         console.error('[Verify API Error]', err);
+                         setPaymentStatus('failed');
+                         toast.error(err.message || 'Payment verification failed.');
+                    }
+                },
+                onCancel: () => {
                     setPaymentStatus('idle');
-                    setOtpCode('');
-                }, 1500);
-            } catch (err) {
-                console.error(err);
-                setPaymentStatus('failed');
-                toast.error("Payment failed. Please try again.");
-            }
-        }, 1800);
+                },
+                onError: (error: any) => {
+                    setPaymentStatus('failed');
+                    toast.error(error?.message || 'Payment initiation failed.');
+                }
+            } as any);
+        } catch (err: any) {
+            setPaymentStatus('failed');
+            toast.error(err.message || 'Could not launch Paystack payment popup.');
+        }
     };
 
     // Update delivery progression simulated
@@ -731,62 +764,20 @@ export default function PaySmallSmallPage() {
                                             <p className="text-xs text-gray-500 mt-1">Initiating layaway deposit of <span className="font-extrabold text-slate-900">{formatCurrency(calcDownPayment)}</span></p>
                                         </div>
 
-                                        {/* Mobile Money Provider selection */}
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Network Provider</label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                {[
-                                                    { id: '13', name: 'MTN MoMo', color: 'bg-yellow-400 border-yellow-400 text-yellow-950' },
-                                                    { id: '6', name: 'Telecel', color: 'bg-red-500 border-red-500 text-white' },
-                                                    { id: '7', name: 'AT Money', color: 'bg-blue-600 border-blue-600 text-white' },
-                                                ].map((provider) => (
-                                                    <button
-                                                        key={provider.id}
-                                                        type="button"
-                                                        onClick={() => setMomoProvider(provider.id as any)}
-                                                        className={`py-2 text-[10px] font-bold rounded-lg border-2 transition-all cursor-pointer flex items-center justify-center text-center ${
-                                                            momoProvider === provider.id
-                                                                ? `${provider.color} font-black shadow-xs scale-102`
-                                                                : 'bg-white border-gray-200 text-slate-600 hover:border-gray-300'
-                                                        }`}
-                                                    >
-                                                        {provider.name}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* Mobile Number Input */}
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile Number</label>
-                                            <div className="relative">
-                                                <span className="absolute left-3.5 top-3.5 text-xs text-gray-500 font-bold">+233</span>
-                                                <input
-                                                    type="tel"
-                                                    placeholder="24 123 4567"
-                                                    value={momoNumber}
-                                                    onChange={(e) => setMomoNumber(e.target.value.replace(/\D/g, ''))}
-                                                    className="w-full bg-white border border-gray-200 focus:border-orange-400 text-slate-900 px-4 py-3 pl-14 rounded-lg text-sm transition-all focus:outline-hidden"
-                                                    maxLength={10}
-                                                />
-                                            </div>
-                                            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Secured payment process powered by Moolre</p>
-                                        </div>
-
-                                        <div className="flex gap-3 pt-2">
+                                        <div className="flex gap-3 pt-4">
                                             <button
                                                 type="button"
                                                 onClick={() => setWizardStep(2)}
-                                                className="flex-1 py-3 border border-gray-300 hover:border-gray-400 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer uppercase tracking-wider"
+                                                className="flex-1 py-3.5 border border-gray-300 hover:border-gray-400 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer uppercase tracking-wider"
                                             >
                                                 Back
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={handleInitiateDownPayment}
-                                                className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider active:scale-95 shadow-xs"
+                                                className="flex-1 py-3.5 bg-[#0ba4db] hover:bg-[#0991c2] text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider active:scale-95 shadow-xs flex items-center justify-center gap-2"
                                             >
-                                                Send MoMo Prompt
+                                                Pay with Paystack <ArrowRight size={16} />
                                             </button>
                                         </div>
                                     </div>
@@ -802,41 +793,6 @@ export default function PaySmallSmallPage() {
                                                 Communicating with payment gateway API. Please stand by, do not close or reload this window.
                                             </p>
                                         </div>
-                                    </div>
-                                )}
-
-                                {/* OTP Verification Input */}
-                                {paymentStatus === 'pending_otp' && (
-                                    <div className="space-y-4">
-                                        <div className="text-center">
-                                            <div className="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mx-auto mb-3">
-                                                <Calendar className="w-6 h-6 animate-bounce" />
-                                            </div>
-                                            <h3 className="text-sm font-bold text-slate-900 uppercase">Verify Payment</h3>
-                                            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
-                                                We have sent an SMS with a 4-digit verification OTP code to your mobile device. Enter it below to complete authorization.
-                                            </p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-bold text-slate-700 uppercase tracking-widest text-center block">OTP Code</label>
-                                            <input
-                                                type="text"
-                                                maxLength={4}
-                                                placeholder="1234"
-                                                value={otpCode}
-                                                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                                                className="w-32 bg-white text-center border-2 border-gray-200 focus:border-orange-500 text-lg font-bold tracking-[0.4em] mx-auto py-2.5 rounded-lg transition-all focus:outline-hidden block"
-                                            />
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            onClick={handleConfirmOtp}
-                                            className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider"
-                                        >
-                                            Confirm Payment
-                                        </button>
                                     </div>
                                 )}
 
@@ -1126,61 +1082,20 @@ export default function PaySmallSmallPage() {
                                     <span className="text-[10px] text-gray-400 block text-right font-semibold uppercase">Max Allowed: {formatCurrency(paymentPlan.balance_amount)}</span>
                                 </div>
 
-                                {/* Network Selection */}
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Network Provider</label>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {[
-                                            { id: '13', name: 'MTN MoMo', color: 'bg-yellow-400 border-yellow-400 text-yellow-950' },
-                                            { id: '6', name: 'Telecel', color: 'bg-red-500 border-red-500 text-white' },
-                                            { id: '7', name: 'AT Money', color: 'bg-blue-600 border-blue-600 text-white' },
-                                        ].map((provider) => (
-                                            <button
-                                                key={provider.id}
-                                                type="button"
-                                                onClick={() => setMomoProvider(provider.id as any)}
-                                                className={`py-2 text-[9px] font-bold rounded-lg border-2 transition-all cursor-pointer flex items-center justify-center text-center ${
-                                                    momoProvider === provider.id
-                                                        ? `${provider.color} font-black scale-102`
-                                                        : 'bg-white border-gray-250 text-slate-600 hover:border-gray-300'
-                                                }`}
-                                            >
-                                                {provider.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Phone number */}
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile Money Number</label>
-                                    <div className="relative">
-                                        <span className="absolute left-3.5 top-3.5 text-xs text-gray-500 font-bold">+233</span>
-                                        <input
-                                            type="tel"
-                                            placeholder="24 123 4567"
-                                            value={momoNumber}
-                                            onChange={(e) => setMomoNumber(e.target.value.replace(/\D/g, ''))}
-                                            className="w-full bg-white border border-gray-200 focus:border-orange-400 text-slate-900 px-4 py-3 pl-14 rounded-lg text-sm transition-all focus:outline-hidden"
-                                            maxLength={10}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2.5 pt-2">
+                                <div className="flex gap-2.5 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setIsPaymentModalOpen(false)}
-                                        className="flex-1 py-3 border border-gray-300 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer uppercase tracking-wider"
+                                        className="flex-1 py-3.5 border border-gray-300 hover:border-gray-400 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer uppercase tracking-wider"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="button"
                                         onClick={handlePayInstallment}
-                                        className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider shadow-xs"
+                                        className="flex-1 py-3.5 bg-[#0ba4db] hover:bg-[#0991c2] text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider shadow-xs flex items-center justify-center gap-2"
                                     >
-                                        Authorize
+                                        Pay with Paystack <ArrowRight size={16} />
                                     </button>
                                 </div>
                             </div>
@@ -1192,37 +1107,9 @@ export default function PaySmallSmallPage() {
                                 <div>
                                     <h4 className="text-sm font-bold text-slate-900 uppercase">Connecting Gateway</h4>
                                     <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                                        Initializing mobile payment transactions. Please do not close this window...
+                                        Initializing Paystack payment transaction. Please do not close this window...
                                     </p>
                                 </div>
-                            </div>
-                        )}
-
-                        {paymentStatus === 'pending_otp' && (
-                            <div className="space-y-4">
-                                <div className="text-center">
-                                    <h3 className="text-sm font-bold text-slate-900 uppercase">Verify OTP PIN</h3>
-                                    <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
-                                        Confirm authorization by entering the 4-digit code sent to +233 {momoNumber}
-                                    </p>
-                                </div>
-
-                                <input
-                                    type="text"
-                                    maxLength={4}
-                                    placeholder="1234"
-                                    value={otpCode}
-                                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                                    className="w-32 bg-white text-center border-2 border-gray-250 focus:border-orange-500 text-lg font-bold tracking-[0.4em] mx-auto py-2 rounded-lg transition-all focus:outline-hidden block"
-                                />
-
-                                <button
-                                    type="button"
-                                    onClick={handleConfirmInstallmentOtp}
-                                    className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-all cursor-pointer uppercase tracking-wider"
-                                >
-                                    Verify & Pay
-                                </button>
                             </div>
                         )}
 
