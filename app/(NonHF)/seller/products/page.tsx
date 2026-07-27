@@ -13,6 +13,7 @@ import { useToast } from '@/components/toastProvider';
 import { formatCurrency, deleteCloudinaryImage } from '@/lib/utils';
 import { parseImageUrls } from '@/lib/products';
 import { motion, AnimatePresence } from 'framer-motion';
+import ProductColorSelector from '@/components/ProductColorSelector';
 
 interface Category {
   id: string;
@@ -81,6 +82,7 @@ export default function SellerProductsPage() {
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
   // Fetch Products & Categories
   async function loadData() {
@@ -369,6 +371,7 @@ export default function SellerProductsPage() {
   const handleEditProduct = (p: ProductItem) => {
     setEditingProduct(p);
     setExistingImages(p.images || (p.imageUrl ? [p.imageUrl] : []));
+    setSelectedColors([]);
     formik.setValues({
       name: p.name,
       brand: p.brand,
@@ -387,6 +390,7 @@ export default function SellerProductsPage() {
   const handleOpenAddDrawer = () => {
     setEditingProduct(null);
     setExistingImages([]);
+    setSelectedColors([]);
     formik.resetForm();
     setIsAddDrawerOpen(true);
   };
@@ -826,6 +830,12 @@ export default function SellerProductsPage() {
                       <p className="text-xs font-bold text-red-500">{String(formik.errors.imageFiles)}</p>
                     )}
                   </div>
+
+                  {/* Color Variant Options (Frontend Only - Up to 3 Colors) */}
+                  <ProductColorSelector
+                    selectedColors={selectedColors}
+                    onChange={setSelectedColors}
+                  />
 
                   {/* Short Overview */}
                   <div className="space-y-1">

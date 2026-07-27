@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { deleteCloudinaryImage } from '@/lib/utils';
+import ProductColorSelector from '@/components/ProductColorSelector';
 
 interface Category {
   id: string;
@@ -78,6 +79,7 @@ export default function AdminProductsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const { showToast } = useToast();
   const { user } = useAuth();
 
@@ -366,6 +368,7 @@ export default function AdminProductsPage() {
   const handleEditProduct = (prod: ProductItem) => {
     setEditingProduct(prod);
     setExistingImages(prod.images || (prod.imageUrl ? [prod.imageUrl] : []));
+    setSelectedColors([]);
     formik.setValues({
       name: prod.name,
       brand: prod.brand,
@@ -384,6 +387,7 @@ export default function AdminProductsPage() {
   const handleOpenAddDrawer = () => {
     setEditingProduct(null);
     setExistingImages([]);
+    setSelectedColors([]);
     formik.resetForm();
     setIsAddDrawerOpen(true);
   };
@@ -884,6 +888,12 @@ export default function AdminProductsPage() {
                       </p>
                     )}
                   </div>
+
+                  {/* Color Variant Options (Frontend Only - Up to 3 Colors) */}
+                  <ProductColorSelector
+                    selectedColors={selectedColors}
+                    onChange={setSelectedColors}
+                  />
 
                   {/* Overview summary */}
                   <div>

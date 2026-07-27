@@ -259,11 +259,11 @@ export default function SellerWalletPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
         {/* Available Balance */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-150 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Available Balance</span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <DollarSign size={20} />
+            <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shadow-xs">
+              <DollarSign size={22} />
             </div>
           </div>
           <div>
@@ -277,11 +277,11 @@ export default function SellerWalletPage() {
         </div>
 
         {/* Pending Escrow */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-150 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Pending Payouts</span>
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Clock size={20} />
+            <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shadow-xs">
+              <Clock size={22} />
             </div>
           </div>
           <div>
@@ -295,11 +295,11 @@ export default function SellerWalletPage() {
         </div>
 
         {/* Total Withdrawn */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-150 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Withdrawn</span>
-            <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <ArrowUpRight size={20} />
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shadow-xs">
+              <ArrowUpRight size={22} />
             </div>
           </div>
           <div>
@@ -313,11 +313,11 @@ export default function SellerWalletPage() {
         </div>
 
         {/* Total Revenue */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-150 relative overflow-hidden flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-3xl shadow-lg relative overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Gross Sales</span>
-            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <ShieldCheck size={20} />
+            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center shadow-xs">
+              <ShieldCheck size={22} />
             </div>
           </div>
           <div>
@@ -336,7 +336,7 @@ export default function SellerWalletPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Active Payout Method */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-gray-150 shadow-sm space-y-4">
+        <div className="lg:col-span-2 bg-white p-6 rounded-3xl shadow-lg space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center">
@@ -355,7 +355,7 @@ export default function SellerWalletPage() {
             </button>
           </div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-slate-50/80 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-[10px] font-black uppercase text-orange-500 tracking-widest block">
                 {payoutAccount.networkOrBank}
@@ -376,7 +376,7 @@ export default function SellerWalletPage() {
         </div>
 
         {/* Payout Security Note */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-sm flex flex-col justify-between space-y-4">
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-lg flex flex-col justify-between space-y-4">
           <div className="space-y-2">
             <span className="inline-block bg-white/10 text-orange-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md">
               Fast Payout Processing
@@ -394,7 +394,7 @@ export default function SellerWalletPage() {
       </div>
 
       {/* Transactions Section */}
-      <div className="bg-white rounded-3xl border border-gray-150 shadow-sm p-6 space-y-6">
+      <div className="bg-white rounded-3xl shadow-lg p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-black text-slate-900">Transaction History</h2>
