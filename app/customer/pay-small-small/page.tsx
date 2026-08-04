@@ -50,8 +50,8 @@ export default function PaySmallSmallPage() {
     // Create Plan Wizard State
     const [wizardStep, setWizardStep] = useState<1 | 2 | 3>(1);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [downPaymentPercent, setDownPaymentPercent] = useState<number>(20); // default 20%
-    const [frequency, setFrequency] = useState<'weekly' | 'bi-weekly' | 'monthly'>('monthly');
+    const [downPaymentPercent, setDownPaymentPercent] = useState<number>(30); // default 30%
+    const [frequency, setFrequency] = useState< 'monthly'>('monthly');
     const [installmentsCount, setInstallmentsCount] = useState<number>(6); // default 6 installments
     const [momoNumber, setMomoNumber] = useState('');
     const [momoProvider, setMomoProvider] = useState<'13' | '6' | '7'>('13'); // 13=MTN, 6=Telecel, 7=AT
@@ -123,7 +123,7 @@ export default function PaySmallSmallPage() {
     const startWizard = () => {
         setSelectedProduct(null);
         setWizardStep(1);
-        setDownPaymentPercent(20);
+        setDownPaymentPercent(30);
         setFrequency('monthly');
         setInstallmentsCount(6);
         setMomoNumber('');
@@ -400,7 +400,7 @@ export default function PaySmallSmallPage() {
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-950 mb-2">No Installment Plans Yet</h3>
                                 <p className="text-sm text-slate-600 mb-6 max-w-sm">
-                                    Don&apos;t wait to save the full amount! Purchase any phone or laptop using Pay Small Small, start with a 10-20% down payment, and spread the balance.
+                                    Don&apos;t wait to save the full amount! Purchase any phone or laptop using Pay Small Small, start with a 30-50% down payment, and spread the balance.
                                 </p>
                                 <button
                                     onClick={startWizard}
@@ -524,28 +524,18 @@ export default function PaySmallSmallPage() {
                         </button>
 
                         {/* Step Indicators */}
-                        <div className="flex items-center justify-center gap-4 max-w-md mx-auto mb-8">
-                            {[1, 2, 3].map((step) => (
-                                <React.Fragment key={step}>
-                                    <div className="flex items-center gap-2">
-                                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 ${
-                                            wizardStep === step
-                                                ? 'bg-orange-500 text-white border-orange-500'
-                                                : wizardStep > step
-                                                ? 'bg-orange-50 text-orange-500 border-orange-500'
-                                                : 'text-gray-400 border-gray-200'
-                                        }`}>
-                                            {step}
-                                        </span>
-                                        <span className={`text-xs font-bold hidden sm:inline ${
-                                            wizardStep === step ? 'text-slate-800' : 'text-gray-400'
-                                        }`}>
-                                            {step === 1 ? 'Choose Device' : step === 2 ? 'Configure Plan' : 'Pay Deposit'}
-                                        </span>
-                                    </div>
-                                    {step < 3 && <ChevronRight size={16} className="text-gray-300" />}
-                                </React.Fragment>
-                            ))}
+                        <div className="flex items-center justify-center gap-3 max-w-md mx-auto mb-8 text-sm font-bold tracking-wide uppercase">
+                            <span className={wizardStep === 1 ? 'text-orange-500' : wizardStep > 1 ? 'text-slate-700' : 'text-gray-300'}>
+                                Device
+                            </span>
+                            <ChevronRight size={16} className="text-gray-300" />
+                            <span className={wizardStep === 2 ? 'text-orange-500' : wizardStep > 2 ? 'text-slate-700' : 'text-gray-300'}>
+                                Plan
+                            </span>
+                            <ChevronRight size={16} className="text-gray-300" />
+                            <span className={wizardStep === 3 ? 'text-orange-500' : 'text-gray-300'}>
+                                Pay
+                            </span>
                         </div>
 
                         {/* STEP 1: CHOOSE DEVICE */}
@@ -630,7 +620,7 @@ export default function PaySmallSmallPage() {
                                             <span className="text-sm font-extrabold text-orange-500">{downPaymentPercent}% ({formatCurrency(calcDownPayment)})</span>
                                         </div>
                                         <div className="flex gap-2">
-                                            {[10, 20, 30, 40, 50].map((pct) => (
+                                            {[30, 40, 50].map((pct) => (
                                                 <button
                                                     key={pct}
                                                     type="button"
@@ -653,8 +643,6 @@ export default function PaySmallSmallPage() {
                                         <label className="text-xs font-bold text-slate-700 uppercase tracking-wide block">Payment Frequency</label>
                                         <div className="flex gap-2">
                                             {[
-                                                { label: 'Weekly', value: 'weekly' },
-                                                { label: 'Bi-Weekly', value: 'bi-weekly' },
                                                 { label: 'Monthly', value: 'monthly' },
                                             ].map((freqItem) => (
                                                 <button
@@ -680,7 +668,7 @@ export default function PaySmallSmallPage() {
                                             <span className="text-sm font-extrabold text-slate-900">{installmentsCount} {frequency.replace('ly', 's')}</span>
                                         </div>
                                         <div className="flex gap-2">
-                                            {[3, 6, 9, 12].map((cnt) => (
+                                            {[2, 3, 4, 5, 6].map((cnt) => (
                                                 <button
                                                     key={cnt}
                                                     type="button"
