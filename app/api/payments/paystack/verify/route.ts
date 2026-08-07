@@ -36,14 +36,20 @@ export async function POST(request: Request) {
 
     if (data.status && data.data?.status === 'success') {
       const txData = data.data;
-      const { amount, currency, customer, metadata, paid_at } = txData;
+      const { amount, customer, metadata } = txData;
       const amountPaidGHS = amount / 100;
       const customerEmail = customer?.email || '';
       const customerPhone = customer?.phone || metadata?.phone_number || '';
       const customerName = metadata?.customer_name || `${customer?.first_name || ''} ${customer?.last_name || ''}`.trim() || customerEmail;
+      
+      let userId: string | null = metadata?.user_id || metadata?.userId || null;
+      if (typeof userId === 'string' && userId.trim().length !== 36) {
+        userId = null;
+      }
 
       console.log('--- [VERIFY API CUSTOMER SUMMARY] ---');
       console.log(`Amount Paid:  GHS ${amountPaidGHS}`);
+      console.log(`User ID:      ${userId || 'Guest / Null'}`);
       console.log(`Customer:     ${customerName} (${customerEmail}, ${customerPhone})`);
 
       const isInstallment = metadata?.payment_type === 'installment_wallet' || String(reference || '').includes('installment');
@@ -62,13 +68,16 @@ export async function POST(request: Request) {
         const cartItems: any[] = Array.isArray(rawCart) ? rawCart : [];
         console.log(`[Paystack Verify API] Cart Items Count: ${cartItems.length}`);
 
-        // Fetch DB Prices
+        // Collect product IDs (BIGINT) to fetch authoritative prices from DB
         const productIds = cartItems
-          .map((item: any) => item.product?.id || item.id || item.product_id)
-          .filter(Boolean)
-          .map(String);
+          .map((item: any) => {
+            const rawId = item.product?.id || item.id || item.product_id;
+            const parsed = parseInt(String(rawId), 10);
+            return isNaN(parsed) ? null : parsed;
+          })
+          .filter((id): id is number => id !== null);
 
-        let dbPriceMap: Record<string, number> = {};
+        let dbPriceMap: Record<number, number> = {};
         if (productIds.length > 0) {
           try {
             console.log('[Paystack Verify API] Querying Supabase `products` table for IDs:', productIds);
@@ -79,7 +88,7 @@ export async function POST(request: Request) {
 
             if (dbProducts) {
               dbProducts.forEach((p: any) => {
-                dbPriceMap[String(p.id)] = Number(p.price || 0);
+                dbPriceMap[Number(p.id)] = Number(p.price || 0);
               });
               console.log('[Paystack Verify API] DB Price Map:', dbPriceMap);
             }
@@ -91,8 +100,9 @@ export async function POST(request: Request) {
         // Calculate expected total from DB
         let dbCalculatedTotal = 0;
         const verifiedItems = cartItems.map((item: any) => {
-          const prodId = String(item.product?.id || item.id || item.product_id || '');
-          const dbPrice = dbPriceMap[prodId] !== undefined 
+          const rawId = item.product?.id || item.id || item.product_id;
+          const prodId = parseInt(String(rawId), 10);
+          const dbPrice = !isNaN(prodId) && dbPriceMap[prodId] !== undefined 
             ? dbPriceMap[prodId] 
             : Number(item.product?.price || item.price || 0);
           const quantity = Number(item.quantity || item.qty || 1);
@@ -117,83 +127,55 @@ export async function POST(request: Request) {
 
         console.log(`[Paystack Verify API Price Check] Paid: GHS ${amountPaidGHS} | DB Total: GHS ${dbCalculatedTotal} | Matched: ${isPriceMatched}`);
 
-        // --- Inspect Schema Columns Before Insert ---
-        let dbColumns: string[] = [];
-        try {
-          const { data: sampleOrders } = await supabase.from('orders').select('*').limit(1);
-          if (sampleOrders && sampleOrders.length > 0) {
-            dbColumns = Object.keys(sampleOrders[0]);
-            console.log('[Paystack Verify API] Detected DB columns in orders table:', dbColumns);
-          }
-        } catch (e) {}
+        const orderStatus = isPriceMatched ? 'paid' : 'flagged_mismatch';
 
-        const richMetadata = {
-          ...(metadata || {}),
-          paid_amount: amountPaidGHS,
-          db_calculated_total: dbCalculatedTotal,
-          price_matched: isPriceMatched,
-          verified_items: verifiedItems,
-          customer_name: customerName,
-          customer_phone: customerPhone,
-          customer_email: customerEmail
+        // STRICT SCHEMA PAYLOAD FOR `orders` TABLE: (user_id, total, status, updated_at)
+        const orderPayload: Record<string, any> = {
+          total: dbCalculatedTotal > 0 ? dbCalculatedTotal : amountPaidGHS,
+          status: orderStatus,
+          updated_at: new Date().toISOString()
         };
 
-        const primaryOrderPayload: Record<string, any> = {
-          reference: reference,
-          customer_email: customerEmail,
-          customer_name: customerName,
-          customer_phone: customerPhone,
-          total: dbCalculatedTotal,
-          total_amount: amountPaidGHS,
-          currency: currency || 'GHS',
-          payment_status: isPriceMatched ? 'paid' : 'paid_price_mismatch',
-          order_status: isPriceMatched ? 'processing' : 'flagged_mismatch',
-          status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
-          payment_method: 'paystack',
-          paid_at: paid_at || new Date().toISOString(),
-          metadata: richMetadata
-        };
+        if (userId) {
+          orderPayload.user_id = userId;
+        }
 
         try {
-          if (dbColumns.length > 0) {
-            const filteredPayload: Record<string, any> = {};
-            dbColumns.forEach(col => {
-              if (primaryOrderPayload[col] !== undefined) {
-                filteredPayload[col] = primaryOrderPayload[col];
+          console.log('[Paystack Verify API] Inserting into `orders` table (user_id, total, status)...');
+          
+          const { data: orderData, error: orderErr } = await supabase
+            .from('orders')
+            .insert([orderPayload])
+            .select('id')
+            .single();
+
+          if (orderErr) {
+            console.error('[Paystack Verify API] ❌ Supabase `orders` Insert Error:', orderErr);
+          } else if (orderData?.id) {
+            const createdOrderId = orderData.id;
+            console.log(`[Paystack Verify API] ✅ Created Order ID (BIGINT): ${createdOrderId}`);
+
+            if (verifiedItems.length > 0) {
+              const orderItemsToInsert = verifiedItems
+                .filter(item => !isNaN(item.product_id))
+                .map((vItem: any) => ({
+                  order_id: createdOrderId,   // BIGINT foreign key -> orders(id)
+                  product_id: vItem.product_id, // BIGINT foreign key -> products(id)
+                  quantity: vItem.quantity,     // BIGINT
+                  price: vItem.unit_price       // NUMERIC
+                }));
+
+              if (orderItemsToInsert.length > 0) {
+                const { error: itemsErr } = await supabase
+                  .from('order_items')
+                  .insert(orderItemsToInsert);
+
+                if (itemsErr) {
+                  console.error('[Paystack Verify API] ❌ `order_items` Insert Error:', itemsErr);
+                } else {
+                  console.log(`[Paystack Verify API] ✅ Inserted ${orderItemsToInsert.length} line items into \`order_items\`!`);
+                }
               }
-            });
-            filteredPayload['reference'] = reference;
-            filteredPayload['metadata'] = richMetadata;
-
-            const { data: orderData, error: orderErr } = await supabase
-              .from('orders')
-              .upsert(filteredPayload, { onConflict: 'reference' })
-              .select()
-              .maybeSingle();
-
-            if (orderErr) {
-              console.error('[Paystack Verify API] ❌ Order Upsert Error:', orderErr);
-            } else {
-              console.log('[Paystack Verify API] ✅ Order Created/Updated successfully:', orderData?.id || reference);
-            }
-          } else {
-            const { data: orderData, error: orderErr } = await supabase
-              .from('orders')
-              .upsert(primaryOrderPayload, { onConflict: 'reference' })
-              .select()
-              .maybeSingle();
-
-            if (orderErr && orderErr.code === 'PGRST204') {
-              console.log('[Paystack Verify API] 🔄 Retrying with minimal fallback payload...');
-              await supabase.from('orders').upsert({
-                reference: reference,
-                customer_email: customerEmail,
-                total: amountPaidGHS,
-                status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
-                metadata: richMetadata
-              }, { onConflict: 'reference' });
-            } else if (!orderErr) {
-              console.log('[Paystack Verify API] ✅ Order Created successfully:', orderData?.id || reference);
             }
           }
         } catch (dbErr) {

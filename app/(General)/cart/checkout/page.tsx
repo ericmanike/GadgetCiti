@@ -5,14 +5,14 @@ import { ArrowLeft, ChevronRight, CheckCircle2, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
 import { useCart } from '@/components/CartContext';
+import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const STEPS = ['Delivery', 'Review & Pay'];
 
-
-
 export default function CheckoutPage() {
     const { cart, clearCart, totalPrice } = useCart();
+    const { user } = useAuth();
     const [step, setStep] = useState(0);
     const [placed, setPlaced] = useState(false);
     const [isPaying, setIsPaying] = useState(false);
@@ -100,7 +100,8 @@ export default function CheckoutPage() {
                 lastname: form.fullName.split(' ').slice(1).join(' ') || '',
                 phone: form.phone,
                 metadata: {
-                    cart_items:cart,
+                    user_id: user?.id || null,
+                    cart_items: cart,
                     custom_fields: [
                     
                         { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
