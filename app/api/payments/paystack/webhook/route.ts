@@ -47,8 +47,6 @@ export async function POST(request: Request) {
       console.log(`Customer Name:   ${customerName}`);
       console.log(`Customer Email:  ${customerEmail}`);
       console.log(`Customer Phone:  ${customerPhone}`);
-      console.log(`Channel/Currency:${channel} / ${currency}`);
-      console.log(`Paid At:         ${paid_at}`);
 
       const isInstallment = metadata?.payment_type === 'installment_wallet' || String(reference || '').includes('installment');
 
@@ -89,7 +87,6 @@ export async function POST(request: Request) {
         if (typeof rawCart === 'string') {
           try {
             rawCart = JSON.parse(rawCart);
-            console.log('[Paystack Webhook] Parsed cart_items string successfully.');
           } catch (e) {
             console.warn('[Paystack Webhook] ⚠️ Could not parse cart_items JSON string:', e);
             rawCart = [];
@@ -98,7 +95,6 @@ export async function POST(request: Request) {
 
         const cartItems: any[] = Array.isArray(rawCart) ? rawCart : [];
         console.log(`[Paystack Webhook] Cart Items Count: ${cartItems.length}`);
-        console.log('[Paystack Webhook] Raw Cart Items:', JSON.stringify(cartItems, null, 2));
 
         // Collect product IDs to fetch authoritative prices from DB
         const productIds = cartItems
@@ -171,69 +167,122 @@ export async function POST(request: Request) {
         console.log(`Price Difference:       GHS ${priceDifference.toFixed(2)}`);
         console.log(`Price Matched Flag:     ${isPriceMatched ? '✅ MATCHED' : '❌ MISMATCH FLAGGED'}`);
 
+        // --- 🔍 QUERY DB SCHEMA / COLUMNS BEFORE INSERT ---
+        console.log('\n[Paystack Webhook] Inspecting `orders` table columns in Supabase before insertion...');
+        let dbColumns: string[] = [];
         try {
-          console.log('\n[Paystack Webhook] Upserting order into Supabase `orders` table...');
-          // Insert / Upsert Order into Supabase
-          const { data: orderData, error: orderErr } = await supabase
+          const { data: sampleOrders, error: inspectErr } = await supabase
             .from('orders')
-            .upsert({
-              reference: reference,
-              customer_email: customerEmail,
-              customer_name: customerName,
-              customer_phone: customerPhone,
-              total_amount: amountPaidGHS,
-              total: dbCalculatedTotal, // DB verified total
-              calculated_total: dbCalculatedTotal,
-              price_matched: isPriceMatched,
-              currency: currency || 'GHS',
-              payment_status: isPriceMatched ? 'paid' : 'paid_price_mismatch',
-              order_status: isPriceMatched ? 'processing' : 'flagged_mismatch',
-              status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
-              payment_method: 'paystack',
-              paid_at: paid_at || new Date().toISOString(),
-              metadata: {
-                ...(metadata || {}),
-                paid_amount: amountPaidGHS,
-                db_calculated_total: dbCalculatedTotal,
-                price_matched: isPriceMatched,
-                verified_items: verifiedItems
-              }
-            }, { onConflict: 'reference' })
-            .select()
-            .maybeSingle();
+            .select('*')
+            .limit(1);
 
-          if (orderErr) {
-            console.error('[Paystack Webhook] ❌ Supabase Order Upsert Error:', orderErr);
-          } else {
-            console.log('[Paystack Webhook] ✅ Successfully created/updated Order in Supabase! Order ID/Ref:', orderData?.id || reference);
-
-            // Attempt to insert order line items into order_items table if present
-            if (orderData?.id && verifiedItems.length > 0) {
-              try {
-                console.log(`[Paystack Webhook] Inserting ${verifiedItems.length} line items into order_items table...`);
-                const orderItemsToInsert = verifiedItems.map((vItem: any) => ({
-                  order_id: orderData.id,
-                  product_id: vItem.product_id,
-                  quantity: vItem.quantity,
-                  price: vItem.unit_price
-                }));
-
-                const { error: itemsErr } = await supabase
-                  .from('order_items')
-                  .insert(orderItemsToInsert);
-
-                if (itemsErr) {
-                  console.warn('[Paystack Webhook] ℹ️ order_items insert note:', itemsErr.message);
-                } else {
-                  console.log('[Paystack Webhook] ✅ Successfully inserted order_items.');
-                }
-              } catch (itemException) {
-                console.warn('[Paystack Webhook] ℹ️ Exception inserting order_items:', itemException);
-              }
-            }
+          if (!inspectErr && sampleOrders && sampleOrders.length > 0) {
+            dbColumns = Object.keys(sampleOrders[0]);
+            console.log('[Paystack Webhook] ✅ Detected DB columns in `orders` table:', dbColumns);
+          } else if (inspectErr) {
+            console.warn('[Paystack Webhook] ⚠️ Column inspection query note:', inspectErr.message);
           }
-        } catch (dbErr) {
-          console.error('[Paystack Webhook] ❌ DB Exception - Order Creation:', dbErr);
+        } catch (e) {
+          console.warn('[Paystack Webhook] ⚠️ Exception inspecting schema columns:', e);
+        }
+
+        // Construct safe order record with existing DB columns
+        const richMetadata = {
+          ...(metadata || {}),
+          paid_amount: amountPaidGHS,
+          db_calculated_total: dbCalculatedTotal,
+          price_matched: isPriceMatched,
+          verified_items: verifiedItems,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          customer_email: customerEmail
+        };
+
+        // Primary Payload - using universal schema columns
+        const primaryOrderPayload: Record<string, any> = {
+          reference: reference,
+          customer_email: customerEmail,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          total: dbCalculatedTotal,
+          total_amount: amountPaidGHS,
+          currency: currency || 'GHS',
+          payment_status: isPriceMatched ? 'paid' : 'paid_price_mismatch',
+          order_status: isPriceMatched ? 'processing' : 'flagged_mismatch',
+          status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
+          payment_method: 'paystack',
+          paid_at: paid_at || new Date().toISOString(),
+          metadata: richMetadata
+        };
+
+        // If schema inspection returned specific columns, filter keys to match existing DB columns
+        if (dbColumns.length > 0) {
+          const filteredPayload: Record<string, any> = {};
+          dbColumns.forEach(col => {
+            if (primaryOrderPayload[col] !== undefined) {
+              filteredPayload[col] = primaryOrderPayload[col];
+            }
+          });
+          // Ensure reference and metadata are included
+          filteredPayload['reference'] = reference;
+          filteredPayload['metadata'] = richMetadata;
+          
+          console.log('[Paystack Webhook] Filtered payload matching schema cache:', Object.keys(filteredPayload));
+          
+          try {
+            const { data: orderData, error: orderErr } = await supabase
+              .from('orders')
+              .upsert(filteredPayload, { onConflict: 'reference' })
+              .select()
+              .maybeSingle();
+
+            if (orderErr) {
+              console.error('[Paystack Webhook] ❌ Supabase Order Upsert Error (Filtered):', orderErr);
+            } else {
+              console.log('[Paystack Webhook] ✅ Successfully created/updated Order in Supabase! Order ID/Ref:', orderData?.id || reference);
+            }
+          } catch (dbErr) {
+            console.error('[Paystack Webhook] ❌ DB Exception during filtered upsert:', dbErr);
+          }
+        } else {
+          // Fallback Upsert if inspection was empty or new table
+          console.log('[Paystack Webhook] Upserting order with primary payload...');
+          try {
+            const { data: orderData, error: orderErr } = await supabase
+              .from('orders')
+              .upsert(primaryOrderPayload, { onConflict: 'reference' })
+              .select()
+              .maybeSingle();
+
+            if (orderErr) {
+              console.error('[Paystack Webhook] ❌ Supabase Order Upsert Error:', orderErr);
+              
+              // Second Fallback: Minimal payload if any column is rejected by schema cache
+              if (orderErr.code === 'PGRST204') {
+                console.log('[Paystack Webhook] 🔄 Attempting minimal safe payload fallback...');
+                const minimalPayload = {
+                  reference: reference,
+                  customer_email: customerEmail,
+                  total: amountPaidGHS,
+                  status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
+                  metadata: richMetadata
+                };
+                const { data: fallbackData, error: fallbackErr } = await supabase
+                  .from('orders')
+                  .upsert(minimalPayload, { onConflict: 'reference' });
+
+                if (fallbackErr) {
+                  console.error('[Paystack Webhook] ❌ Minimal fallback error:', fallbackErr);
+                } else {
+                  console.log('[Paystack Webhook] ✅ Minimal fallback order created successfully:', fallbackData);
+                }
+              }
+            } else {
+              console.log('[Paystack Webhook] ✅ Successfully created/updated Order in Supabase! Order ID/Ref:', orderData?.id || reference);
+            }
+          } catch (dbErr) {
+            console.error('[Paystack Webhook] ❌ DB Exception - Order Creation:', dbErr);
+          }
         }
       }
     }

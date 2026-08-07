@@ -117,39 +117,84 @@ export async function POST(request: Request) {
 
         console.log(`[Paystack Verify API Price Check] Paid: GHS ${amountPaidGHS} | DB Total: GHS ${dbCalculatedTotal} | Matched: ${isPriceMatched}`);
 
-        // Create / Update Order Record in DB
+        // --- Inspect Schema Columns Before Insert ---
+        let dbColumns: string[] = [];
         try {
-          console.log('[Paystack Verify API] Upserting order into Supabase...');
-          const { data: orderData } = await supabase
-            .from('orders')
-            .upsert({
-              reference: reference,
-              customer_email: customerEmail,
-              customer_name: customerName,
-              customer_phone: customerPhone,
-              total_amount: amountPaidGHS,
-              total: dbCalculatedTotal,
-              calculated_total: dbCalculatedTotal,
-              price_matched: isPriceMatched,
-              currency: currency || 'GHS',
-              payment_status: isPriceMatched ? 'paid' : 'paid_price_mismatch',
-              order_status: isPriceMatched ? 'processing' : 'flagged_mismatch',
-              status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
-              payment_method: 'paystack',
-              paid_at: paid_at || new Date().toISOString(),
-              metadata: {
-                ...(metadata || {}),
-                paid_amount: amountPaidGHS,
-                db_calculated_total: dbCalculatedTotal,
-                price_matched: isPriceMatched,
-                verified_items: verifiedItems
-              }
-            }, { onConflict: 'reference' })
-            .select()
-            .maybeSingle();
+          const { data: sampleOrders } = await supabase.from('orders').select('*').limit(1);
+          if (sampleOrders && sampleOrders.length > 0) {
+            dbColumns = Object.keys(sampleOrders[0]);
+            console.log('[Paystack Verify API] Detected DB columns in orders table:', dbColumns);
+          }
+        } catch (e) {}
 
-          if (orderData?.id) {
-            console.log('[Paystack Verify API] ✅ Successfully created/updated Order in Supabase ID:', orderData.id);
+        const richMetadata = {
+          ...(metadata || {}),
+          paid_amount: amountPaidGHS,
+          db_calculated_total: dbCalculatedTotal,
+          price_matched: isPriceMatched,
+          verified_items: verifiedItems,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          customer_email: customerEmail
+        };
+
+        const primaryOrderPayload: Record<string, any> = {
+          reference: reference,
+          customer_email: customerEmail,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          total: dbCalculatedTotal,
+          total_amount: amountPaidGHS,
+          currency: currency || 'GHS',
+          payment_status: isPriceMatched ? 'paid' : 'paid_price_mismatch',
+          order_status: isPriceMatched ? 'processing' : 'flagged_mismatch',
+          status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
+          payment_method: 'paystack',
+          paid_at: paid_at || new Date().toISOString(),
+          metadata: richMetadata
+        };
+
+        try {
+          if (dbColumns.length > 0) {
+            const filteredPayload: Record<string, any> = {};
+            dbColumns.forEach(col => {
+              if (primaryOrderPayload[col] !== undefined) {
+                filteredPayload[col] = primaryOrderPayload[col];
+              }
+            });
+            filteredPayload['reference'] = reference;
+            filteredPayload['metadata'] = richMetadata;
+
+            const { data: orderData, error: orderErr } = await supabase
+              .from('orders')
+              .upsert(filteredPayload, { onConflict: 'reference' })
+              .select()
+              .maybeSingle();
+
+            if (orderErr) {
+              console.error('[Paystack Verify API] ❌ Order Upsert Error:', orderErr);
+            } else {
+              console.log('[Paystack Verify API] ✅ Order Created/Updated successfully:', orderData?.id || reference);
+            }
+          } else {
+            const { data: orderData, error: orderErr } = await supabase
+              .from('orders')
+              .upsert(primaryOrderPayload, { onConflict: 'reference' })
+              .select()
+              .maybeSingle();
+
+            if (orderErr && orderErr.code === 'PGRST204') {
+              console.log('[Paystack Verify API] 🔄 Retrying with minimal fallback payload...');
+              await supabase.from('orders').upsert({
+                reference: reference,
+                customer_email: customerEmail,
+                total: amountPaidGHS,
+                status: isPriceMatched ? 'Processing' : 'Flagged (Price Mismatch)',
+                metadata: richMetadata
+              }, { onConflict: 'reference' });
+            } else if (!orderErr) {
+              console.log('[Paystack Verify API] ✅ Order Created successfully:', orderData?.id || reference);
+            }
           }
         } catch (dbErr) {
           console.error('[Paystack Verify API DB Exception]:', dbErr);
