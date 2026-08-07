@@ -1,66 +1,66 @@
-
-'use client'
+'use client';
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function Footer() {
-
     const pathname = usePathname();
-    const hideFooter = pathname === '/checkout' 
+    const hideFooter = pathname === '/checkout';
 
     if (hideFooter) {
         return null;
     } 
+    
     return (
-        <footer className="bg-gray-800 text-gray-300 border-t border-gray-800 z-0 ">
+        <footer className="bg-slate-900 text-gray-300 border-t border-slate-800 z-0">
             <div className="container mx-auto px-4 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     {/* Brand Section */}
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-black text-white tracking-tighter font-outfit">Gadget CITi</h3>
-                        <p className="text-sm leading-relaxed text-gray-400">
-                            Your trusted platform for premium smartphones, laptops, accessories, and professional IT services.
+                    <div className="space-y-4 lg:col-span-2">
+                        <h3 className="text-2xl font-black text-white tracking-tighter font-outfit">Gadget's CITi</h3>
+                        <p className="text-sm leading-relaxed text-gray-400 max-w-sm">
+                            Your trusted Ghanaian platform for authentic smartphones, laptops, tech accessories, device trade-ins, flexible financing, and professional IT repair services.
                         </p>
                         <div className="flex gap-4 pt-2">
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Facebook className="h-5 w-5" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-5 w-5" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-5 w-5" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-5 w-5" /></a>
-                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-5 w-5" /></a>
-
+                            <a href="mailto:contact@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-5 w-5" /></a>
                         </div>
                     </div>
 
                     {/* Quick Links */}
                     <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white">Quick Links</h4>
-                        <ul className="space-y-2 text-sm">
+                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Company</h4>
+                        <ul className="space-y-2.5 text-sm">
                             <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
-                            <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Shop now</Link></li>
-                            <li><Link href="/seller" className="hover:text-orange-500 transition-colors">Sell to Us</Link></li>
-                            <li><Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support</Link></li>
+                            <li><Link href="/about" className="hover:text-orange-500 transition-colors font-semibold text-white">About Us</Link></li>
+                            <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Shop Products</Link></li>
+                            <li><Link href="/seller" className="hover:text-orange-500 transition-colors">Sell / Trade-In</Link></li>
+                            <li><Link href="/reviews" className="hover:text-orange-500 transition-colors font-semibold text-orange-400">Customer Reviews</Link></li>
                         </ul>
                     </div>
 
-                    {/* Categories */}
+                    {/* Support & Legal Links */}
                     <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white">Categories</h4>
-                        <ul className="space-y-2 text-sm">
-                            <li><Link href="/buy?category=phones" className="hover:text-orange-500 transition-colors">Phones & Tablets</Link></li>
-                            <li><Link href="/buy?category=laptops" className="hover:text-orange-500 transition-colors">Computers & Laptops</Link></li>
-                            <li><Link href="/buy?category=accessories" className="hover:text-orange-500 transition-colors">Accessories</Link></li>
-                            <li><Link href="/services" className="hover:text-orange-500 transition-colors">IT Services</Link></li>
+                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Support & Legal</h4>
+                        <ul className="space-y-2.5 text-sm">
+                            <li><Link href="/faq" className="hover:text-orange-500 transition-colors">FAQ's</Link></li>
+                            <li><Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support</Link></li>
+                            <li><Link href="/terms" className="hover:text-orange-500 transition-colors font-semibold text-gray-200">Terms of Service</Link></li>
+                            <li><Link href="/privacy" className="hover:text-orange-500 transition-colors font-semibold text-gray-200">Privacy Policy</Link></li>
+                            <li><Link href="/refund-policy" className="hover:text-orange-500 transition-colors font-semibold text-gray-200">Refund & Return Policy</Link></li>
                         </ul>
                     </div>
 
                     {/* Contact Info */}
                     <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white">Contact Us</h4>
+                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Contact Us</h4>
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-orange-500 shrink-0" />
-                                <span>Kumasi, KNUST</span>
+                                <MapPin className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                                <span>Kumasi, KNUST, Ghana</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 text-orange-500 shrink-0" />
@@ -74,8 +74,14 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500">
+                <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
                     <p>&copy; {new Date().getFullYear()} Gadget CITi Hub. All rights reserved.</p>
+                    <div className="flex gap-6">
+                        <Link href="/terms" className="hover:text-orange-500 transition-colors">Terms of Service</Link>
+                        <Link href="/privacy" className="hover:text-orange-500 transition-colors">Privacy Policy</Link>
+                        <Link href="/refund-policy" className="hover:text-orange-500 transition-colors">Refund Policy</Link>
+                        <Link href="/reviews" className="hover:text-orange-500 transition-colors">Customer Feedback</Link>
+                    </div>
                 </div>
             </div>
         </footer>

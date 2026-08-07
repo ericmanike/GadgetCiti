@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList } from 'lucide-react';
+import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList, Info, MessageSquareQuote, ShieldCheck, FileText, Scale, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from './AuthContext';
 
@@ -42,17 +42,26 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       ]
     },
     {
-      title: 'Financing',
+      title: 'Financing & Services',
       items: [
         { id: 8, name: 'Pay Small Small', href: '/customer/pay-small-small', icon: Wallet },
       ]
     },
     {
-      title: 'Account & Support',
+      title: 'Company & Support',
       items: [
+        { id: 10, name: 'About Gadget CITi', href: '/about', icon: Info },
+        { id: 11, name: 'Customer Reviews', href: '/reviews', icon: MessageSquareQuote },
         { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
-        { id: 6, name: 'Locate Our Shop(s)', href: '/dump', icon: MapPin },
         { id: 5, name: 'FAQs', href: '/faq', icon: HelpCircle },
+      ]
+    },
+    {
+      title: 'Legal & Policies',
+      items: [
+        { id: 12, name: 'Terms of Service', href: '/terms', icon: Scale },
+        { id: 13, name: 'Privacy Policy', href: '/privacy', icon: ShieldCheck },
+        { id: 14, name: 'Refund Policy', href: '/refund-policy', icon: RefreshCw },
       ]
     }
   ];
