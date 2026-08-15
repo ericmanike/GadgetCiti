@@ -12,28 +12,28 @@ export default function Footer() {
     } 
     
     return (
-        <footer className="bg-slate-900 text-gray-300 border-t border-slate-800 z-0">
+        <footer className="bg-slate-900 text-gray-300 border-t border-slate-800 z-0 font-sans">
             <div className="container mx-auto px-4 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
                     {/* Brand Section */}
                     <div className="space-y-4 lg:col-span-2">
-                        <h3 className="text-2xl font-black text-white tracking-tighter font-outfit">Gadget's CITi</h3>
-                        <p className="text-sm leading-relaxed text-gray-400 max-w-sm">
+                        <h3 className="text-3xl font-black text-white tracking-tighter font-outfit">Gadget's CITi</h3>
+                        <p className="text-base leading-relaxed text-gray-400 max-w-md">
                             Your trusted Ghanaian platform for authentic smartphones, laptops, tech accessories, device trade-ins, flexible financing, and professional IT repair services.
                         </p>
-                        <div className="flex gap-4 pt-2">
-                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Facebook className="h-5 w-5" /></a>
-                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-5 w-5" /></a>
-                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-5 w-5" /></a>
-                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-5 w-5" /></a>
-                            <a href="mailto:contact@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-5 w-5" /></a>
+                        <div className="flex gap-5 pt-2">
+                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Facebook className="h-6 w-6" /></a>
+                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-6 w-6" /></a>
+                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-6 w-6" /></a>
+                            <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-6 w-6" /></a>
+                            <a href="mailto:contact@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
                         </div>
                     </div>
 
                     {/* Quick Links */}
                     <div className="space-y-4">
-                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Company</h4>
-                        <ul className="space-y-2.5 text-sm">
+                        <h4 className="text-lg font-bold text-white uppercase tracking-wider">Company</h4>
+                        <ul className="space-y-3 text-base">
                             <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
                             <li><Link href="/about" className="hover:text-orange-500 transition-colors font-semibold text-white">About Us</Link></li>
                             <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Shop Products</Link></li>
@@ -44,8 +44,8 @@ export default function Footer() {
 
                     {/* Support & Legal Links */}
                     <div className="space-y-4">
-                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Support & Legal</h4>
-                        <ul className="space-y-2.5 text-sm">
+                        <h4 className="text-lg font-bold text-white uppercase tracking-wider">Support & Legal</h4>
+                        <ul className="space-y-3 text-base">
                             <li><Link href="/faq" className="hover:text-orange-500 transition-colors">FAQ's</Link></li>
                             <li><Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support</Link></li>
                             <li><Link href="/terms" className="hover:text-orange-500 transition-colors font-semibold text-gray-200">Terms of Service</Link></li>
@@ -56,10 +56,10 @@ export default function Footer() {
 
                     {/* Contact Info */}
                     <div className="space-y-4">
-                        <h4 className="text-base font-bold text-white uppercase tracking-wider">Contact Us</h4>
-                        <ul className="space-y-3 text-sm">
+                        <h4 className="text-lg font-bold text-white uppercase tracking-wider">Contact Us</h4>
+                        <ul className="space-y-3.5 text-base">
                             <li className="flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
+                                <MapPin className="h-5 w-5 text-orange-500 shrink-0 mt-1" />
                                 <span>Kumasi, KNUST, Ghana</span>
                             </li>
                             <li className="flex items-center gap-3">
@@ -74,7 +74,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+                <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
                     <p>&copy; {new Date().getFullYear()} Gadget CITi Hub. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="/terms" className="hover:text-orange-500 transition-colors">Terms of Service</Link>
@@ -87,3 +87,4 @@ export default function Footer() {
         </footer>
     );
 }
+
