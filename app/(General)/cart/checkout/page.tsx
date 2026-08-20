@@ -251,7 +251,7 @@ export default function CheckoutPage() {
                                                     value={(form as any)[field]}
                                                     onChange={e => update(field, e.target.value)}
                                                     placeholder={placeholder}
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-slate-400 focus:ring-2 focus:ring-slate-300/50 outline-none transition text-[16px]"
+                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px]"
                                                 />
                                             </div>
                                         ))}
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                                             <select
                                                 value={form.region}
                                                 onChange={e => update('region', e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-300/50 outline-none transition text-[16px] cursor-pointer"
+                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px] cursor-pointer"
                                             >
                                                 <option value="" disabled>Select your region</option>
                                                 <option value="Greater Accra">Greater Accra</option>

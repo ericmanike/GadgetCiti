@@ -447,7 +447,7 @@ export default function AdminProductsPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search products by title, name, or brand..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
           />
         </div>
 
@@ -457,7 +457,7 @@ export default function AdminProductsPage() {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer appearance-none animate-in"
+            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition cursor-pointer appearance-none animate-in"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -653,7 +653,7 @@ export default function AdminProductsPage() {
                       id="name"
                       name="name"
                       placeholder="e.g. iPhone 15 Pro Max"
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                     />
                     {formik.touched.name && formik.errors.name && (
                       <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -673,7 +673,7 @@ export default function AdminProductsPage() {
                         id="brand"
                         name="brand"
                         placeholder="e.g. Apple"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                       />
                       {formik.touched.brand && formik.errors.brand && (
                         <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -690,7 +690,7 @@ export default function AdminProductsPage() {
                         as="select"
                         id="category"
                         name="category"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition cursor-pointer"
                       >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
@@ -717,7 +717,7 @@ export default function AdminProductsPage() {
                         as="select"
                         id="condition"
                         name="condition"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-[9px] md:text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition cursor-pointer"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-[9px] md:text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition cursor-pointer"
                       >
                         <option value="">Select Condition</option>
                         <option value="New">New</option>
@@ -740,7 +740,7 @@ export default function AdminProductsPage() {
                         name="price"
                         step="50"
                         placeholder="1200.00"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                       />
                       {formik.touched.price && formik.errors.price && (
                         <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -760,7 +760,7 @@ export default function AdminProductsPage() {
                         min="0"
                         max="99"
                         placeholder="e.g. 10"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                       />
                       {formik.touched.discount && formik.errors.discount && (
                         <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -778,7 +778,7 @@ export default function AdminProductsPage() {
                         id="stock"
                         name="stock"
                         placeholder="5"
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                       />
                       {formik.touched.stock && formik.errors.stock && (
                         <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -909,7 +909,7 @@ export default function AdminProductsPage() {
                       id="overview"
                       name="overview"
                       placeholder="e.g. Excellent flagship smartphone with pristine dynamic displays."
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                     />
                     {formik.touched.overview && formik.errors.overview && (
                       <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">
@@ -929,7 +929,7 @@ export default function AdminProductsPage() {
                       name="description"
                       rows={3}
                       placeholder="Explain features, specs, size, and package components in detail..."
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition resize-none text-slate-800"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition resize-none text-slate-800"
                     />
                     {formik.touched.description && formik.errors.description && (
                       <p className="mt-1 text-[8px] md:text-sm text-red-500 flex items-center gap-1 font-semibold">

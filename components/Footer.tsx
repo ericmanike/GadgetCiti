@@ -19,7 +19,7 @@ export default function Footer() {
                     <div className="space-y-4 lg:col-span-2">
                         <h3 className="text-3xl font-black text-white tracking-tighter font-outfit">Gadget's CITi</h3>
                         <p className="text-base leading-relaxed text-gray-400 max-w-md">
-                            Your trusted Ghanaian platform for authentic smartphones, laptops, tech accessories, device trade-ins, flexible financing, and professional IT repair services.
+                            Your trusted platform for authentic smartphones, laptops, tech accessories, device trade-ins, flexible financing, and professional IT repair services.
                         </p>
                         <div className="flex gap-5 pt-2">
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Facebook className="h-6 w-6" /></a>
@@ -37,14 +37,14 @@ export default function Footer() {
                             <li><Link href="/" className="hover:text-orange-500 transition-colors">Home</Link></li>
                             <li><Link href="/about" className="hover:text-orange-500 transition-colors font-semibold text-white">About Us</Link></li>
                             <li><Link href="/buy" className="hover:text-orange-500 transition-colors">Shop Products</Link></li>
-                            <li><Link href="/seller" className="hover:text-orange-500 transition-colors">Sell / Trade-In</Link></li>
-                            <li><Link href="/reviews" className="hover:text-orange-500 transition-colors font-semibold text-orange-400">Customer Reviews</Link></li>
+                            <li><Link href="/seller" className="hover:text-orange-500 transition-colors">Start Selling</Link></li>
+                            <li><Link href="/reviews" className="hover:text-orange-500 transition-colors font-semibold ">Customer Reviews</Link></li>
                         </ul>
                     </div>
 
                     {/* Support & Legal Links */}
                     <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-white uppercase tracking-wider">Support & Legal</h4>
+                        <h4 className="text-lg font-bold text-white uppercase tracking-wider">Support</h4>
                         <ul className="space-y-3 text-base">
                             <li><Link href="/faq" className="hover:text-orange-500 transition-colors">FAQ's</Link></li>
                             <li><Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support</Link></li>
@@ -75,11 +75,11 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
-                    <p>&copy; {new Date().getFullYear()} Gadget CITi Hub. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Gadget CITi. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="/terms" className="hover:text-orange-500 transition-colors">Terms of Service</Link>
                         <Link href="/privacy" className="hover:text-orange-500 transition-colors">Privacy Policy</Link>
-                        <Link href="/refund-policy" className="hover:text-orange-500 transition-colors">Refund Policy</Link>
+                        <Link href="/refund-policy" className="hover:text-orange-500 transition-colors">Return Policy</Link>
                         <Link href="/reviews" className="hover:text-orange-500 transition-colors">Customer Feedback</Link>
                     </div>
                 </div>

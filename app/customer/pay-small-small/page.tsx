@@ -550,7 +550,7 @@ export default function PaySmallSmallPage() {
                                             placeholder="Search phones, laptops..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full bg-gray-50 border border-gray-200 focus:border-orange-400 text-slate-800 px-4 py-2.5 pl-10 rounded-lg text-sm transition-all focus:outline-hidden"
+                                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] text-slate-800 px-4 py-2.5 pl-10 rounded-lg text-sm transition-all focus:outline-hidden"
                                         />
                                     </div>
                                     {/* Filter category */}
@@ -1065,7 +1065,7 @@ export default function PaySmallSmallPage() {
                                         }}
                                         min={1}
                                         max={paymentPlan.balance_amount}
-                                        className="w-full bg-gray-50 border border-gray-250 focus:border-orange-400 text-slate-950 font-bold px-4 py-2.5 rounded-lg text-sm transition-all focus:outline-hidden"
+                                        className="w-full bg-gray-50 border border-gray-250 focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] text-slate-950 font-bold px-4 py-2.5 rounded-lg text-sm transition-all focus:outline-hidden"
                                     />
                                     <span className="text-[10px] text-gray-400 block text-right font-semibold uppercase">Max Allowed: {formatCurrency(paymentPlan.balance_amount)}</span>
                                 </div>

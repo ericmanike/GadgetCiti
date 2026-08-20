@@ -550,7 +550,7 @@ export default function SellerWalletPage() {
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     placeholder="e.g. 500"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none text-sm font-semibold text-slate-900"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none text-sm font-semibold text-slate-900"
                   />
                 </div>
 

@@ -13,7 +13,11 @@ import {
     Minus,
     Plus,
     CheckCircle2,
-    MessageSquare
+    MessageSquare,
+    Sparkles,
+    Bot,
+    X,
+    Maximize2
 } from "lucide-react";
 import { Product, parseImageUrls } from "@/lib/products";
 import { formatCurrency } from "@/lib/utils";
@@ -33,16 +37,41 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const isSaved = isInWishlist(product.id);
     const [activeTab, setActiveTab] = useState("overview");
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { addToCart } = useCart();
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [product.id]);
 
-    const validImages = parseImageUrls(product?.images);
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [isModalOpen]);
+
+     const validImages = parseImageUrls(product?.images);
     const images = validImages.length > 0 ? validImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
     const [imgError, setImgError] = useState<Record<number, boolean>>({});
 
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isModalOpen) return;
+            if (e.key === "Escape") setIsModalOpen(false);
+            if (e.key === "ArrowLeft") setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+            if (e.key === "ArrowRight") setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isModalOpen, images?.length]);
+
+   
     const getImgSrc = (idx: number) => {
         if (imgError[idx]) {
             return "https://placehold.co/800?text=photo+unavailable&font=roboto";
@@ -70,7 +99,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 {/* Left: Image Gallery */}
                 <div className="lg:col-span-4 flex flex-col gap-4">
-                    <div className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group">
+                    <div 
+                        onClick={() => setIsModalOpen(true)}
+                        className="aspect-square relative rounded-2xl overflow-hidden bg-white shadow-sm border border-gray-100 group cursor-pointer"
+                        title="Click to view full image"
+                    >
                         {/* Discount Badge on Image Top Left */}
                         {discountPercent > 0 && (
                             <span className="absolute top-2.5 left-2.5 z-20 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-md">
@@ -89,6 +122,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         >
                             <Heart size={18} className={isSaved ? "fill-red-500 text-red-500" : "text-gray-600"} />
                         </button>
+
+                        {/* Expand Hint on Hover */}
+                        <div className="absolute bottom-2.5 left-2.5 z-20 bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all opacity-0 group-hover:opacity-100 shadow-md">
+                            <Maximize2 size={13} />
+                            <span>Click to enlarge</span>
+                        </div>
 
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -309,10 +348,10 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     </button>
                     <button
                         onClick={() => setActiveTab("ai")}
-                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "specs" ? "text-slate-900" : "text-gray-400"
+                        className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "ai" ? "text-slate-900" : "text-gray-400"
                             }`}
                     >
-                        Ai Review
+                        AI Review & Insights
                         {activeTab === "ai" && (
                             <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}
@@ -356,24 +395,46 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                         </ul>
                                     </div>
                                 )}
+                                {product.specifications && product.specifications.length > 0 && (
+                                    <div className="flex flex-col gap-4 pt-4 border-t border-gray-100">
+                                        <h3 className="text-base font-black text-gray-900 uppercase tracking-widest">Specifications</h3>
+                                        <div className="flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-xs">
+                                            {product.specifications.map((spec, i) => (
+                                                <div key={i} className={`flex p-3.5 ${i % 2 === 0 ? "bg-gray-50/50" : "bg-white"}`}>
+                                                    <span className="w-1/3 text-xs font-bold text-gray-500 uppercase tracking-wider">{spec.label}</span>
+                                                    <span className="w-2/3 text-xs font-black text-gray-900">{spec.value}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </motion.div>
                         ) : activeTab === "ai" ? (
                             <motion.div
-                                key="specs"
+                                key="ai"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100"
+                                className="flex flex-col gap-4"
                             >
-                                {product.specifications ? (
-                                    product.specifications.map((spec, i) => (
-                                        <div key={i} className={`flex p-4 ${i % 2 === 0 ? "bg-gray-50/50" : "bg-white"}`}>
-                                            <span className="w-1/3 text-sm font-bold text-gray-500 uppercase tracking-widest text-[10px]">{spec.label}</span>
-                                            <span className="w-2/3 text-sm font-black text-gray-900">{spec.value}</span>
+                                {product.aiRecommendation ? (
+                                    <div className="p-6 md:p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl shadow-xl flex flex-col gap-4">
+                                        <div className="flex items-center gap-2.5 text-orange-400 font-extrabold text-xs uppercase tracking-widest">
+                                
+                                            <span>AI Review & Insight</span>
                                         </div>
-                                    ))
+                                        <p className="text-slate-200 leading-relaxed text-sm md:text-base font-medium">
+                                            {product.aiRecommendation}
+                                        </p>
+                                    </div>
                                 ) : (
-                                    <div className="p-8 text-center text-gray-400 font-medium uppercase text-xs tracking-[0.2em]">Contact seller for full specifications</div>
+                                    <div className="p-8 text-center   flex flex-col items-center justify-center gap-3">
+                                        <div className="p-3 bg-slate-100 text-slate-500 rounded-2xl">
+                                            <Bot className="size-6" />
+                                        </div>
+                                        <p className="text-gray-700 font-bold text-sm">AI recommendation coming soon</p>
+                                        <span className="text-xs text-gray-400 font-medium">AI insights are automatically generated for select items.</span>
+                                    </div>
                                 )}
                             </motion.div>
                         ) : null}
@@ -393,6 +454,86 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     ))}
                 </div>
             </section>
+            {/* Transparent Fullscreen Image Modal */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 md:p-8"
+                        onClick={() => setIsModalOpen(false)}
+                    >
+                        {/* Close Button */}
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-5 right-5 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all hover:scale-110 active:scale-95 cursor-pointer border border-white/10"
+                            aria-label="Close fullscreen image"
+                        >
+                            <X size={24} strokeWidth={2.5} />
+                        </button>
+
+                        {/* Previous Button */}
+                        {images.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                                }}
+                                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all hover:scale-110 active:scale-95 cursor-pointer border border-white/10"
+                                aria-label="Previous image"
+                            >
+                                <ChevronLeft size={26} strokeWidth={2.5} />
+                            </button>
+                        )}
+
+                        {/* Full Image Wrapper */}
+                        <div
+                            className="relative max-w-5xl max-h-[85vh] w-full h-full flex flex-col items-center justify-center p-2"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <AnimatePresence mode="wait">
+                                <motion.img
+                                    key={activeImage}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    src={getImgSrc(activeImage)}
+                                    alt={`${product.name} - view ${activeImage + 1}`}
+                                    className="max-h-[80vh] max-w-[90vw] object-contain rounded-2xl shadow-2xl"
+                                    onError={() => setImgError((prev) => ({ ...prev, [activeImage]: true }))}
+                                />
+                            </AnimatePresence>
+
+                            {/* Counter & Controls Indicator */}
+                            {images.length > 1 && (
+                                <div className="mt-4 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full border border-white/10 shadow-lg">
+                                    {activeImage + 1} / {images.length}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Next Button */}
+                        {images.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                                }}
+                                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all hover:scale-110 active:scale-95 cursor-pointer border border-white/10"
+                                aria-label="Next image"
+                            >
+                                <ChevronRight size={26} strokeWidth={2.5} />
+                            </button>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

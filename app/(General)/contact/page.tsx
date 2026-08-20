@@ -156,7 +156,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.name
                     ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-100 focus:border-blue-500'
+                    : 'border-gray-300 focus:ring-[#1e293b]/20 focus:border-[#1e293b]'
                     }`}
                   placeholder="Your Name"
                 />
@@ -177,7 +177,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.email
                     ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-100 focus:border-blue-500'
+                    : 'border-gray-300 focus:ring-[#1e293b]/20 focus:border-[#1e293b]'
                     }`}
                   placeholder="your.email@example.com"
                 />
@@ -198,7 +198,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.phone
                     ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-100 focus:border-blue-500'
+                    : 'border-gray-300 focus:ring-[#1e293b]/20 focus:border-[#1e293b]'
                     }`}
                   placeholder="054 344 2518"
                 />
@@ -217,7 +217,7 @@ export default function ContactPage() {
                   value={formData.subject}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg 
-                  focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500
+                  focus:outline-none focus:ring-2 focus:ring-[#1e293b]/20 focus:border-[#1e293b]
                    transition-all bg-white"
                 >
                   <option value="">Select a subject</option>
@@ -241,7 +241,7 @@ export default function ContactPage() {
                   rows={5}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all resize-none ${errors.message
                     ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-100 focus:border-blue-500'
+                    : 'border-gray-300 focus:ring-[#1e293b]/20 focus:border-[#1e293b]'
                     }`}
                   placeholder="Tell us how we can help you..."
                 />

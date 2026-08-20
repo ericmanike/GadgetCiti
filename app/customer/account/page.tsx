@@ -126,7 +126,7 @@ export default function AccountPage() {
                                 type="text"
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                                 required
                             />
                         </div>
@@ -136,7 +136,7 @@ export default function AccountPage() {
                                 type="email"
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                                 required
                             />
                         </div>
@@ -147,7 +147,7 @@ export default function AccountPage() {
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 placeholder="+233 XX XXX XXXX"
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                             />
                         </div>
                         <div>
@@ -156,7 +156,7 @@ export default function AccountPage() {
                                 type="text"
                                 value={formData.location}
                                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                             />
                         </div>
                     </div>

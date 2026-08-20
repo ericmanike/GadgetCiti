@@ -301,7 +301,7 @@ export default function RecycoProfile() {
                         value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`text-2xl font-semibold text-gray-900 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full ${formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
+                        className={`text-2xl font-semibold text-gray-900 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:border-[#1e293b] w-full ${formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
                           }`}
                       />
                       {formik.touched.name && formik.errors.name && (
@@ -315,7 +315,7 @@ export default function RecycoProfile() {
                         value={formik.values.role}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full max-w-xs text-gray-900 ${formik.touched.role && formik.errors.role ? 'border-red-500' : 'border-gray-300'
+                        className={`border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:border-[#1e293b] w-full max-w-xs text-gray-900 ${formik.touched.role && formik.errors.role ? 'border-red-500' : 'border-gray-300'
                           }`}
                       >
                         <option value="Buyer/Seller">Buyer/Seller</option>
@@ -345,7 +345,7 @@ export default function RecycoProfile() {
                         name="email"
                         value={formik.values.email}
                         readOnly
-                        className="border-b focus:border-emerald-500 outline-none bg-transparent border-gray-300 text-gray-400 cursor-not-allowed"
+                        className="border-b focus:border-[#1e293b] outline-none bg-transparent border-gray-300 text-gray-400 cursor-not-allowed"
                       />
                     </div>
                   ) : (
@@ -362,7 +362,7 @@ export default function RecycoProfile() {
                         value={formik.values.location}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={`border-b focus:border-emerald-500 outline-none bg-transparent ${formik.touched.location && formik.errors.location ? 'border-red-500' : 'border-gray-300'
+                        className={`border-b focus:border-[#1e293b] outline-none bg-transparent ${formik.touched.location && formik.errors.location ? 'border-red-500' : 'border-gray-300'
                           }`}
                       />
                       {formik.touched.location && formik.errors.location && (
@@ -386,7 +386,7 @@ export default function RecycoProfile() {
                       name="startDate"
                       value={formik.values.startDate}
                       readOnly
-                      className="font-medium text-gray-900 border-b focus:border-emerald-500 outline-none bg-transparent border-gray-300 opacity-50 cursor-not-allowed"
+                      className="font-medium text-gray-900 border-b focus:border-[#1e293b] outline-none bg-transparent border-gray-300 opacity-50 cursor-not-allowed"
                     />
                   </div>
                 ) : (
@@ -419,7 +419,7 @@ export default function RecycoProfile() {
                   value={formik.values.about}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className={`w-full text-gray-700 leading-relaxed border focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent rounded-md p-3 min-h-[120px] ${formik.touched.about && formik.errors.about ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full text-gray-700 leading-relaxed border focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:border-[#1e293b] rounded-md p-3 min-h-[120px] ${formik.touched.about && formik.errors.about ? 'border-red-500' : 'border-gray-300'
                     }`}
                   placeholder="Tell us about yourself..."
                 />
@@ -432,7 +432,7 @@ export default function RecycoProfile() {
                 <textarea
                   value={aboutText}
                   onChange={(e) => setAboutText(e.target.value)}
-                  className="w-full text-gray-700 leading-relaxed border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent rounded-md p-3 min-h-[120px]"
+                  className="w-full text-gray-700 leading-relaxed border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:border-[#1e293b] rounded-md p-3 min-h-[120px]"
                   placeholder="Tell us about yourself..."
                 />
                 <div className="flex gap-2 justify-end">

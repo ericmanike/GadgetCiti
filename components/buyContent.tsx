@@ -397,7 +397,7 @@ export default function BuyPage() {
                     params.delete("page");
                     router.push(`?${params.toString()}`);
                   }}
-                  className="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-orange-500 cursor-pointer shadow-xs transition"
+                  className="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] cursor-pointer shadow-xs transition"
                 >
                   <option value="newest">Newest First</option>
                   <option value="price-asc">Price: Low to High</option>

@@ -241,7 +241,7 @@ export default function AddressBookPage() {
                   value={addressData.address}
                   onChange={(e) => setAddressData({ ...addressData, address: e.target.value })}
                   placeholder="e.g. 24 Spintex Road, near Shell Signboard"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                 />
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function AddressBookPage() {
                   value={addressData.city}
                   onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
                   placeholder="e.g. Accra"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                 />
               </div>
             </div>
@@ -275,7 +275,7 @@ export default function AddressBookPage() {
                   required
                   value={addressData.region}
                   onChange={(e) => setAddressData({ ...addressData, region: e.target.value })}
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition appearance-none cursor-pointer"
+                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition appearance-none cursor-pointer"
                 >
                   <option value="" disabled>Select Region</option>
                   {GHANA_REGIONS.map((region) => (
@@ -302,7 +302,7 @@ export default function AddressBookPage() {
                   value={addressData.additionalPhone}
                   onChange={(e) => setAddressData({ ...addressData, additionalPhone: e.target.value })}
                   placeholder="Alternative contact e.g. +233 XX XXX XXXX"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                 />
               </div>
             </div>
@@ -319,7 +319,7 @@ export default function AddressBookPage() {
                   onChange={(e) => setAddressData({ ...addressData, additionalInfo: e.target.value })}
                   placeholder="Provide landmark details (e.g. Next to the MTN office), gate code, or instruction for courier."
                   rows={3}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-orange-500 focus:bg-white transition resize-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition resize-none"
                 />
               </div>
             </div>

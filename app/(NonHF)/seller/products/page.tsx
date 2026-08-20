@@ -452,7 +452,7 @@ export default function SellerProductsPage() {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search by name, brand..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
           />
         </div>
 
@@ -462,7 +462,7 @@ export default function SellerProductsPage() {
           <select
             value={selectedCategory}
             onChange={e => setSelectedCategory(e.target.value)}
-            className="w-full md:w-56 px-4 py-2.5 rounded-2xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm font-semibold text-gray-900 cursor-pointer"
+            className="w-full md:w-56 px-4 py-2.5 rounded-2xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none bg-white transition text-sm font-semibold text-gray-900 cursor-pointer"
           >
             <option value="">All Categories</option>
             {categories.map(c => (
@@ -611,7 +611,7 @@ export default function SellerProductsPage() {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder="e.g. MacBook Pro M3 Max"
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                     />
                     {formik.touched.name && formik.errors.name && (
                       <p className="text-xs font-bold text-red-500">{formik.errors.name}</p>
@@ -629,7 +629,7 @@ export default function SellerProductsPage() {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="e.g. Apple"
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.brand && formik.errors.brand && (
                         <p className="text-xs font-bold text-red-500">{formik.errors.brand}</p>
@@ -644,7 +644,7 @@ export default function SellerProductsPage() {
                         value={formik.values.category}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-sm font-semibold text-gray-900 cursor-pointer"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none bg-white transition text-sm font-semibold text-gray-900 cursor-pointer"
                       >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
@@ -666,7 +666,7 @@ export default function SellerProductsPage() {
                         value={formik.values.condition}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none bg-white transition text-xs font-semibold text-gray-900 cursor-pointer"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none bg-white transition text-xs font-semibold text-gray-900 cursor-pointer"
                       >
                         <option value="">Select Condition</option>
                         <option value="New">New</option>
@@ -688,7 +688,7 @@ export default function SellerProductsPage() {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="2999.00"
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.price && formik.errors.price && (
                         <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.price}</p>
@@ -707,7 +707,7 @@ export default function SellerProductsPage() {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="e.g. 10"
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.discount && formik.errors.discount && (
                         <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.discount}</p>
@@ -724,7 +724,7 @@ export default function SellerProductsPage() {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="10"
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                       />
                       {formik.touched.stock && formik.errors.stock && (
                         <p className="text-[8px] md:text-xs font-bold text-red-500">{formik.errors.stock}</p>
@@ -851,7 +851,7 @@ export default function SellerProductsPage() {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder="e.g. 16GB Unified Memory, 512GB SSD Storage"
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                     />
                     {formik.touched.overview && formik.errors.overview && (
                       <p className="text-xs font-bold text-red-500">{formik.errors.overview}</p>
@@ -868,7 +868,7 @@ export default function SellerProductsPage() {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder="Detail specifications, product condition, warranty, and box items..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition text-sm font-semibold text-gray-900"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-sm font-semibold text-gray-900"
                     />
                     {formik.touched.description && formik.errors.description && (
                       <p className="text-xs font-bold text-red-500">{formik.errors.description}</p>

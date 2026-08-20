@@ -108,7 +108,7 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className="w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 py-6 rounded-l-full border-2 border-transparent bg-white focus:border-orange-500 outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
+                    className="w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 py-6 rounded-l-full border-2 border-transparent bg-white focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] outline-none transition-all placeholder:text-gray-500 text-[16px] md:text-base"
                   />
                   {searchQuery && (
                     <button

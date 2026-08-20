@@ -277,7 +277,7 @@ export default function AdminCategoriesPage() {
                 value={newCatName}
                 onChange={(e) => setNewCatName(e.target.value)}
                 placeholder="e.g. Smart Home"
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                 required
               />
               <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal font-semibold">
@@ -321,7 +321,7 @@ export default function AdminCategoriesPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search active categories by label name or slug..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-slate-850 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 transition shadow-sm"
+              className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-slate-850 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] transition shadow-sm"
             />
           </div>
 
@@ -473,7 +473,7 @@ export default function AdminCategoriesPage() {
                   value={editCatName}
                   onChange={(e) => setEditCatName(e.target.value)}
                   placeholder="e.g. Smart Home"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 focus:bg-white transition"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
                   required
                 />
                 <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal font-semibold">

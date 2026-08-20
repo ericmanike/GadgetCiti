@@ -200,7 +200,7 @@ export default function FalaaDealsComponent() {
                         placeholder="john@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 focus:bg-white rounded-2xl focus:outline-none transition-all font-bold"
+                        className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white rounded-2xl focus:outline-none transition-all font-bold"
                       />
                     </div>
                     <button

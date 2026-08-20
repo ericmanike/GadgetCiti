@@ -17,6 +17,7 @@ export interface Product {
     ratingCount: number;
     specifications?: { label: string; value: string }[];
     features?: string[];
+    aiRecommendation?: string;
     createdAt?: string;
 }
 
@@ -137,6 +138,7 @@ export function mapDBProductToClient(row: any): Product {
         ratingCount: ratingCount,
         specifications: specs,
         features: row.over_view?.features || [],
+        aiRecommendation: row.over_view?.aiRecommendation || row.ai_recommendation || row.ai_review || undefined,
         createdAt: row.created_at || new Date().toISOString()
     };
 }
