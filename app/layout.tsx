@@ -22,6 +22,7 @@ const outfit = Outfit({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.gadgetciti.com"),
   title: "Gadget CITi - Your Trusted Plug for Quality Gadgets",
   description: "Buy quality and trusted gadgets on Gadget CITi - your trusted platform for all phones, laptop and accessories - gadgets.",
   twitter: {
