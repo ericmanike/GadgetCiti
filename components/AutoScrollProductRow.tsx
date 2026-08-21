@@ -63,7 +63,7 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
       className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none"
     >
       {products.map((product) => (
-        <div key={product.id} className="w-[240px] sm:w-[260px] md:w-[280px] shrink-0">
+        <div key={product.id} className="w-[190px] sm:w-[200px] md:w-[240px]  shrink-0">
           <ProductCard product={product} />
         </div>
       ))}
