@@ -1,14 +1,14 @@
 'use client';
 import { ProductCard } from '@/components/ProductCard';
+import AutoScrollProductRow from '@/components/AutoScrollProductRow';
 import Link from "next/link";
-import FramerMultiSlideCarousel from '@/components/multicouresel';
 
 import Image from 'next/image';
 
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
-import {MonitorCog, Cable  } from 'lucide-react';
+import { MonitorCog, Cable, ArrowRight } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
@@ -91,23 +91,26 @@ export default function Home() {
             ))}
 
             {/* View All Button */}
-            <div className="col-span-full flex justify-center mt-2">
+            <div className="col-span-full flex justify-center mt-4 md:mt-6">
               <Link
                 href="/buy"
                 className="
-                flex  items-center justify-between gap-3 
-                px-10 py-5 bg-orange-500 
-                hover:bg-orange-600 text-white rounded-xl
-                font-bold text-1xl md:text-2xl uppercase tracking-wider
-                transition-all duration-200 shadow-md
-                hover:shadow-lg
-                hover:scale-102 active:scale-98
+                group/btn relative inline-flex items-center justify-center gap-3.5 
+                px-8 md:px-10 py-3.5 md:py-4 
+                bg-orange-500 hover:bg-orange-600
+                text-white rounded-2xl
+                font-black text-sm md:text-base uppercase tracking-wider
+                transition-all duration-300 shadow-lg shadow-orange-500/25
+                hover:shadow-xl hover:shadow-orange-500/35
+                hover:scale-[1.02] active:scale-[0.98]
                 cursor-pointer select-none"
-                
               >
-                Start Shopping
+                <span className="font-black tracking-widest">Start Shopping</span>
                 
-                <MonitorCog  className="w-6 h-6 " /> 
+                <div className="relative z-10 p-1.5 bg-white/20 rounded-xl group-hover/btn:bg-white/30 transition-colors">
+                  <MonitorCog className="w-5 h-5 group-hover/btn:rotate-45 transition-transform duration-500 ease-out" /> 
+                </div>
+                <ArrowRight className="relative z-10 w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
           </div>
@@ -129,10 +132,7 @@ export default function Home() {
           {loading ? (
             <SkeletonCards cols={4} rows={1} />
           ) : (
-            <FramerMultiSlideCarousel
-              items={SPONSORED_GADGETS}
-              renderItem={(product) => <ProductCard product={product} />}
-            />
+            <AutoScrollProductRow products={SPONSORED_GADGETS} />
           )}
         </section>
 
@@ -151,10 +151,13 @@ export default function Home() {
           {loading ? (
             <SkeletonCards cols={4} rows={1} />
           ) : (
-            <FramerMultiSlideCarousel
-              items={RECOMMENDED_GADGETS}
-              renderItem={(product) => <ProductCard product={product} />}
-            />
+            <div className="flex gap-4 overflow-x-auto no-scrollbar py-2">
+              {RECOMMENDED_GADGETS.map((product) => (
+                <div key={product.id} className="w-[240px] sm:w-[260px] md:w-[280px] shrink-0">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
           )}
         </section>
 
