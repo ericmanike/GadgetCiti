@@ -11,12 +11,42 @@ interface AutoScrollProductRowProps {
 
 export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScrollProductRowProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const isHoveredRef = useRef(false);
+  const [isInteracting, setIsInteracting] = useState(false);
+  const isInteractingRef = useRef(false);
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    isHoveredRef.current = isHovered;
-  }, [isHovered]);
+    isInteractingRef.current = isInteracting;
+  }, [isInteracting]);
+
+  const handleInteractionStart = () => {
+    setIsInteracting(true);
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+    }
+  };
+
+  const handleInteractionEnd = () => {
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+    }
+    // Auto-resume auto-scrolling 2.5 seconds after touch/interaction ends
+    resumeTimeoutRef.current = setTimeout(() => {
+      setIsInteracting(false);
+    }, 2500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Duplicate items to ensure seamless infinite looping without flickering back to start
+  const repeatCount = products.length > 0 && products.length < 8 ? 4 : 3;
+  const displayProducts = Array.from({ length: repeatCount }, () => products).flat();
 
   useEffect(() => {
     const el = containerRef.current;
@@ -27,7 +57,7 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
       ([entry]) => {
         isVisible = entry.isIntersecting;
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
 
     observer.observe(el);
@@ -35,9 +65,11 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
     let animationFrameId: number;
 
     const scroll = () => {
-      if (el && isVisible && !isHoveredRef.current) {
-        if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
-          el.scrollLeft = 0;
+      if (el && isVisible && !isInteractingRef.current) {
+        const singleSetWidth = el.scrollWidth / repeatCount;
+        if (singleSetWidth > 0 && el.scrollLeft >= singleSetWidth) {
+          // Seamlessly reset by 1 set length - 0px visual jump or flicker!
+          el.scrollLeft -= singleSetWidth;
         } else {
           el.scrollLeft += speed;
         }
@@ -51,22 +83,43 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
       observer.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
-  }, [products, speed]);
+  }, [products, speed, repeatCount]);
+
+  if (!products || products.length === 0) return null;
 
   return (
     <div
       ref={containerRef}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={() => setIsHovered(false)}
-      className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none"
+      onMouseEnter={handleInteractionStart}
+      onMouseLeave={handleInteractionEnd}
+      onTouchStart={handleInteractionStart}
+      onTouchEnd={handleInteractionEnd}
+      onTouchCancel={handleInteractionEnd}
+      onScroll={() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const singleSetWidth = el.scrollWidth / repeatCount;
+        if (singleSetWidth > 0) {
+          if (el.scrollLeft >= singleSetWidth * (repeatCount - 1)) {
+            el.scrollLeft -= singleSetWidth;
+          } else if (el.scrollLeft <= 0) {
+            el.scrollLeft += singleSetWidth;
+          }
+        }
+        if (isInteractingRef.current) {
+          handleInteractionStart();
+          handleInteractionEnd();
+        }
+      }}
+      className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none touch-pan-x"
+      style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      {products.map((product) => (
-        <div key={product.id} className="w-[190px] sm:w-[200px] md:w-[240px]  shrink-0">
+      {displayProducts.map((product, idx) => (
+        <div key={`${product.id}-${idx}`} className="w-[190px] sm:w-[200px] md:w-[240px] shrink-0">
           <ProductCard product={product} />
         </div>
       ))}
     </div>
   );
 }
+

@@ -139,7 +139,8 @@ export default function SignupSuccessModal({ isOpen, onClose, type, email, redir
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 15 }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-            className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-slate-100 bg-white p-8 text-center shadow-2xl z-10"
+            className="relative w-full max-w-md max-h-[88dvh] overflow-y-auto no-scrollbar rounded-[28px] border border-slate-100 bg-white p-6 sm:p-8 text-center shadow-2xl z-10"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
             {/* Confetti Explosion for Direct Success */}
             {type === 'success' && particles.map((_, i) => (
