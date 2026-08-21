@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
-import { ChevronDown } from 'lucide-react';
+import {MonitorCog, Cable  } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
@@ -93,20 +93,21 @@ export default function Home() {
             {/* View All Button */}
             <div className="col-span-full flex justify-center mt-2">
               <Link
-                href="/categories"
+                href="/buy"
                 className="
                 flex  items-center justify-between gap-3 
-                px-8 py-3 bg-orange-500 
+                px-10 py-5 bg-orange-500 
                 hover:bg-orange-600 text-white rounded-xl
-                font-bold text-sm md:text-1xl uppercase tracking-wider
+                font-bold text-1xl md:text-2xl uppercase tracking-wider
                 transition-all duration-200 shadow-md
                 hover:shadow-lg
                 hover:scale-102 active:scale-98
                 cursor-pointer select-none"
                 
               >
-                Explore All
-                <ChevronDown className="w-3.5 h-3.5 " /> 
+                Start Shopping
+                
+                <MonitorCog  className="w-6 h-6 " /> 
               </Link>
             </div>
           </div>
