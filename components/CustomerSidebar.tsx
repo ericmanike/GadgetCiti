@@ -85,7 +85,7 @@ const CustomerSidebar = () => {
                 >
                     <CircleUser className="w-6 h-6 md:w-8 md:h-8 text-white shrink-0 group-hover:scale-105 transition-transform" color="white" />
                     <div className="flex flex-col min-w-0">
-                        <span className="text-white text-sm font-bold truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
+                        <span className="text-white text-[14px] font-normal truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
                     </div>
                 </Link>
                 {menuItems.map((item) => {
@@ -94,7 +94,7 @@ const CustomerSidebar = () => {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 text-base transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
+                            className={`flex items-center gap-3 px-4 py-3 text-[14px] font-normal transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
                                 isActive ? 'text-orange-500 bg-orange-50/50 font-bold border-r-4 border-orange-500' : 'text-slate-700'
                             }`}
                         >
@@ -105,14 +105,14 @@ const CustomerSidebar = () => {
                 })}
 
                 <div className="pt-4 mt-4 border-t border-gray-100 space-y-1">
-                    <p className="px-4 py-2 text-xs font-extrabold text-white uppercase bg-orange-500 rounded-lg mx-2 mb-2 tracking-wider">Account Settings</p>
+                    <p className="px-4 py-2 text-xs font-bold text-white uppercase bg-orange-500 rounded-lg mx-2 mb-2 tracking-wider">Account Settings</p>
                     {managementItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`block px-4 py-3 text-base font-semibold hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
+                                className={`block px-4 py-3 text-[14px] font-normal hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
                                     isActive ? 'text-orange-500 bg-orange-50/60 font-bold' : 'text-slate-700'
                                 }`}
                             >
@@ -126,14 +126,14 @@ const CustomerSidebar = () => {
             <div className="pt-2 border-t border-gray-150 bg-white p-2 w-full space-y-1 pb-8 md:pb-6">
                 <Link
                     href="/buy"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-medium tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
                     <ArrowLeft size={12} />
                     Back to Shop
                 </Link>
                 <button 
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-orange-500 hover:bg-orange-50 transition-colors uppercase font-bold tracking-wider cursor-pointer rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-orange-500 hover:bg-orange-50 transition-colors uppercase font-medium tracking-wider cursor-pointer rounded-xl"
                 >
                     <LogOut size={16} />
                     Logout
