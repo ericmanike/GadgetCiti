@@ -76,11 +76,9 @@ export default function Footer() {
 
                 <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
                     <p>&copy; {new Date().getFullYear()} Gadget CITi. All rights reserved.</p>
-                    <div className="flex gap-6">
-                        <Link href="/terms" className="hover:text-orange-500 transition-colors">Terms of Service</Link>
-                        <Link href="/privacy" className="hover:text-orange-500 transition-colors">Privacy Policy</Link>
-                        <Link href="/refund-policy" className="hover:text-orange-500 transition-colors">Return Policy</Link>
-                        <Link href="/reviews" className="hover:text-orange-500 transition-colors">Customer Feedback</Link>
+                    <div className="flex gap-6 text-[18px] font-bold text-orange-500">
+ 
+                        <Link href="www.ericmanike.tech" className="hover:text-white transition-colors">Developed by Eric Manike Haare</Link>
                     </div>
                 </div>
             </div>

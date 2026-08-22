@@ -96,7 +96,7 @@ export default function HeroSlider({
                   <div className="mt-8 sm:mt-10 lg:mt-12">
                     <Link
                       href={slide.ctaLink}
-                      className="inline-block bg-[#FF6900] text-white font-bold px-6 py-3 sm:px-8 sm:py-3.5 rounded-full hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-sm sm:text-base"
+                      className="inline-block bg-[#FF6900] text-white font-bold px-6 py-3 sm:px-8 sm:py-3.5 rounded-1xl hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-sm sm:text-base"
                     >
                       {slide.ctaText}
                     </Link>
@@ -104,7 +104,7 @@ export default function HeroSlider({
                 </div>
 
                 {/* Right Image Column (Framed Image) */}
-                <div className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 rounded-2xl lg:rounded-3xl overflow-hidden border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group">
+                <div className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0   overflow-hidden border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group">
                   <Image
                     src={slide.backgroundImage}
                     alt={slide.imageAlt || slide.title}
