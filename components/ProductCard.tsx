@@ -46,14 +46,14 @@ export function ProductCard({ product }: ProductCardProps) {
         : 0);
 
   return (
-    <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group">
+    <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group/card">
       <Link href={`/products/${product.slug}`} className="relative block h-50 md:h-48 overflow-hidden">
         <Image
           src={mainImage}
           alt={product.name}
           fill
           unoptimized
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-cover transition-transform duration-500 group-hover/card:scale-110"
           sizes="(max-width: 768px) 50vw, 25vw"
         />
         <div className="absolute left-2 top-2 z-10 flex flex-col gap-1 items-start">

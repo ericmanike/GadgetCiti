@@ -1,7 +1,9 @@
 'use client';
 import { ProductCard } from '@/components/ProductCard';
 import AutoScrollProductRow from '@/components/AutoScrollProductRow';
+import ProductScrollRow from '@/components/ProductScrollRow';
 import Link from "next/link";
+import HeroSlider from '@/components/HeroSlider';
 
 import Image from 'next/image';
 
@@ -12,9 +14,38 @@ import { MonitorCog, Cable, ArrowRight } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
-  { id: 1, url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80', title: 'High-End Workstations', description: 'Powerful setups for creators and developers.' },
-  { id: 2, url: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1200&q=80', title: 'Gaming Beasts', description: 'Experience pure performance with top-tier hardware.' },
-  { id: 3, url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80', title: 'IT Lab Gear', description: 'Reliable networking and server infrastructure.' },
+  {
+    id: 1,
+    title: 'High-End Workstations',
+    description: 'Powerful setups for creators, developers, and power users.',
+    ctaText: 'Shop Workstations',
+    ctaLink: '/buy?category=computers',
+    backgroundImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80',
+  },
+  {
+    id: 2,
+    title: 'Gaming & Performance Laptops',
+    description: 'Experience pure speed and performance with top-tier hardware.',
+    ctaText: 'Explore Laptops',
+    ctaLink: '/buy?category=computers',
+    backgroundImage: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1200&q=80',
+  },
+  {
+    id: 3,
+    title: 'IT & Networking Gear',
+    description: 'Reliable networking hardware and server infrastructure for your business.',
+    ctaText: 'Browse Network Gear',
+    ctaLink: '/buy?category=wifi-network-devices',
+    backgroundImage: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80',
+  },
+  {
+    id: 4,
+    title: 'Become a Verified Seller',
+    description: 'Grow your gadget business on Letronix. Reach thousands of buyers with 0% commission options.',
+    ctaText: 'Start Selling Today',
+    ctaLink: '/seller',
+    backgroundImage: 'https://images.unsplash.com/photo-1556742049-0a67daf4005a?w=1200&q=80',
+  },
 ];
 
 
@@ -37,10 +68,11 @@ export default function Home() {
   const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
 
   return (
-    <main className="w-full bg-slate-50 min-h-screen pt-6 pb-2 overflow-x-hidden">
+    <main className="w-full bg-slate-50 min-h-screen   overflow-x-hidden">
+      <HeroSlider slides={COMPUTER_SLIDES} />
   
       <div className="relative  z-10 px-4 md:px-10 space-y-10">
-          <Pattern/>
+        
         {/* Shop by Category - Carousel */}
         <section className="w-full  py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
        
@@ -70,7 +102,7 @@ export default function Home() {
               <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="group flex flex-col gap-2 md:col-span-2 select-none"
+                className="group flex flex-col gap-4 md:col-span-2 select-none"
               >
                 {/* Image Container */}
                 <div className="relative h-[110px] md:h-[160px] rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
@@ -121,7 +153,7 @@ export default function Home() {
         <section className="w-full">
           <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
-              For You
+              New Arrival
             </h2>
             {!loading && SPONSORED_GADGETS.length > 0 && (
               <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
@@ -151,17 +183,53 @@ export default function Home() {
           {loading ? (
             <SkeletonCards cols={4} rows={1} />
           ) : (
-            <div className="flex gap-4 overflow-x-auto no-scrollbar py-2">
-              {RECOMMENDED_GADGETS.map((product) => (
-                <div key={product.id} className="w-[190px] sm:w-[200px] md:w-[240px]  shrink-0">
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
+            <ProductScrollRow products={RECOMMENDED_GADGETS} />
           )}
         </section>
 
       </div>
+
+        <section className="relative overflow-hidden bg-[#632cf5] text-white py-16 lg:py-24">
+        {/* Decorative background gradients or patterns */}
+       
+
+        <div className="relative mx-auto w-[80%] px-2 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* Left Column (Text & Button) */}
+          <div className="lg:col-span-5 flex flex-col justify-center items-start">
+            <h2 className="text-4xl font-extrabold sm:text-5xl md:text-8xl tracking-tight leading-[1.15] text-white">
+              Shop the Best Tech. <br /> 
+           
+            </h2>
+            <p className="mt-4 text-lg text-purple-100/90 max-w-md">
+              Discover top brand  with discount.
+            </p>
+            <div className="mt-8">
+              
+              <Link
+                href="/buy"
+                className="inline-block rounded-full bg-[#E0E7FF] text-[#4F46E5] px-8 py-3.5 text-2xl font-bold transition-all duration-200 hover:bg-white hover:scale-[1.03] active:scale-[0.98] shadow-md hover:shadow-lg"
+              >
+              Browse All
+              </Link>
+            </div>
+          </div>
+            
+          {/* Right Column: Virtual Reality Experience Image */}
+          <div className="lg:col-span-7 w-full lg:justify-self-end">
+            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-2xl shadow-indigo-900/40 group hover:scale-[1.01] transition-transform duration-500">
+              <Image
+                src="/vr.jpg"
+                alt="Virtual Reality Tech Experience"
+                width={800}
+                height={450}
+                className="w-full h-auto object-cover rounded-3xl transition-transform duration-700 group-hover:scale-105"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none rounded-3xl" />
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

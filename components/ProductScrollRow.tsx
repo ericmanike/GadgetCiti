@@ -1,44 +1,18 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/products';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface AutoScrollProductRowProps {
+interface ProductScrollRowProps {
   products: Product[];
-  speed?: number;
 }
 
-export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScrollProductRowProps) {
+export default function ProductScrollRow({ products }: ProductScrollRowProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInteracting, setIsInteracting] = useState(false);
-  const isInteractingRef = useRef(false);
-  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-
-  useEffect(() => {
-    isInteractingRef.current = isInteracting;
-  }, [isInteracting]);
-
-  const handleInteractionStart = () => {
-    setIsInteracting(true);
-    if (resumeTimeoutRef.current) {
-      clearTimeout(resumeTimeoutRef.current);
-    }
-  };
-
-  const handleInteractionEnd = () => {
-    if (resumeTimeoutRef.current) {
-      clearTimeout(resumeTimeoutRef.current);
-    }
-    // Auto-resume auto-scrolling 2.5 seconds after touch/interaction ends
-    resumeTimeoutRef.current = setTimeout(() => {
-      setIsInteracting(false);
-    }, 2500);
-  };
 
   const checkScrollPosition = () => {
     const el = containerRef.current;
@@ -52,7 +26,6 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
   };
 
   const scrollByAmount = (direction: 'left' | 'right') => {
-    handleInteractionStart();
     if (containerRef.current) {
       const scrollAmount = containerRef.current.clientWidth * 0.75;
       containerRef.current.scrollBy({
@@ -60,57 +33,13 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
         behavior: 'smooth',
       });
     }
-    handleInteractionEnd();
   };
-
-  useEffect(() => {
-    return () => {
-      if (resumeTimeoutRef.current) {
-        clearTimeout(resumeTimeoutRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     checkScrollPosition();
     window.addEventListener('resize', checkScrollPosition);
     return () => window.removeEventListener('resize', checkScrollPosition);
   }, [products]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || products.length === 0) return;
-
-    let isVisible = false;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-
-    let animationFrameId: number;
-
-    const scroll = () => {
-      if (el && isVisible && !isInteractingRef.current) {
-        const maxScroll = el.scrollWidth - el.clientWidth;
-        if (el.scrollLeft < maxScroll - 0.5) {
-          el.scrollLeft += speed;
-        }
-      }
-      checkScrollPosition();
-      animationFrameId = requestAnimationFrame(scroll);
-    };
-
-    animationFrameId = requestAnimationFrame(scroll);
-
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [products, speed]);
 
   if (!products || products.length === 0) return null;
 
@@ -131,23 +60,12 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
       {/* Product Scroll Container */}
       <div
         ref={containerRef}
-        onMouseEnter={handleInteractionStart}
-        onMouseLeave={handleInteractionEnd}
-        onTouchStart={handleInteractionStart}
-        onTouchEnd={handleInteractionEnd}
-        onTouchCancel={handleInteractionEnd}
-        onScroll={() => {
-          checkScrollPosition();
-          if (isInteractingRef.current) {
-            handleInteractionStart();
-            handleInteractionEnd();
-          }
-        }}
+        onScroll={checkScrollPosition}
         className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none touch-pan-x"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        {products.map((product, idx) => (
-          <div key={`${product.id}-${idx}`} className="w-[190px] sm:w-[200px] md:w-[240px] shrink-0">
+        {products.map((product) => (
+          <div key={product.id} className="w-[190px] sm:w-[200px] md:w-[240px] shrink-0">
             <ProductCard product={product} />
           </div>
         ))}
@@ -167,4 +85,3 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
     </div>
   );
 }
-
