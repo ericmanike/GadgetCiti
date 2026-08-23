@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList, Info, MessageSquareQuote, ShieldCheck, FileText, Scale, RefreshCw } from 'lucide-react';
+import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList, Info, MessageSquareQuote, ShieldCheck, FileText, Scale, RefreshCw, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from './AuthContext';
 
@@ -36,7 +36,9 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
     {
       title: 'Shop & Explore',
       items: [
+        { id: 1, name: 'Home', href: '/', icon: Home },
         { id: 2, name: 'Shop now', href: '/buy', icon: ShoppingBagIcon },
+        { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
         { id: 7, name: 'Falaa Deals', href: '/buy', icon: Zap },
       ]
     },
@@ -47,16 +49,15 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       ]
     },
     {
-      title: 'Company & Support',
+      title: 'Support',
       items: [
-        { id: 10, name: 'About Gadget CITi', href: '/about', icon: Info },
+        { id: 10, name: 'About Us', href: '/about', icon: Info },
         { id: 11, name: 'Customer Reviews', href: '/reviews', icon: MessageSquareQuote },
-        { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
         { id: 5, name: 'FAQs', href: '/faq', icon: HelpCircle },
       ]
     },
     {
-      title: 'Legal & Policies',
+      title: 'Terms & Policies',
       items: [
         { id: 12, name: 'Terms of Service', href: '/terms', icon: Scale },
         { id: 13, name: 'Privacy Policy', href: '/privacy', icon: ShieldCheck },
@@ -77,24 +78,18 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
     scrollbar-hide z-50 top-0 transition-all duration-300 ease-in-out shadow-2xl flex flex-col border-r border-slate-100`} ref={sidebarRef}>
 
 
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-
-        className="p-1.5 transition cursor-pointer rounded-full bg-slate-700/80 hover:bg-slate-800 absolute top-2 right-2 z-10" onClick={() => setIsOpen(false)}>
-        <X size={20} className="text-orange-500" strokeWidth={2.5} />
-      </motion.button>
-
-
-      <div className='w-full bg-slate-800 p-5 py-4 gap-3.5 flex justify-start items-center shadow-sm shrink-0'>
-
-
-        <SquareUser className='w-8 h-8' color='white' strokeWidth={1.5} />
-        <span className='text-white text-[14px] font-normal tracking-wide'>Hello, {displayName}</span>
-
-
+      <div className="w-full p-4 px-5 flex items-center justify-between border-b border-slate-100 shadow-sm shrink-0">
+        <span className="text-gray-800 text-[16px] font-bold logo tracking-wide">GadgetCITi</span>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="p-1.5 transition cursor-pointer rounded-full bg-slate-100 hover:bg-slate-200"
+          onClick={() => setIsOpen(false)}
+        >
+          <X size={20} className="text-orange-500" strokeWidth={2.5} />
+        </motion.button>
       </div>
-      
+
       {/* Grouped menu sections */}
       <div className="flex-1 py-3 flex flex-col gap-5 overflow-y-auto no-scrollbar">
         {menuSections.map((section, sIdx) => (
