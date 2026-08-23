@@ -103,8 +103,11 @@ export default function HeroSlider({
                   </div>
                 </div>
 
-                {/* Right Image Column (Framed Image) */}
-                <div className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0   overflow-hidden border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group">
+                {/* Right Image Column (Framed Image Link) */}
+                <Link
+                  href={slide.ctaLink}
+                  className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 overflow-hidden border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group cursor-pointer block"
+                >
                   <Image
                     src={slide.backgroundImage}
                     alt={slide.imageAlt || slide.title}
@@ -113,7 +116,7 @@ export default function HeroSlider({
                     className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 50vw, 40vw"
                   />
-                </div>
+                </Link>
               </div>
             </div>
           );

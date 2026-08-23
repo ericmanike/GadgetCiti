@@ -43,7 +43,7 @@ const COMPUTER_SLIDES = [
     id: 3,
     title: 'IT & Networking Devices',
     description: 'Reliable networking hardware and server infrastructure for your business.',
-    ctaText: 'Browse Network Gear',
+    ctaText: 'Discover More',
     ctaLink: '/buy?category=wifi-network-devices',
     backgroundImage: '/router.jpg',
   },
