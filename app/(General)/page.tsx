@@ -14,38 +14,40 @@ import { MonitorCog, Cable, ArrowRight } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
+
+   {
+    id: 4,
+    title: 'Become a Verified Seller',
+    description: 'Grow your  business on Gadgets CIti. Reach thousands of buyers with 0% commission options.',
+    ctaText: 'Start Selling Today',
+    ctaLink: '/seller',
+    backgroundImage: '/Seller.jpg',
+  },
   {
     id: 1,
-    title: 'High-End Workstations',
-    description: 'Powerful setups for creators, developers, and power users.',
+    title: 'High-Performance Workstations',
+    description: 'Powerful setups for creators, developers,gamers and power users.',
     ctaText: 'Shop Workstations',
     ctaLink: '/buy?category=computers',
-    backgroundImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&q=80',
+    backgroundImage: '/officeSet.jpg',
   },
   {
     id: 2,
-    title: 'Gaming & Performance Laptops',
-    description: 'Experience pure speed and performance with top-tier hardware.',
-    ctaText: 'Explore Laptops',
-    ctaLink: '/buy?category=computers',
-    backgroundImage: 'https://images.unsplash.com/photo-1547082299-de196ea013d6?w=1200&q=80',
+    title: 'iPhone & Latest Smartphones',
+    description: 'Discover the newest flagship iPhones and smartphones with cutting-edge mobile tech.',
+    ctaText: 'Explore Smartphones',
+    ctaLink: '/buy?category=smartphones',
+    backgroundImage: '/cat_smartphones.png',
   },
   {
     id: 3,
-    title: 'IT & Networking Gear',
+    title: 'IT & Networking Devices',
     description: 'Reliable networking hardware and server infrastructure for your business.',
     ctaText: 'Browse Network Gear',
     ctaLink: '/buy?category=wifi-network-devices',
-    backgroundImage: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80',
+    backgroundImage: '/router.jpg',
   },
-  {
-    id: 4,
-    title: 'Become a Verified Seller',
-    description: 'Grow your gadget business on Letronix. Reach thousands of buyers with 0% commission options.',
-    ctaText: 'Start Selling Today',
-    ctaLink: '/seller',
-    backgroundImage: 'https://images.unsplash.com/photo-1556742049-0a67daf4005a?w=1200&q=80',
-  },
+ 
 ];
 
 
