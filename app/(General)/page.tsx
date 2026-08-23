@@ -88,7 +88,7 @@ export default function Home() {
           </div>
 
           {/* Single Row Horizontal Scrollable Category Cards */}
-          <div className="flex gap-3  md:justify-center sm:gap-4 overflow-x-auto no-scrollbar py-1 select-none touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex gap-3  md:justify-center sm:gap-4 overflow-x-auto no-scrollbar py-1 select-none" style={{ WebkitOverflowScrolling: 'touch' }}>
             {[
               { title: 'Computers', url: '/L1.jpg', query: 'computers' },
               { title: 'Smartphones', url: '/cat_smartphones.png', query: 'smartphones' },

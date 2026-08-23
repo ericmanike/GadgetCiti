@@ -67,7 +67,7 @@ export default function HeroSlider({
   };
 
   return (
-    <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none p-5 md:p-0">
+    <div className="relative w-full h-[270px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none -mt-4 sm:mt-0 px-3 pt-0 pb-2 sm:p-4 md:p-0">
       {/* Decorative Light Glow Elements */}
 
       {/* Slides container */}
@@ -82,19 +82,19 @@ export default function HeroSlider({
               className="relative w-full h-full flex-none shrink-0"
             >
               {/* Slide Content Layout: Left Text, Right Image */}
-              <div className="relative h-full max-w-6xl mx-auto px-6 sm:px-12 flex items-center justify-between z-20 gap-6 lg:gap-12">
+              <div className="relative h-full max-w-6xl mx-auto px-4 sm:px-12 flex items-center justify-between z-20 gap-4 sm:gap-6 lg:gap-12">
                 {/* Left Text Column */}
-                <div className="flex-1 max-w-xl text-left py-6">
-                  <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-[1.15]">
+                <div className="flex-1 max-w-xl text-left py-2 sm:py-6">
+                  <h1 className="text-xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-[1.15]">
                     {slide.title}
                   </h1>
-                  <p className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-600 line-clamp-3">
+                  <p className="mt-2 sm:mt-5 text-xs sm:text-base text-slate-600 line-clamp-3">
                     {slide.description}
                   </p>
-                  <div className="mt-8 sm:mt-10 lg:mt-12">
+                  <div className="mt-4 sm:mt-10 lg:mt-12">
                     <Link
                       href={slide.ctaLink}
-                      className="inline-block bg-[#FF6900] text-white font-bold px-6 py-3 sm:px-8 sm:py-3.5 rounded-[5px] hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-sm sm:text-base"
+                      className="inline-block bg-[#FF6900] text-white font-bold px-4 py-2.5 sm:px-8 sm:py-3.5 rounded-[5px] hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-xs sm:text-base"
                     >
                       {slide.ctaText}
                     </Link>
@@ -137,7 +137,7 @@ export default function HeroSlider({
       </div>
 
       {/* Control Buttons (Bottom Right) */}
-      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-12 flex items-center gap-3 z-30">
+      <div className="absolute bottom-4 right-10 sm:bottom-6 sm:right-20 flex items-center gap-3 z-30">
         {/* Previous Button */}
         <button
           onClick={handlePrev}

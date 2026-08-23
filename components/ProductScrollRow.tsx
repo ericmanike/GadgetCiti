@@ -61,7 +61,7 @@ export default function ProductScrollRow({ products }: ProductScrollRowProps) {
       <div
         ref={containerRef}
         onScroll={checkScrollPosition}
-        className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none touch-pan-x"
+        className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {products.map((product) => (

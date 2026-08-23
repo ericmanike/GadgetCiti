@@ -98,9 +98,9 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
         const maxScroll = el.scrollWidth - el.clientWidth;
         if (el.scrollLeft < maxScroll - 0.5) {
           el.scrollLeft += speed;
+          checkScrollPosition();
         }
       }
-      checkScrollPosition();
       animationFrameId = requestAnimationFrame(scroll);
     };
 
@@ -138,12 +138,8 @@ export default function AutoScrollProductRow({ products, speed = 0.8 }: AutoScro
         onTouchCancel={handleInteractionEnd}
         onScroll={() => {
           checkScrollPosition();
-          if (isInteractingRef.current) {
-            handleInteractionStart();
-            handleInteractionEnd();
-          }
         }}
-        className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none touch-pan-x"
+        className="flex gap-4 overflow-x-auto no-scrollbar py-2 select-none"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {products.map((product, idx) => (
