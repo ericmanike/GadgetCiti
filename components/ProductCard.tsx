@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useCart } from "@/components/CartContext";
@@ -27,12 +28,22 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
   const isSaved = isInWishlist(product.id);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     addToCart(product as Product);
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
+    router.push(`/products/${product.slug}`);
   };
 
   const mainImage = product.images?.[0] && typeof product.images[0] === 'string' && product.images[0].trim().length > 0
@@ -46,7 +57,10 @@ export function ProductCard({ product }: ProductCardProps) {
         : 0);
 
   return (
-    <article className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group/card">
+    <article
+      onClick={handleCardClick}
+      className="flex flex-col w-full overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-blue-500/10 group/card cursor-pointer"
+    >
       <Link href={`/products/${product.slug}`} className="relative block h-50 md:h-48 overflow-hidden">
         <Image
           src={mainImage}

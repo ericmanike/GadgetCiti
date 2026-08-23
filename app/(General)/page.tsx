@@ -76,15 +76,15 @@ export default function Home() {
         {/* Shop by Category - Carousel */}
         <section className="w-full  py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
        
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3 md:gap-4">
           
 
             {/* Section Header Text */}
-            <div className="col-span-full  ">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight uppercase">
+            <div className="col-span-full">
+              <h2 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight uppercase">
                 Shop by Category
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-slate-500">
                 Explore our curated selection of high-quality electronics and tech accessories.
               </p>
             </div>
@@ -93,30 +93,30 @@ export default function Home() {
             {[
               { title: 'Computers', url: '/L1.jpg', query: 'computers' },
          
-              { title: 'Latest Smartphones', url: '/cat_smartphones.png', query: 'smartphones' },
-              { title: 'Tablets & Ipad', url: '/cat_tablets.png', query: 'tablets-ipads' },
-              { title: 'Accessories ', url: '/cat_accessories.png', query: 'accessories' },
-             { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers-scanners' },
+              { title: 'Smartphones', url: '/cat_smartphones.png', query: 'smartphones' },
+              { title: 'Tablets & Ipads', url: '/cat_tablets.png', query: 'tablets-ipads' },
+              { title: 'Accessories', url: '/cat_accessories.png', query: 'accessories' },
+              { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers-scanners' },
               { title: 'Network Devices', url: '/starlink.png', query: 'wifi-network-devices' },
             ].map((cat, idx) => (
               <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="group flex flex-col gap-4 md:col-span-2 select-none"
+                className="group flex flex-col gap-2 select-none"
               >
                 {/* Image Container */}
-                <div className="relative h-[110px] md:h-[160px] rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
+                <div className="relative h-[75px] sm:h-[90px] md:h-[105px] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
                   <Image
                     src={cat.url}
                     alt={cat.title}
                     fill
-                    sizes="(max-width: 768px) 50vw, 20vw"
+                    sizes="(max-width: 768px) 33vw, 16vw"
                     priority={true}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
                 {/* Label under card */}
-                <span className="text-xs md:text-sm font-bold text-slate-800 tracking-wide text-center group-hover:text-orange-500 transition-colors">
+                <span className="text-[10px] sm:text-xs font-bold text-slate-800 tracking-wide text-center group-hover:text-orange-500 transition-colors leading-tight truncate px-0.5">
                   {cat.title.toUpperCase()}
                 </span>
               </Link>
