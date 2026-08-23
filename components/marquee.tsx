@@ -16,8 +16,9 @@ const Marquee = () => {
         <Cable className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 shrink-0" />  
         <TextType 
           text={[
-            "Shop The Best Tech Here",
+            "Shop The Best Tech Here",    
             "Latest Tech, Smartphones & Accessories",
+            "Call or WhatsApp 0543442518 to place an order",
             "Unbeatable Quality & Prices"
           ]}
           typingSpeed={75}
@@ -31,14 +32,6 @@ const Marquee = () => {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-6 shrink-0">
-        <a
-          href="tel:0543442518"
-          className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-yellow-400 hover:text-yellow-300 transition-colors whitespace-nowrap"
-        >
-          <Phone className="w-4 h-4 text-yellow-400 shrink-0" />
-          <span className="hidden xs:inline sm:inline">054 344 2518</span>
-        </a>
-
         <Link href="/customer/pay-small-small" className="text-orange-500 hover:text-orange-400 flex items-center justify-center gap-1.5 hover:underline font-bold transition-colors whitespace-nowrap text-xs sm:text-sm">
           <BanknoteArrowUp className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
           <span>Pay Small Small</span>

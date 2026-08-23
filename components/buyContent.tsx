@@ -170,8 +170,8 @@ export default function BuyPage() {
   };
 
   return (
-    <div className="min-h-screen font-sans w-full md:mt-5 mt-2 bg-gray-50">
-      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 py-10 w-full w-full  mx-auto px-4 md:px-6 relative">
+    <div className="min-h-screen font-sans w-full bg-gray-50">
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 pt-2 pb-8 md:pt-4 md:pb-10 w-full mx-auto px-4 md:px-6 relative">
         <div className="md:sticky md:top-36 h-fit flex-shrink-0">
           {/* Mobile Backdrop */}
           {isFilterOpen && (
