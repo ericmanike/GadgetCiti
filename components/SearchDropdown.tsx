@@ -28,11 +28,11 @@ export default function SearchDropdown({
         <AnimatePresence>
             <motion.div
                 key="search-dropdown"
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.18 }}
-                className="absolute left-0 right-0 top-full mt-1 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.12 }}
+                className="absolute left-0 right-0 top-full bg-white rounded-b-2xl shadow-2xl border border-gray-200 border-t-0 z-50 overflow-hidden"
             >
                 {/* No query – show trending */}
                 {!query && (
