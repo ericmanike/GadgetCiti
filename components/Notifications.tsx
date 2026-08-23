@@ -58,6 +58,38 @@ const SAMPLE_NOTIFICATIONS: Notification[] = [
     time: '3 days ago',
     read: true,
   },
+    {
+    id: '6',
+    type: 'promo',
+    title: 'New arrivals just dropped 🔥',
+    message: 'Samsung Galaxy S25 Ultra and MacBook Air M3 are now available. Be among the first to grab yours.',
+    time: '3 days ago',
+    read: true,
+  },
+    {
+    id: '6',
+    type: 'promo',
+    title: 'New arrivals just dropped 🔥',
+    message: 'Samsung Galaxy S25 Ultra and MacBook Air M3 are now available. Be among the first to grab yours.',
+    time: '3 days ago',
+    read: true,
+  },
+    {
+    id: '6',
+    type: 'promo',
+    title: 'New arrivals just dropped 🔥',
+    message: 'Samsung Galaxy S25 Ultra and MacBook Air M3 are now available. Be among the first to grab yours.',
+    time: '3 days ago',
+    read: true,
+  },
+    {
+    id: '6',
+    type: 'promo',
+    title: 'New arrivals just dropped 🔥',
+    message: 'Samsung Galaxy S25 Ultra and MacBook Air M3 are now available. Be among the first to grab yours.',
+    time: '3 days ago',
+    read: true,
+  },
 ];
 
 const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOpen }) => {
