@@ -168,8 +168,8 @@ export default function HeroSlider({
             onClick={() => handleDotClick(index)}
             aria-label={`Go to slide ${index + 1}`}
             className={`w-2.5 h-2.5 rounded-full border transition-all duration-300 cursor-pointer ${index === current
-                ? "bg-[#FF6900] border-[#FF6900] scale-110"
-                : "bg-transparent border-slate-300 hover:bg-slate-300"
+              ? "bg-[#FF6900] border-[#FF6900] scale-110"
+              : "bg-transparent border-slate-300 hover:bg-slate-300"
               }`}
           />
         ))}

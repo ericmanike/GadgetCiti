@@ -1,17 +1,13 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Gift, Truck, Bell, Megaphone, Search, Zap, Home, MapPin, Wallet } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Truck, Bell, Search, Zap, Home, Wallet, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
-
 import Sidebar from './Sidebar';
 import ActiveLink from './ActiveLink';
 import DropdownProfile from './Profiledropdown';
 import { useRouter } from 'next/navigation';
-
-
 import Marquee from './marquee';
-
 import { Suspense } from 'react';
 import SearchDropdown from './SearchDropdown';
 import { fetchAllProducts, Product } from '@/lib/products';
@@ -29,10 +25,6 @@ const Navbar = () => {
   const { totalItems } = useCart();
 
   const router = useRouter();
-
-
-
-
 
   // Load products on mount
   useEffect(() => {
@@ -81,7 +73,7 @@ const Navbar = () => {
         <Marquee />
 
         {/* Top Row: Menu, Logo, Search, and Actions */}
-        <div className="flex items-center justify-between px-4 py-2 gap-x-4 flex-wrap md:flex-nowrap">
+        <div className="flex items-center justify-between px-4 py-2.5 md:py-3.5 gap-x-4 flex-wrap md:flex-nowrap">
           {/* Menu & Logo */}
           <div className="flex items-center gap-2 md:gap-4 shrink-0">
             <button className="p-2 hover:bg-gray-100 rounded-lg transition" onClick={() => setIsSidebarOpen(true)}>
@@ -150,8 +142,16 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Section: Profile, Cart, Notifications */}
+          {/* Right Section: Contact Phone, Profile, Cart */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <a
+              href="tel:0543442518"
+              className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 text-yellow-400 font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm transition-all border border-gray-700 shadow-sm"
+              title="Call Us"
+            >
+              <Phone size={15} className="text-yellow-400 shrink-0" />
+              <span className="hidden xs:inline sm:inline">054 344 2518</span>
+            </a>
 
             <DropdownProfile />
 
