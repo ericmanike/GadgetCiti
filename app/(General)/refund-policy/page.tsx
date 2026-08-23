@@ -1,100 +1,124 @@
 'use client';
 
 import React from 'react';
-import { RefreshCw, CheckCircle, Clock, AlertTriangle, ShieldCheck, HelpCircle } from 'lucide-react';
+import { RefreshCw, CheckCircle, Clock, AlertTriangle, ShieldCheck, HelpCircle, ArrowRight, PackageCheck, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 
 export default function RefundPolicyPage() {
-  const lastUpdated = 'August 7, 2026';
-
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 pt-28 pb-20 mt-20 md:mt-12">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-orange-100 text-orange-600 rounded-2xl mb-2">
-            <RefreshCw className="w-8 h-8" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
+    <div className="min-h-screen bg-slate-50 font-sans pb-20">
+      {/* Hero Header */}
+      <div className="relative bg-blue-600 text-white py-16 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-400/30 via-transparent to-transparent pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-4 text-center space-y-4 z-10">
+          
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white font-outfit">
             Return & Refund Policy
           </h1>
-          <p className="text-slate-500 text-sm font-medium">
-            Last Updated: {lastUpdated} | Gadget CITi (CITi Hub)
-          </p>
         </div>
+      </div>
 
-        {/* Content Box */}
-        <div className="bg-white rounded-3xl p-6 md:p-10 border border-slate-200 shadow-sm space-y-8 text-slate-700 text-sm md:text-base leading-relaxed">
-          
-          <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl text-xs md:text-sm flex gap-3 items-start">
-            <CheckCircle className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
+      {/* Main Container */}
+      <div className="max-w-4xl mx-auto px-4 -mt-8 relative z-20 space-y-8">
+        
+        {/* 7-Day Guarantee Callout */}
+        <div className="bg-white text-slate-800 rounded-3xl p-6 shadow-xl flex gap-4 items-start border border-slate-100">
+          <div className="w-10 h-10 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0 mt-0.5">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
+            <p className="font-extrabold text-slate-900 text-base">7-Day Hassle-Free Returns</p>
             <p>
-              At <strong>Gadget CITi</strong>, customer satisfaction is our top priority. We offer a transparent <strong>7-Day Return & Exchange Guarantee</strong> for items that arrive defective, damaged in transit, or do not match your order specifications.
+              If your device arrives with factory defects, transit damage, or does not match your ordered specifications, Gadget CITi offers a straightforward 7-day return or exchange policy.
             </p>
           </div>
+        </div>
 
+        {/* 3-Step Process Graphic */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-2 text-center">
+            <div className="w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 font-extrabold flex items-center justify-center mx-auto text-sm">1</div>
+            <h3 className="font-bold text-slate-900 text-sm">Contact Support</h3>
+            <p className="text-xs text-slate-500">Reach out via phone or email within 7 days with your receipt.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-2 text-center">
+            <div className="w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 font-extrabold flex items-center justify-center mx-auto text-sm">2</div>
+            <h3 className="font-bold text-slate-900 text-sm">Inspection</h3>
+            <p className="text-xs text-slate-500">Drop off at our Kumasi store or dispatch via courier for technical check.</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-2 text-center">
+            <div className="w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 font-extrabold flex items-center justify-center mx-auto text-sm">3</div>
+            <h3 className="font-bold text-slate-900 text-sm">Refund / Replacement</h3>
+            <p className="text-xs text-slate-500">Receive full refund to original payment method or instant exchange.</p>
+          </div>
+        </div>
+
+        {/* Policy Content Card */}
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-100 space-y-10 text-slate-700 text-sm sm:text-base leading-relaxed">
+          
           {/* Section 1 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">1</span>
-              Return Eligibility
-            </h2>
-            <p>To be eligible for a return or replacement, the item must meet the following criteria:</p>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">1</span>
+              <h2 className="text-xl font-bold text-slate-900">Return Eligibility Requirements</h2>
+            </div>
+            <p className="text-slate-600">To qualify for a return or replacement, the product must meet all criteria:</p>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
-              <li>Item must be returned within <strong>7 days</strong> from the delivery or pickup date.</li>
-              <li>Item must be in its original packaging with all original accessories, user manuals, warranty cards, and receipt included.</li>
-              <li>Item must not show signs of physical damage, water damage, unauthorized tampering, or altered serial numbers.</li>
+              <li>Item returned within <strong>7 calendar days</strong> from delivery or pick-up date.</li>
+              <li>Item must be complete with original box, manuals, accessories, and receipt.</li>
+              <li>Device must be free of physical drop damage, water damage, power surge burns, or altered serial numbers.</li>
             </ul>
           </section>
 
           {/* Section 2 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">2</span>
-              Refund Process & Payment Reversal
-            </h2>
-            <p>
-              Once your returned item is received at our store and completes technical inspection:
-            </p>
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">2</span>
+              <h2 className="text-xl font-bold text-slate-900">Refund Processing Timelines</h2>
+            </div>
+            <p className="text-slate-600">Following successful technical inspection:</p>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
-              <li><strong>Approved Refunds:</strong> Will be processed back to the original method of payment (Mobile Money account or Card via Paystack) within 3 to 5 business days.</li>
-              <li><strong>Store Credit & Exchanges:</strong> If requested, customers may choose immediate store credit or item replacement instead of a monetary refund.</li>
+              <li><strong>Mobile Money & Card Refunds:</strong> Reversals are processed via Paystack directly to your original MoMo or card account within <strong>3 to 5 business days</strong>.</li>
+              <li><strong>Immediate Store Credit:</strong> Optional instant store credit or replacement item exchange available on request.</li>
             </ul>
           </section>
 
           {/* Section 3 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">3</span>
-              Non-Refundable Items & Services
-            </h2>
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">3</span>
+              <h2 className="text-xl font-bold text-slate-900">Non-Refundable Items & Services</h2>
+            </div>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
-              <li>Custom software installation, logic board repair labor fees, and diagnostic charges once services have been delivered.</li>
-              <li>Items with missing original serial numbers, or items modified after delivery.</li>
-              <li>Consumable or single-use accessories with broken seal packaging (e.g. unsealed screen protectors or ear tips).</li>
+              <li>Custom technical repair labor, motherboard diagnostics, or software flashing after work completion.</li>
+              <li>Single-use accessories with broken seal packaging (e.g. screen protectors or opened ear tips).</li>
+              <li>Devices modified by unauthorized third-party technicians after delivery.</li>
             </ul>
           </section>
 
-          {/* Section 4 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">4</span>
-              How to Initiate a Return
-            </h2>
-            <p>To request a return or exchange:</p>
-            <ol className="list-decimal pl-5 space-y-2 text-slate-600 font-medium">
-              <li>Contact our customer support team at <strong>054 344 2518</strong> or email <strong>contact@gadgetciti.com</strong>.</li>
-              <li>Provide your order number, photo/video evidence of the defect or issue, and receipt.</li>
-              <li>Our team will guide you on drop-off at our Kumasi office or return courier dispatch instructions.</li>
-            </ol>
-          </section>
+          {/* Contact Box */}
+          <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
+            <h3 className="font-bold text-base "> For Returns</h3>
+            <p className="text-xs ">Call Support: 054 344 2518 | Email: contact@gadgetciti.com</p>
+
+          </div>
+
         </div>
 
-        {/* Footer Link Navigation */}
-        <div className="flex justify-between items-center text-xs font-bold text-slate-500 px-2">
-          <Link href="/terms" className="hover:text-orange-500 transition-colors">&larr; View Terms of Service</Link>
-          <Link href="/contact" className="hover:text-orange-500 transition-colors">Contact Support &rarr;</Link>
+        {/* Related Navigation Footer */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-600 px-2">
+          <Link href="/terms" className="flex items-center gap-1 hover:text-orange-500 transition-colors">
+            <span>View Terms of Service</span>
+            <ArrowRight size={14} />
+          </Link>
+          <Link href="/contact" className="flex items-center gap-1 hover:text-orange-500 transition-colors">
+            <span>Contact Customer Support</span>
+            <ArrowRight size={14} />
+          </Link>
         </div>
+
       </div>
     </div>
   );

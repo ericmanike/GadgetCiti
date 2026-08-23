@@ -1,142 +1,144 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, FileText, Scale, CreditCard, Truck, RefreshCw, Lock, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Scale, AlertCircle, FileText, CreditCard, Truck, RefreshCw, HelpCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function TermsOfServicePage() {
-  const lastUpdated = 'August 7, 2026';
+  const lastUpdated = 'August 2026';
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 pt-28 pb-20 mt-20 md:mt-12">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center p-3 bg-orange-100 text-orange-600 rounded-2xl mb-2">
-            <Scale className="w-8 h-8" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
+    <div className="min-h-screen bg-slate-50 font-sans pb-20">
+      {/* Hero Header */}
+      <div className="relative bg-blue-600 text-white py-16 md:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-400/30 via-transparent to-transparent pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-4 text-center space-y-4 z-10">
+        
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white font-outfit">
             Terms of Service
           </h1>
-          <p className="text-slate-500 text-sm font-medium">
-            Last Updated: {lastUpdated} | Gadget CITi (CITi Hub)
-          </p>
+        
         </div>
+      </div>
 
-        {/* Content Box */}
-        <div className="bg-white rounded-3xl p-6 md:p-10 border border-slate-200 shadow-sm space-y-8 text-slate-700 text-sm md:text-base leading-relaxed">
-          
-          <div className="p-4 bg-orange-50 rounded-2xl border border-orange-200 text-slate-800 text-xs md:text-sm flex gap-3 items-start">
-            <AlertCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+      {/* Main Container */}
+      <div className="max-w-4xl mx-auto px-4 -mt-8 relative z-20 space-y-8">
+        
+        {/* Important Notice Callout */}
+        <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex gap-4 items-start">
+          <div className="w-10 h-10 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0 mt-0.5">
+            <AlertCircle className="w-5 h-5" />
+          </div>
+          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
+            <p className="font-extrabold text-slate-900 text-base">Welcome to Gadget CITi</p>
             <p>
-              Welcome to <strong>Gadget CITi</strong>. By accessing our platform, purchasing products, utilizing our trade-in or "Pay Small Small" installment services, or engaging our IT repair services, you agree to comply with and be bound by the following Terms of Service. Please read them carefully.
+              By accessing our platform, purchasing consumer electronics, using our "Pay Small Small" financing, or sending devices for trade-in/repairs, you agree to be bound by these Terms of Service. Please review them carefully before placing an order.
             </p>
           </div>
+        </div>
 
+        {/* Policy Content Card */}
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-100 space-y-10 text-slate-700 text-sm sm:text-base leading-relaxed">
+          
           {/* Section 1 */}
           <section className="space-y-3">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">1</span>
-              General & Business Overview
-            </h2>
-            <p>
-              Gadget CITi (also operating as CITi Hub) is a registered business operating in Kumasi, Ghana. We specialize in the retail and wholesale of consumer electronics (smartphones, laptops, tablets, accessories), device trade-ins, installment payment solutions, and technical IT services.
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">1</span>
+              <h2 className="text-xl font-bold text-slate-900">General & Business Overview</h2>
+            </div>
+            <p className="text-slate-600">
+              Gadget CITi (also operating as CITi Hub) is a registered consumer electronics retail and services firm in Kumasi, Ghana. We specialize in flagship smartphones, laptops, tablets, IT hardware, trade-in programs, and installment financing solutions.
             </p>
-            <p>
-              By placing an order on our platform, you confirm that you are at least 18 years of age or have legal parental/guardian consent to enter into binding agreements.
+            <p className="text-slate-600">
+              By engaging our platform, you affirm that you are at least 18 years old or operating under legal parental consent.
             </p>
           </section>
 
           {/* Section 2 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">2</span>
-              Pricing, Orders & Payments
-            </h2>
-            <p>
-              All prices listed on Gadget CITi are in Ghanaian Cedi (GHS) unless explicitly specified otherwise. We reserve the right to update product prices and availability without prior notice.
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">2</span>
+              <h2 className="text-xl font-bold text-slate-900">Pricing, Orders & Payments</h2>
+            </div>
+            <p className="text-slate-600">
+              All listed prices are displayed in Ghanaian Cedi (GHS). Prices and promotional offers are subject to change based on market availability.
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
-              <li><strong>Payment Processing:</strong> Online card payments and Mobile Money transactions are processed securely through <strong>Paystack</strong>. Gadget CITi does not store sensitive card or MoMo PIN information.</li>
-              <li><strong>Order Confirmation:</strong> An order is considered confirmed upon successful payment verification or authorization. We reserve the right to cancel orders in cases of stock unavailability or suspected fraudulent transactions.</li>
-              <li><strong>Pay Small Small Financing:</strong> Purchases made via installment financing require strict adherence to agreed repayment schedules. Default on payments may lead to account suspension or device locks until resolved.</li>
+              <li><strong>Secure Online Payments:</strong> All Mobile Money (MoMo) and Credit/Debit card payments are securely authorized via <strong>Paystack</strong>.</li>
+              <li><strong>Order Confirmation:</strong> Orders are verified upon successful payment authorization. We reserve the right to cancel orders in event of pricing errors or stock unavailability.</li>
+              <li><strong>Pay Small Small Financing:</strong> Installment plans require strict adherence to agreed deposit and payment schedules.</li>
             </ul>
           </section>
 
           {/* Section 3 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">3</span>
-              Delivery & In-Store Pickups
-            </h2>
-            <p>
-              We deliver packages across regions in Ghana using trusted logistics partners. Estimated delivery times provided at checkout are indicative.
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">3</span>
+              <h2 className="text-xl font-bold text-slate-900">Delivery & In-Store Pickups</h2>
+            </div>
+            <p className="text-slate-600">
+              We dispatch orders nationwide across Ghana using verified courier networks. Delivery durations provided at checkout are estimates.
             </p>
-            <p>
-              Customers opting for in-store pickup at our Kumasi location must present valid national identification (Ghana Card) and order confirmation details upon collection.
+            <p className="text-slate-600">
+              For in-store pick-up at our Kumasi location, customers must present valid identification (Ghana Card) and the order receipt code.
             </p>
           </section>
 
           {/* Section 4 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">4</span>
-              Warranties & Device Condition
-            </h2>
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">4</span>
+              <h2 className="text-xl font-bold text-slate-900">Warranties & Device Condition</h2>
+            </div>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
-              <li><strong>Brand New Products:</strong> Covered by standard manufacturer warranty (up to 12 months) covering factory defects.</li>
-              <li><strong>Gently Used / Refurbished Products:</strong> Covered by a 6-month Gadget CITi store warranty for functional defects. Physical damage, liquid contact, unauthorized repair attempts, or power surges render warranty null and void.</li>
+              <li><strong>Brand New Products:</strong> Covered by standard manufacturer warranties covering factory defects up to 12 months.</li>
+              <li><strong>Refurbished / Pre-owned Products:</strong> Covered by a 6-month Gadget CITi functional store warranty. Physical drop damage, liquid intrusion, or third-party repair attempts void the warranty.</li>
             </ul>
           </section>
 
           {/* Section 5 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">5</span>
-              Trade-In & Selling Policies
-            </h2>
-            <p>
-              When selling devices to Gadget CITi, sellers guarantee that they possess legitimate ownership of the device and that it is not reported stolen or blacklisted. Sellers must remove all personal accounts (iCloud, Google Account, Samsung Account) prior to handover.
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">5</span>
+              <h2 className="text-xl font-bold text-slate-900">Trade-In & Seller Regulations</h2>
+            </div>
+            <p className="text-slate-600">
+              Sellers trading devices with Gadget CITi guarantee legal ownership. All iCloud, Google, and Samsung accounts must be removed prior to device valuation.
             </p>
           </section>
 
           {/* Section 6 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">6</span>
-              Limitation of Liability & Governing Law
-            </h2>
-            <p>
-              Gadget CITi shall not be held liable for any indirect, incidental, or consequential damages resulting from the use or inability to use our products or web services.
-            </p>
-            <p>
-              These Terms shall be governed by and construed in accordance with the laws of the <strong>Republic of Ghana</strong>. Any disputes shall be submitted to appropriate jurisdiction courts in Ghana.
-            </p>
-          </section>
-
-          {/* Section 7 */}
-          <section className="space-y-3 border-t border-slate-100 pt-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-slate-100 text-orange-600 text-xs font-black flex items-center justify-center">7</span>
-              Contact Information
-            </h2>
-            <p>
-              If you have any questions regarding our Terms of Service, please contact us at:
-            </p>
-            <div className="bg-slate-50 p-4 rounded-xl text-xs md:text-sm font-semibold space-y-1 text-slate-700">
-              <p>Gadget CITi Hub</p>
-              <p>Kumasi, KNUST, Ghana</p>
-              <p>Email: contact@gadgetciti.com</p>
-              <p>Phone: +233 54 344 2518</p>
+          <section className="space-y-3 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-xs shrink-0">6</span>
+              <h2 className="text-xl font-bold text-slate-900">Governing Law</h2>
             </div>
+            <p className="text-slate-600">
+              These Terms shall be interpreted and governed in accordance with the statutory laws of the <strong>Republic of Ghana</strong>.
+            </p>
           </section>
+
+          {/* Contact Box */}
+          <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
+            <h3 className="font-bold text-base text-white">Contact Us</h3>
+            <p className="text-xs text-white">Gadget CITi | Kumasi, KNUST, Ghana</p>
+            <p className="text-xs text-white">Email: support@gadgetciti.com | Phone: 0543442518</p>
+          </div>
+
         </div>
 
-        {/* Footer Link Navigation */}
-        <div className="flex justify-between items-center text-xs font-bold text-slate-500 px-2">
-          <Link href="/privacy" className="hover:text-orange-500 transition-colors">View Privacy Policy &rarr;</Link>
-          <Link href="/refund-policy" className="hover:text-orange-500 transition-colors">View Refund Policy &rarr;</Link>
+        {/* Related Navigation Footer */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-600 px-2">
+          <Link href="/privacy" className="flex items-center gap-1 hover:text-orange-500 transition-colors">
+            <span>View Privacy Policy</span>
+            <ArrowRight size={14} />
+          </Link>
+          <Link href="/refund-policy" className="flex items-center gap-1 hover:text-orange-500 transition-colors">
+            <span>View Return & Refund Policy</span>
+            <ArrowRight size={14} />
+          </Link>
         </div>
+
       </div>
     </div>
   );
