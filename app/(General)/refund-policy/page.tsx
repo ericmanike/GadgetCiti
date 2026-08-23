@@ -101,7 +101,7 @@ export default function RefundPolicyPage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base "> For Returns</h3>
-            <p className="text-xs ">Call Support: 054 344 2518 | Email: contact@gadgetciti.com</p>
+            <p className="text-xs ">Call Support: 054 344 2518 | Email: support@gadgetciti.com</p>
 
           </div>
 

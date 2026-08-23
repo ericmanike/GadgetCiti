@@ -26,7 +26,7 @@ export default function Footer() {
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-6 w-6" /></a>
-                            <a href="mailto:contact@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
+                            <a href="mailto:support@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-orange-500 shrink-0" />
-                                <span>contact@gadgetciti.com</span>
+                                <span>support@gadgetciti.com</span>
                             </li>
                         </ul>
                     </div>

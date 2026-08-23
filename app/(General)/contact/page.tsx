@@ -179,8 +179,8 @@ export default function ContactPage() {
                   <p className="text-xs text-slate-500">Inquiries, quotes & partnerships</p>
                 </div>
               </div>
-              <a href="mailto:contact@gadgetciti.com" className="text-base font-bold text-blue-600 hover:underline">
-                contact@gadgetciti.com
+              <a href="mailto:support@gadgetciti.com" className="text-base font-bold text-blue-600 hover:underline">
+                support@gadgetciti.com
               </a>
             </div>
 

@@ -227,7 +227,7 @@ export default function FAQPage() {
             <div className="flex items-center gap-2 justify-center
              sm:justify-end">
               <Mail className="w-4 h-4 text-orange-400 shrink-0" />
-              <span>Email: contact@gadgetciti.com</span>
+              <span>Email: support@gadgetciti.com</span>
             </div>
           </div>
         </div>

@@ -26,16 +26,58 @@ export default function HeroSlider({
   autoplay = true,
   autoplayInterval = 5000,
 }: HeroSliderProps) {
-  const [current, setCurrent] = useState(0);
+  const totalSlides = slides ? slides.length : 0;
+
+  // Create extended slides array for seamless infinite looping
+  const extendedSlides = totalSlides > 0 ? [slides[totalSlides - 1], ...slides, slides[0]] : [];
+
+  const [current, setCurrent] = useState(1); // Index 1 is the first real slide
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const [isPlaying, setIsPlaying] = useState(autoplay);
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const totalSlides = slides.length;
+  // Handle seamless instant wrap-around reset after 500ms transition finishes
+  useEffect(() => {
+    if (current === 0) {
+      // Swiped backwards to clone of last slide -> jump instantly to real last slide
+      transitionTimeoutRef.current = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrent(totalSlides);
+      }, 500);
+    } else if (current === totalSlides + 1) {
+      // Swiped forwards to clone of first slide -> jump instantly to real first slide
+      transitionTimeoutRef.current = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrent(1);
+      }, 500);
+    }
 
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, [current, totalSlides]);
+
+  // Re-enable smooth transition after instant reset
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(true);
+        });
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  // Autoplay interval timer
   useEffect(() => {
     if (isPlaying && totalSlides > 0) {
       timerRef.current = setInterval(() => {
-        setCurrent((prev) => (prev + 1) % totalSlides);
+        setCurrent((prev) => prev + 1);
       }, autoplayInterval);
     }
 
@@ -44,18 +86,33 @@ export default function HeroSlider({
         clearInterval(timerRef.current);
       }
     };
-  }, [isPlaying, totalSlides, autoplayInterval, current]);
+  }, [isPlaying, totalSlides, autoplayInterval]);
 
   if (!slides || slides.length === 0) {
     return null;
   }
 
+  const restartAutoplayTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    if (isPlaying && totalSlides > 0) {
+      timerRef.current = setInterval(() => {
+        setCurrent((prev) => prev + 1);
+      }, autoplayInterval);
+    }
+  };
+
   const handleNext = () => {
-    setCurrent((prev) => (prev + 1) % totalSlides);
+    if (!isTransitioning) return;
+    setCurrent((prev) => prev + 1);
+    restartAutoplayTimer();
   };
 
   const handlePrev = () => {
-    setCurrent((prev) => (prev - 1 + totalSlides) % totalSlides);
+    if (!isTransitioning) return;
+    setCurrent((prev) => prev - 1);
+    restartAutoplayTimer();
   };
 
   const handleTogglePlay = () => {
@@ -63,7 +120,9 @@ export default function HeroSlider({
   };
 
   const handleDotClick = (index: number) => {
-    setCurrent(index);
+    setIsTransitioning(true);
+    setCurrent(index + 1);
+    restartAutoplayTimer();
   };
 
   const touchStartX = useRef<number | null>(null);
@@ -100,6 +159,9 @@ export default function HeroSlider({
     }
   };
 
+  // Calculate real slide index for pagination dots (0 to totalSlides - 1)
+  const realIndex = (current - 1 + totalSlides) % totalSlides;
+
   return (
     <div
       className="relative w-full h-[270px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none -mt-4 sm:mt-0 px-3 pt-0 pb-2 sm:p-4 md:p-0 touch-pan-y"
@@ -111,13 +173,15 @@ export default function HeroSlider({
 
       {/* Slides container */}
       <div
-        className="flex w-full h-full transition-transform duration-500 ease-in-out"
+        className={`flex w-full h-full ${
+          isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
+        }`}
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {slides.map((slide, index) => {
+        {extendedSlides.map((slide, index) => {
           return (
             <div
-              key={slide.id}
+              key={`${slide.id}-${index}`}
               className="relative w-full h-full flex-none shrink-0"
             >
               {/* Slide Content Layout: Left Text, Right Image */}
@@ -149,7 +213,7 @@ export default function HeroSlider({
                     src={slide.backgroundImage}
                     alt={slide.imageAlt || slide.title}
                     fill
-                    priority={index === 0}
+                    priority={index === 1}
                     className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105 rounded"
                     sizes="(max-width: 768px) 50vw, 40vw"
                   />
@@ -167,10 +231,11 @@ export default function HeroSlider({
             key={index}
             onClick={() => handleDotClick(index)}
             aria-label={`Go to slide ${index + 1}`}
-            className={`w-2.5 h-2.5 rounded-full border transition-all duration-300 cursor-pointer ${index === current
-              ? "bg-[#FF6900] border-[#FF6900] scale-110"
-              : "bg-transparent border-slate-300 hover:bg-slate-300"
-              }`}
+            className={`w-2.5 h-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
+              index === realIndex
+                ? "bg-[#FF6900] border-[#FF6900] scale-110"
+                : "bg-transparent border-slate-300 hover:bg-slate-300"
+            }`}
           />
         ))}
       </div>
