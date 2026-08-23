@@ -74,43 +74,40 @@ export default function Home() {
       <div className="relative  z-10 px-4 md:px-10 space-y-10">
         
         {/* Shop by Category - Carousel */}
-        <section className="w-full  py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50">
-       
-          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3 md:gap-4">
-          
+        <section className="w-full py-3 md:p-6 rounded-[15px] md:rounded-[15px] bg-transparent shadow-lg shadow-slate-100/50 border border-slate-50 flex flex-col gap-4">
+          {/* Section Header Text */}
+          <div>
+            <h2 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight uppercase">
+              Shop by Category
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Explore our curated selection of high-quality electronics and tech accessories.
+            </p>
+          </div>
 
-            {/* Section Header Text */}
-            <div className="col-span-full">
-              <h2 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight uppercase">
-                Shop by Category
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Explore our curated selection of high-quality electronics and tech accessories.
-              </p>
-            </div>
-
-            {/* Small Category Cards */}
+          {/* Single Row Horizontal Scrollable Category Cards */}
+          <div className="flex gap-3  md:justify-center sm:gap-4 overflow-x-auto no-scrollbar py-1 select-none touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
             {[
               { title: 'Computers', url: '/L1.jpg', query: 'computers' },
-         
               { title: 'Smartphones', url: '/cat_smartphones.png', query: 'smartphones' },
               { title: 'Tablets & Ipads', url: '/cat_tablets.png', query: 'tablets-ipads' },
               { title: 'Accessories', url: '/cat_accessories.png', query: 'accessories' },
               { title: 'Printers & Scanners', url: '/cat_printers.png', query: 'printers-scanners' },
               { title: 'Network Devices', url: '/starlink.png', query: 'wifi-network-devices' },
+
             ].map((cat, idx) => (
               <Link
                 key={idx}
                 href={`/buy?category=${cat.query}`}
-                className="group flex flex-col gap-2 select-none"
+                className="group flex flex-col gap-2 shrink-0 w-[110px] sm:w-[130px] md:w-[150px] select-none"
               >
                 {/* Image Container */}
-                <div className="relative h-[75px] sm:h-[90px] md:h-[105px] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
+                <div className="relative h-[80px] sm:h-[95px] md:h-[110px] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-100 w-full">
                   <Image
                     src={cat.url}
                     alt={cat.title}
                     fill
-                    sizes="(max-width: 768px) 33vw, 16vw"
+                    sizes="(max-width: 768px) 130px, 150px"
                     priority={true}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
@@ -121,6 +118,7 @@ export default function Home() {
                 </span>
               </Link>
             ))}
+          </div>
 
             {/* View All Button */}
             <div className="col-span-full flex justify-center mt-4 md:mt-6">
@@ -137,7 +135,7 @@ export default function Home() {
                 hover:scale-[1.02] active:scale-[0.98]
                 cursor-pointer select-none"
               >
-                <span className="font-black tracking-widest">Start Shopping</span>
+                <span className="font-black tracking-widest"> Find the Best Tech. </span>
                 
                 <div className="relative z-10 p-1.5 bg-white/20 rounded-xl group-hover/btn:bg-white/30 transition-colors">
                   <MonitorCog className="w-5 h-5 group-hover/btn:rotate-45 transition-transform duration-500 ease-out" /> 
@@ -145,7 +143,6 @@ export default function Home() {
                 <ArrowRight className="relative z-10 w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
-          </div>
 
         </section>
 
