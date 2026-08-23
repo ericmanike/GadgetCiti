@@ -67,10 +67,8 @@ export default function HeroSlider({
   };
 
   return (
-    <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none">
+    <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none p-5 md:p-0">
       {/* Decorative Light Glow Elements */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#632CF5]/5 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-purple-500/5 blur-3xl pointer-events-none" />
 
       {/* Slides container */}
       <div
@@ -96,7 +94,7 @@ export default function HeroSlider({
                   <div className="mt-8 sm:mt-10 lg:mt-12">
                     <Link
                       href={slide.ctaLink}
-                      className="inline-block bg-[#FF6900] text-white font-bold px-6 py-3 sm:px-8 sm:py-3.5 rounded-1xl hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-sm sm:text-base"
+                      className="inline-block bg-[#FF6900] text-white font-bold px-6 py-3 sm:px-8 sm:py-3.5 rounded-[5px] hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-orange-500/25 text-sm sm:text-base"
                     >
                       {slide.ctaText}
                     </Link>
@@ -106,14 +104,14 @@ export default function HeroSlider({
                 {/* Right Image Column (Framed Image Link) */}
                 <Link
                   href={slide.ctaLink}
-                  className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 overflow-hidden border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group cursor-pointer block"
+                  className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 overflow-hidden rounded border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group cursor-pointer block"
                 >
                   <Image
                     src={slide.backgroundImage}
                     alt={slide.imageAlt || slide.title}
                     fill
                     priority={index === 0}
-                    className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105 rounded"
                     sizes="(max-width: 768px) 50vw, 40vw"
                   />
                 </Link>

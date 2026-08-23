@@ -100,7 +100,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         {menuSections.map((section, sIdx) => (
           <div key={sIdx} className="w-full flex flex-col">
             {/* Section title */}
-            <div className="px-5 py-1 text-xs md:text-[10px] font-black tracking-widest text-[#1E2939] uppercase">
+            <div className="px-5 py-1 text-[14px] font-bold tracking-wide text-[#1E2939]">
               {section.title}
             </div>
             

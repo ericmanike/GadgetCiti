@@ -105,7 +105,7 @@ const CustomerSidebar = () => {
                 })}
 
                 <div className="pt-4 mt-4 border-t border-gray-100 space-y-1">
-                    <p className="px-4 py-1 text-xs font-bold text-[#1E2939] uppercase tracking-wider mx-2 mb-2">Account Settings</p>
+                    <p className="px-4 py-1 text-[14px] font-bold text-[#1E2939] tracking-wide mx-2 mb-1">Account Settings</p>
                     {managementItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
