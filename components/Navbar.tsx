@@ -101,7 +101,7 @@ const Navbar = () => {
                 className={`flex w-full bg-white transition-all duration-200 ${
                   isSearchOpen
                     ? 'rounded-t-2xl shadow-2xl border border-gray-200'
-                    : 'rounded-full shadow-sm border border-transparent'
+                    : 'rounded-2xl shadow-sm border border-gray-200'
                 }`}
               >
                 <div className="relative flex-1 flex items-center">
@@ -116,7 +116,7 @@ const Navbar = () => {
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
                     className={`w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 bg-transparent outline-none placeholder:text-gray-500 text-[16px] md:text-base ${
-                      isSearchOpen ? 'rounded-tl-2xl' : 'rounded-l-full'
+                      isSearchOpen ? 'rounded-tl-2xl' : 'rounded-l-2xl'
                     }`}
                   />
                   {searchQuery && (
@@ -132,7 +132,7 @@ const Navbar = () => {
                 <button
                   type="submit"
                   className={`px-4 md:px-6 bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all ${
-                    isSearchOpen ? 'rounded-tr-2xl' : 'rounded-r-full'
+                    isSearchOpen ? 'rounded-tr-2xl' : 'rounded-r-2xl'
                   }`}
                 >
                   <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
