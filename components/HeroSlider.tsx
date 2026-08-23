@@ -66,8 +66,47 @@ export default function HeroSlider({
     setCurrent(index);
   };
 
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const touchEndY = useRef<number | null>(null);
+
+  const minSwipeDistance = 40;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEndX.current = null;
+    touchEndY.current = null;
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchStartY.current = e.targetTouches[0].clientY;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+    touchEndY.current = e.targetTouches[0].clientY;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current || !touchStartY.current || !touchEndY.current) return;
+    const distanceX = touchStartX.current - touchEndX.current;
+    const distanceY = touchStartY.current - touchEndY.current;
+
+    // Only trigger horizontal swipe if horizontal movement is larger than vertical movement
+    if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > minSwipeDistance) {
+      if (distanceX > 0) {
+        handleNext();
+      } else {
+        handlePrev();
+      }
+    }
+  };
+
   return (
-    <div className="relative w-full h-[270px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none -mt-4 sm:mt-0 px-3 pt-0 pb-2 sm:p-4 md:p-0">
+    <div
+      className="relative w-full h-[270px] sm:h-[400px] lg:h-[460px] overflow-hidden bg-white border-b border-slate-100 select-none -mt-4 sm:mt-0 px-3 pt-0 pb-2 sm:p-4 md:p-0 touch-pan-y"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Decorative Light Glow Elements */}
 
       {/* Slides container */}
