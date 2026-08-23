@@ -95,17 +95,17 @@ const CustomerSidebar = () => {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3 text-[14px] font-normal transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
-                                isActive ? 'text-orange-500 bg-orange-50/50 font-bold border-r-4 border-orange-500' : 'text-slate-700'
+                                isActive ? 'text-orange-500 bg-orange-50/50 font-bold border-r-4 border-orange-500' : 'text-black'
                             }`}
                         >
-                            <item.icon size={18} className={isActive ? 'text-orange-500' : 'text-slate-600'} />
+                            <item.icon size={18} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
                             <span className="truncate leading-tight">{item.label}</span>
                         </Link>
                     );
                 })}
 
                 <div className="pt-4 mt-4 border-t border-gray-100 space-y-1">
-                    <p className="px-4 py-2 text-xs font-bold text-white uppercase bg-orange-500 rounded-lg mx-2 mb-2 tracking-wider">Account Settings</p>
+                    <p className="px-4 py-1 text-xs font-bold text-[#1E2939] uppercase tracking-wider mx-2 mb-2">Account Settings</p>
                     {managementItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
@@ -113,7 +113,7 @@ const CustomerSidebar = () => {
                                 key={item.href}
                                 href={item.href}
                                 className={`block px-4 py-3 text-[14px] font-normal hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
-                                    isActive ? 'text-orange-500 bg-orange-50/60 font-bold' : 'text-slate-700'
+                                    isActive ? 'text-orange-500 bg-orange-50/60 font-bold' : 'text-black'
                                 }`}
                             >
                                 {item.label}
@@ -126,9 +126,9 @@ const CustomerSidebar = () => {
             <div className="pt-2 border-t border-gray-150 bg-white p-2 w-full space-y-1 pb-8 md:pb-6">
                 <Link
                     href="/buy"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-medium tracking-wider cursor-pointer border border-gray-200 rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-black hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-medium tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
-                    <ArrowLeft size={12} />
+                    <ArrowLeft size={12} className="text-[#1E2939]" />
                     Back to Shop
                 </Link>
                 <button 

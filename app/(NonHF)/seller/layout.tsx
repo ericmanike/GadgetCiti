@@ -105,10 +105,10 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
                   className={`w-full flex items-center space-x-4 px-4 py-3 mb-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                     isActive 
                       ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      : 'text-black hover:bg-slate-50'
                   }`}
                 >
-                  <item.icon size={20} />
+                  <item.icon size={20} className={isActive ? 'text-white' : 'text-[#1E2939]'} />
                   <span>{item.name}</span>
                 </button>
               </Link>
@@ -181,10 +181,10 @@ export default function SellLayout({ children }: { children: React.ReactNode }) 
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                         isActive 
                           ? 'bg-orange-500 text-white shadow-lg' 
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                          : 'text-black hover:bg-slate-50'
                       }`}
                     >
-                      <item.icon size={20} />
+                      <item.icon size={20} className={isActive ? 'text-white' : 'text-[#1E2939]'} />
                       <span>{item.name}</span>
                     </button>
                   </Link>

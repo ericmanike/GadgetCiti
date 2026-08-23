@@ -169,7 +169,7 @@ const Navbar = () => {
         </div>
 
         {/* Bottom Row: Navigation Links */}
-        <div className="bg-white border-t border-gray-300 px-4 py-1.5 overflow-x-auto no-scrollbar">
+        <div className="hidden md:block bg-white border-t border-gray-300 px-4 py-1.5 overflow-x-auto no-scrollbar">
           <div className="flex items-center justify-center gap-6 md:gap-10 min-w-max mx-auto">
             <ActiveLink href="/">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
@@ -210,14 +210,6 @@ const Navbar = () => {
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
                 <Wallet size={18} className="group-hover:text-orange-500" />
                 <span className="text-xs md:text-sm font-semibold">Pay Small Small</span>
-              </div>
-            </ActiveLink>
-
-
-            <ActiveLink href="/news">
-              <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group md:hidden">
-                <Megaphone size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs font-semibold">News</span>
               </div>
             </ActiveLink>
           </div>

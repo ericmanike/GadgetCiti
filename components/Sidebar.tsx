@@ -100,7 +100,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         {menuSections.map((section, sIdx) => (
           <div key={sIdx} className="w-full flex flex-col">
             {/* Section title */}
-            <div className="px-5 py-1 text-xs md:text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            <div className="px-5 py-1 text-xs md:text-[10px] font-black tracking-widest text-[#1E2939] uppercase">
               {section.title}
             </div>
             
@@ -111,9 +111,9 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
                   key={menu.id}
                   href={menu.href}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3.5 px-5 py-3 hover:bg-slate-50 transition-colors group cursor-pointer text-slate-700 hover:text-orange-500 select-none"
+                  className="flex items-center gap-3.5 px-5 py-3 hover:bg-slate-50 transition-colors group cursor-pointer text-black hover:text-orange-500 select-none"
                 >
-                  <menu.icon className="text-orange-500 w-5 h-5 transition-transform group-hover:scale-105" strokeWidth={2} />
+                  <menu.icon className="text-[#1E2939] w-5 h-5 transition-transform group-hover:scale-105" strokeWidth={2} />
                   <span className="text-[14px] font-normal tracking-wide leading-none">{menu.name}</span>
                 </Link>
               ))}
