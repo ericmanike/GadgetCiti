@@ -120,7 +120,8 @@ function SignUpForm() {
         </p>
       </div>
 
-      {/* Google Sign Up */}
+      {/* Google Sign Up - Disabled */}
+      {/* 
       <div className="w-full flex flex-col gap-2">
         <motion.button
           whileHover={{ scale: 1.01 }}
@@ -146,6 +147,7 @@ function SignUpForm() {
           <div className="grow border-t border-gray-200"></div>
         </div>
       </div>
+      */}
 
       {/* Sign Up Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>

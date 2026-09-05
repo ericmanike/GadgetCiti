@@ -81,7 +81,8 @@ function LoginForm() {
         </p>
       </div>
 
-      {/* Google Login Button */}
+      {/* Google Login Button - Disabled */}
+      {/* 
       <div className="w-full flex flex-col gap-2">
         <motion.button
           whileHover={{ scale: 1.01 }}
@@ -107,6 +108,7 @@ function LoginForm() {
           <div className="grow border-t border-gray-200"></div>
         </div>
       </div>
+      */}
 
       {/* Sign In Form */}
       <form onSubmit={handleSubmit} className="space-y-4">

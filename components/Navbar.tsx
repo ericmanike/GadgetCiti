@@ -1,5 +1,5 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Truck, Bell, Search, Zap, Home, Wallet, Phone } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Truck, Bell, Search, Zap, Home, Wallet, MessageCircleMore } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
@@ -142,16 +142,15 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Section: Contact Phone, Profile, Cart */}
+          {/* Right Section: Inbox, Profile, Cart */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
-            <a
-              href="tel:0543442518"
-              className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 text-yellow-400 font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm transition-all border border-gray-700 shadow-sm"
-              title="Call Us"
+            <Link
+              href="/customer/inbox"
+              className="p-2 hover:bg-gray-100 rounded-lg transition text-slate-800 flex items-center justify-center cursor-pointer mr-1 sm:mr-2"
+              title="Inbox Messages"
             >
-              <Phone size={15} className="text-yellow-400 shrink-0" />
-              <span className="hidden xs:inline sm:inline">054 344 2518</span>
-            </a>
+              <MessageCircleMore size={23} className="md:size-[26px]" strokeWidth={2} />
+            </Link>
 
             <DropdownProfile />
 

@@ -267,7 +267,7 @@ export default function ContactPage() {
                   className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
                     errors.name
                       ? 'border-red-500 focus:ring-red-200'
-                      : 'border-slate-200 focus:ring-orange-500/20 focus:border-orange-500'
+                      : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                   }`}
                   placeholder="e.g. Kwame Mensah"
                 />
@@ -290,7 +290,7 @@ export default function ContactPage() {
                     className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
                       errors.email
                         ? 'border-red-500 focus:ring-red-200'
-                        : 'border-slate-200 focus:ring-orange-500/20 focus:border-orange-500'
+                        : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                     }`}
                     placeholder="kwame@example.com"
                   />
@@ -311,7 +311,7 @@ export default function ContactPage() {
                     className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
                       errors.phone
                         ? 'border-red-500 focus:ring-red-200'
-                        : 'border-slate-200 focus:ring-orange-500/20 focus:border-orange-500'
+                        : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                     }`}
                     placeholder="054 344 2518"
                   />
@@ -330,7 +330,7 @@ export default function ContactPage() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-sm text-slate-800"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white transition-all text-sm text-slate-800"
                 >
                   <option value="">Select a topic</option>
                   <option value="buy">Purchase Inquiry / Product Stock</option>
@@ -355,7 +355,7 @@ export default function ContactPage() {
                   className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm resize-none ${
                     errors.message
                       ? 'border-red-500 focus:ring-red-200'
-                      : 'border-slate-200 focus:ring-orange-500/20 focus:border-orange-500'
+                      : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                   }`}
                   placeholder="Describe your inquiry or request..."
                 />

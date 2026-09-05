@@ -156,31 +156,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-zinc-100 text-slate-950 flex flex-col md:flex-row font-sans">
       
-      {/* Desktop Sidebar Sidebar - Always Visible on md+ */}
-      <aside className="hidden md:flex md:w-64 bg-slate-900 border-r border-slate-800 flex-col p-6 space-y-8 min-h-screen shadow-xl shrink-0">
-        <div className="flex items-center space-x-3 pb-6 border-b border-slate-800">
+      {/* Desktop Sidebar - Sticky on md+ */}
+      <aside className="hidden md:flex md:w-64 bg-white border-r border-gray-200 flex-col p-6 space-y-8 h-screen sticky top-0 shadow-sm shrink-0">
+        <div className="flex items-center space-x-3 pb-6 border-b border-gray-150">
           <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-lg tracking-wider shadow-lg shadow-orange-500/30">
-            S
+            A
           </div>
-         <span className='text-white'> 
-          Admin Panel
-         </span>
-       
+          <span className="font-black text-xl text-slate-900 tracking-widest uppercase">
+            Gadget CITi<span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
+          </span>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-6">
           {menuItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
             return (
               <Link key={item.href} href={item.href}>
                 <button
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  className={`w-full flex items-center space-x-4 px-4 py-3 mb-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                     isActive 
                       ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
+                      : 'text-black hover:bg-slate-50'
                   }`}
                 >
-                  <item.icon size={20} />
+                  <item.icon size={20} className={isActive ? 'text-white' : 'text-[#1E2939]'} />
                   <span>{item.name}</span>
                 </button>
               </Link>
@@ -188,19 +187,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="pt-4 border-t border-slate-800 space-y-3">
+        <div className="pt-4 border-t border-gray-150 space-y-3">
           <div className="flex items-center space-x-3 px-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-xs text-white">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-xs text-white uppercase select-none">
               {user.email?.charAt(0).toUpperCase()}
             </div>
             <div className="truncate flex-1">
-              <p className="text-xs font-bold text-slate-200 truncate">{user.user_metadata?.full_name || 'Administrator'}</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{user.user_metadata?.full_name || 'Administrator'}</p>
               <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
             </div>
           </div>
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 text-slate-400 font-semibold py-2.5 px-4 rounded-xl text-sm transition-all duration-200 cursor-pointer border border-slate-800 hover:border-red-500/20"
+            className="w-full flex items-center justify-center space-x-2 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-500 font-semibold py-2.5 px-4 rounded-xl text-sm transition-all duration-200 cursor-pointer border border-gray-200 hover:border-red-100"
           >
             <LogOut size={16} />
             <span>Logout</span>
@@ -209,16 +208,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Mobile Top Header - Visible on <md */}
-      <header className="md:hidden bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <header className="md:hidden bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-sm tracking-wider">
-            G
+            A
           </div>
-          <span className="font-black text-md text-white tracking-widest">CITi ADMIN</span>
+          <span className="font-black text-md text-slate-900 tracking-widest">GADGET CITI ADMIN</span>
         </div>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-          className="p-2 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-200 cursor-pointer"
+          className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-slate-600 cursor-pointer border border-gray-200"
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -227,24 +226,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Menu Drawer Overlay */}
       {mobileMenuOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-slate-950/85 backdrop-blur-md z-40" 
+          className="md:hidden fixed inset-0 bg-slate-955/40 backdrop-blur-xs z-40" 
           onClick={() => setMobileMenuOpen(false)}
         >
           <aside 
-            className="w-3/4 max-w-xs h-full bg-slate-900 border-r border-slate-800 flex flex-col p-6 space-y-6 shadow-2xl animate-in slide-in-from-left duration-250"
+            className="w-3/4 max-w-xs h-full bg-white border-r border-gray-200 flex flex-col p-6 space-y-6 shadow-2xl animate-in slide-in-from-left duration-250"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <span className="font-black text-orange-500 tracking-wider">G CITi ADMIN</span>
+            <div className="flex items-center justify-between pb-4 border-b border-gray-150">
+              <span className="font-black text-slate-900 tracking-wider">GADGET CITI ADMIN</span>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="text-slate-400 hover:text-slate-200"
+                className="text-gray-400 hover:text-gray-600"
               >
                 <X size={20} />
               </button>
             </div>
             
-            <nav className="flex-1 space-y-2">
+            <nav className="flex-1 space-y-3.5">
               {menuItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
                 return (
@@ -253,10 +252,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                         isActive 
                           ? 'bg-orange-500 text-white shadow-lg' 
-                          : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
+                          : 'text-black hover:bg-slate-50'
                       }`}
                     >
-                      <item.icon size={20} />
+                      <item.icon size={20} className={isActive ? 'text-white' : 'text-[#1E2939]'} />
                       <span>{item.name}</span>
                     </button>
                   </Link>
@@ -264,22 +263,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               })}
             </nav>
 
-            <div className="pt-4 border-t border-slate-800 space-y-3">
+            <div className="pt-4 border-t border-gray-150 space-y-3">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-xs text-white">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center font-bold text-xs text-white uppercase select-none">
                   {user.email?.charAt(0).toUpperCase()}
                 </div>
                 <div className="truncate flex-1">
-                  <p className="text-xs font-bold text-slate-200 truncate">{user.user_metadata?.full_name || 'Admin'}</p>
+                  <p className="text-xs font-bold text-slate-800 truncate">{user.user_metadata?.full_name || 'Admin'}</p>
                   <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
                 </div>
               </div>
               <button  
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center space-x-2
-                 bg-slate-800 hover:bg-red-500/10 hover:text-red-400
-                  text-slate-400 font-semibold py-2 rounded-xl text-sm 
-                  transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-500 font-semibold py-2 rounded-xl text-sm transition-all cursor-pointer border border-gray-200 hover:border-red-100"
               >
                 <LogOut size={16} />
                 <span>Logout</span>

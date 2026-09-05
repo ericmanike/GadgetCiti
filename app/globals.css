@@ -69,8 +69,10 @@
   input:focus,
   textarea:focus,
   select:focus {
-    border-color: #1e293b;
-    --tw-ring-color: #1e293b;
+    border-color: #1e293b !important;
+    --tw-ring-color: #1e293b !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px #1e293b !important;
   }
 }
 .logo{
