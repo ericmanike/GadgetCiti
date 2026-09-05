@@ -1,7 +1,5 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface OrderItemInfo {
   name: string;
   quantity: number;
@@ -30,6 +28,14 @@ export async function sendOrderConfirmationEmail({
     console.warn('[EMAIL] No recipient email provided for order confirmation.');
     return { success: false, error: 'No recipient email' };
   }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('[EMAIL] RESEND_API_KEY is missing in environment variables. Skipping email dispatch.');
+    return { success: false, error: 'RESEND_API_KEY missing' };
+  }
+
+  const resend = new Resend(apiKey);
 
   try {
     const itemsHtml = items.map(item => `
@@ -90,22 +96,25 @@ export async function sendOrderConfirmationEmail({
       </div>
     `;
 
+    const fromAddress = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const sender = fromAddress.includes('<') ? fromAddress : `Letronix Orders <${fromAddress}>`;
+
     const { data, error } = await resend.emails.send({
-      from: `Letronix Orders <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
+      from: sender,
       to: [to],
       subject: `Order Confirmation #${orderReference} - Letronix`,
       html,
     });
 
     if (error) {
-      console.error('[EMAIL ERROR] Resend error:', error);
-      return { success: false, error };
+      console.error('[EMAIL ERROR] Resend failed:', JSON.stringify(error));
+      return { success: false, error: (error as any).message || JSON.stringify(error) };
     }
 
     console.log('[EMAIL SUCCESS] Sent order confirmation email to:', to, 'Resend ID:', data?.id);
     return { success: true, data };
   } catch (err: any) {
     console.error('[EMAIL EXCEPTION] Failed to send order confirmation email:', err);
-    return { success: false, error: err.message };
+    return { success: false, error: err.message || String(err) };
   }
 }

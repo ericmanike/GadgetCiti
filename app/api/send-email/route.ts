@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
     try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            console.warn('[Resend] RESEND_API_KEY environment variable is not configured.');
+            return NextResponse.json({ error: "Email service is not configured (missing RESEND_API_KEY)" }, { status: 500 });
+        }
+        const resend = new Resend(apiKey);
+
         const body = await req.json();
         const { name, email, message, phone, subject } = body;
 
@@ -12,8 +17,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
+        const fromAddress = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+        const sender = fromAddress.includes("<") ? fromAddress : `Letronix Contact <${fromAddress}>`;
+
         const { data, error } = await resend.emails.send({
-            from: `Letronix Contact <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
+            from: sender,
             to: ["manikeeric@gmail.com"],
             subject: subject ? `[Letronix Contact] ${subject} - ${name}` : `New Contact Form Submission from ${name}`,
             html: `
@@ -40,12 +48,13 @@ export async function POST(req: Request) {
         });
 
         if (error) {
-            return NextResponse.json({ error }, { status: 500 });
+            console.error("Resend error response:", error);
+            return NextResponse.json({ error: (error as any).message || error }, { status: 500 });
         }
 
         return NextResponse.json({ success: true, data });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Resend error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: error?.message || "Internal Server Error" }, { status: 500 });
     }
 }
