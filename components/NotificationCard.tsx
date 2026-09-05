@@ -27,7 +27,7 @@ const typeIcons: Record<Notification['type'], string> = {
     order: '📦',
     promo: '🎉',
     chat: '💬',
-    system: '🔔',
+    system: '🤖',
 };
 
 export default function NotificationCard({ notification, onRead }: NotificationCardProps) {
@@ -53,12 +53,12 @@ export default function NotificationCard({ notification, onRead }: NotificationC
             {/* Content */}
             <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                    <p className={`text-sm font-bold truncate ${notification.read ? 'text-gray-700' : 'text-gray-900'}`}>
+                    <p className={`text-sm sm:text-base font-bold truncate ${notification.read ? 'text-gray-700' : 'text-gray-900'}`}>
                         {notification.title}
                     </p>
-                    <span className="text-[10px] text-gray-400 whitespace-nowrap shrink-0">{notification.time}</span>
+                    <span className="text-xs text-gray-400 whitespace-nowrap shrink-0">{notification.time}</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray-600 mt-0.5 line-clamp-2 leading-relaxed">
                     {notification.message}
                 </p>
             </div>

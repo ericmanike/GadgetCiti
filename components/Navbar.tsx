@@ -1,5 +1,5 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Truck, Bell, Search, Zap, Home, Wallet, MessageCircleMore } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Truck, Headset, Search, Zap, Home, Wallet, MessageCircleMore } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
@@ -142,28 +142,26 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Section: Inbox, Profile, Cart */}
-          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          {/* Right Section: Inbox, Cart, Profile (Auth) */}
+          <div className="flex items-center gap-3 sm:gap-5 md:gap-7 shrink-0">
             <Link
               href="/customer/inbox"
-              className="p-2 hover:bg-gray-100 rounded-lg transition text-slate-800 flex items-center justify-center cursor-pointer mr-1 sm:mr-2"
+              className="p-2 hover:bg-gray-100 rounded-lg transition text-slate-800 flex items-center justify-center cursor-pointer"
               title="Inbox Messages"
             >
               <MessageCircleMore size={23} className="md:size-[26px]" strokeWidth={2} />
             </Link>
 
-            <DropdownProfile />
-
-            <Link href="/cart" className="relative p-2 admd:p-2 hover:bg-gray-100 rounded-lg transition">
+            <Link href="/cart" className="relative p-2 hover:bg-gray-100 rounded-lg transition flex items-center justify-center">
               <ShoppingCart size={22} className="text-black md:size-[26px]" strokeWidth={2} />
               {totalItems > 0 && (
-                <span className="absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-orange-500 text-white text-[7px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-0 right-0 w-3.5 h-3.5 md:w-4 md:h-4 bg-orange-500 text-white text-[8px] md:text-[9px] font-bold rounded-full flex items-center justify-center">
                   {totalItems}
                 </span>
               )}
             </Link>
 
-
+            <DropdownProfile />
           </div>
         </div>
 
@@ -173,54 +171,55 @@ const Navbar = () => {
             <ActiveLink href="/">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <Home size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Home</span>
+                <span className="text-sm font-semibold whitespace-nowrap">Home</span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/buy">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingBag size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Shop now</span>
+                <span className="text-sm font-semibold whitespace-nowrap">Shop now</span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/seller">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingCart size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap">Start Selling </span>
+                <span className="text-sm font-semibold whitespace-nowrap">Start Selling </span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/buy?category=new-arrivals">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <Truck size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold whitespace-nowrap"> New Arrivals</span>
+                <span className="text-sm font-semibold whitespace-nowrap"> New Arrivals</span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/buy?deals=true">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
                 <Zap size={18} className="group-hover:text-orange-500 text-orange-500 fill-orange-500/20" />
-                <span className="text-xs md:text-sm font-semibold">Falaa Deals</span>
+                <span className="text-sm font-semibold">Falaa Deals</span>
               </div>
             </ActiveLink>
 
             <ActiveLink href="/customer/pay-small-small">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
                 <Wallet size={18} className="group-hover:text-orange-500" />
-                <span className="text-xs md:text-sm font-semibold">Pay Small Small</span>
+                <span className="text-sm font-semibold">Pay Small Small</span>
               </div>
             </ActiveLink>
           </div>
         </div>
       </nav>
 
-      {/* Floating Notification Button */}
+      {/* Floating AI Chatbot / Notification Button */}
       <button
-        className="fixed bottom-6 right-6 z-50 p-3.5 bg-white border border-gray-200 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-50 p-3.5 bg-[#632CF5] hover:bg-[#5223cb] text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all active:scale-95 cursor-pointer flex items-center justify-center border-2 border-white shadow-[#632CF5]/30"
         onClick={() => setIsNotificationsOpen(true)}
+        aria-label="AI Support & Notifications"
       >
-        <Bell size={24} className="text-gray-800" strokeWidth={2.5} />
+        <Headset size={24} className="text-white" strokeWidth={2.2} />
         <span className="absolute top-0 right-0 mt-0 mr-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full"></span>
       </button>
 
