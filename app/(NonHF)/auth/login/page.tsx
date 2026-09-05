@@ -2,6 +2,8 @@
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useToast } from "@/components/toastProvider";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, Check, ArrowRight } from "lucide-react";
@@ -9,10 +11,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
+const loginSchema = Yup.object().shape({
+  email: Yup.string().trim().email("Invalid email address").required("Email is required"),
+  password: Yup.string().required("Password is required"),
+  rememberMe: Yup.boolean(),
+});
+
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -42,31 +47,38 @@ function LoginForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+    validationSchema: loginSchema,
+    onSubmit: async (values) => {
+      setIsLoading(true);
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
 
-      if (error) {
-        showToast(error.message, "error");
-      } else {
-        showToast("Welcome back!", "success");
-        // Small delay to let the toast be seen before redirection
-        setTimeout(() => {
-          window.location.href = redirectTo;
-        }, 800);
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast("Welcome back!", "success");
+          // Small delay to let the toast be seen before redirection
+          setTimeout(() => {
+            window.location.href = redirectTo;
+          }, 800);
+        }
+      } catch (err: any) {
+        showToast("Failed to sign in. Please try again.", "error");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err: any) {
-      showToast("Failed to sign in. Please try again.", "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <div className="w-full rounded-[24px] border border-slate-100 bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.04)] sm:p-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -111,50 +123,56 @@ function LoginForm() {
       */}
 
       {/* Sign In Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={formik.handleSubmit} className="space-y-4">
         
         {/* Email input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <Mail className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <Mail className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type="email"
+              autoComplete="email"
+              placeholder="Email"
+              {...formik.getFieldProps("email")}
+              className={`block w-full rounded-xl border ${formik.touched.email && formik.errors.email ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
           </div>
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
+          {formik.touched.email && formik.errors.email && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.email}</p>
+          )}
         </div>
 
         {/* Password Input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <Lock className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <Lock className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="Password"
+              {...formik.getFieldProps("password")}
+              className={`block w-full rounded-xl border ${formik.touched.password && formik.errors.password ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
+            {/* Password Visibility Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 z-10 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" strokeWidth={1.8} />
+              ) : (
+                <Eye className="h-5 w-5" strokeWidth={1.8} />
+              )}
+            </button>
           </div>
-          <input
-            type={showPassword ? "text" : "password"}
-            required
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
-          {/* Password Visibility Toggle */}
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 z-10 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-          >
-            {showPassword ? (
-              <EyeOff className="h-5 w-5" strokeWidth={1.8} />
-            ) : (
-              <Eye className="h-5 w-5" strokeWidth={1.8} />
-            )}
-          </button>
+          {formik.touched.password && formik.errors.password && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.password}</p>
+          )}
         </div>
 
         {/* Remember me Checkbox & Forgot Password */}
@@ -162,8 +180,9 @@ function LoginForm() {
           <label className="relative flex items-center cursor-pointer select-none">
             <input
               type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
+              name="rememberMe"
+              checked={formik.values.rememberMe}
+              onChange={formik.handleChange}
               className="peer sr-only"
             />
             <div className="h-4.5 w-4.5 rounded bg-white border border-slate-300 peer-checked:bg-[#1e3a8a] peer-checked:border-[#1e3a8a] flex items-center justify-center transition-all peer-focus:ring-2 peer-focus:ring-slate-300">
@@ -185,7 +204,7 @@ function LoginForm() {
         {/* Yellow Submit CTA */}
         <button
           type="submit"
-          disabled={isLoading || isGoogleLoading}
+          disabled={isLoading || isGoogleLoading || !formik.isValid || !formik.dirty}
           className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-sm font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
         >
           {isLoading ? (

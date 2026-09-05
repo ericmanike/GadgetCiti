@@ -3,6 +3,8 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { Turnstile } from '@marsidev/react-turnstile';
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import { useToast } from "@/components/toastProvider";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,6 +14,18 @@ import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import SignupSuccessModal from "@/components/SignupSuccessModal";
 
+const signupSchema = Yup.object().shape({
+  name: Yup.string().trim().required("Full Name is required"),
+  phone: Yup.string().trim().required("Phone Number is required"),
+  email: Yup.string().trim().email("Invalid email address").required("Email Address is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[a-z]/, "Password must contain a lowercase letter")
+    .matches(/[A-Z]/, "Password must contain an uppercase letter")
+    .matches(/[0-9]/, "Password must contain a number")
+    .required("Password is required"),
+});
+
 function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,10 +34,6 @@ function SignUpForm() {
   const rawRedirectTo = searchParams.get("redirectTo") || "/buy";
   const redirectTo = (rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")) ? rawRedirectTo : "/buy";
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | undefined>();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,58 +72,58 @@ function SignUpForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!captchaToken) {
-      showToast("Please complete the security check (CAPTCHA)", "error");
-      return;
-    }
-
-    if (password.length < 8) {
-      showToast("Password must be at least 8 characters", "error");
-      return;
-    }
-    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      showToast("Password must contain lowercase, uppercase, and a number", "error");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          captchaToken,
-          data: {
-            full_name: name,
-            phone: phone,
-          },
-        },
-      });
-
-       console.log("Sign Up Data", data);
-       console.log("Sign Up Error", error);
-      if (error) throw error;
-
-      setRegisteredEmail(email);
-      if (data.session) {
-        setModalType("success");
-        setShowModal(true);
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      phone: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: signupSchema,
+    onSubmit: async (values) => {
+      if (!captchaToken) {
+        showToast("Please complete the security check (CAPTCHA)", "error");
         return;
       }
 
-      setModalType("verification_pending");
-      setShowModal(true);
+      setIsLoading(true);
 
-    } catch (err: any) {
-      showToast(err.message || "Signup failed", "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email: values.email,
+          password: values.password,
+          options: {
+            captchaToken,
+            data: {
+              full_name: values.name,
+              phone: values.phone,
+            },
+          },
+        });
+
+        console.log("Sign Up Data", data);
+        console.log("Sign Up Error", error);
+        if (error) throw error;
+
+        setRegisteredEmail(values.email);
+        if (data.session) {
+          setModalType("success");
+          setShowModal(true);
+          return;
+        }
+
+        setModalType("verification_pending");
+        setShowModal(true);
+
+      } catch (err: any) {
+        showToast(err.message || "Signup failed", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  });
+
+  const passwordVal = formik.values.password;
 
   return (
     <div className="w-full rounded-[24px] border border-slate-100 bg-white p-7 shadow-[0_10px_35px_rgba(0,0,0,0.04)] sm:p-9 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -155,97 +165,109 @@ function SignUpForm() {
       */}
 
       {/* Sign Up Form */}
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={formik.handleSubmit}>
 
         {/* Full Name input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <User className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <User className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type="text"
+              autoComplete="name"
+              placeholder="Full Name"
+              {...formik.getFieldProps("name")}
+              className={`block w-full rounded-xl border ${formik.touched.name && formik.errors.name ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
           </div>
-          <input
-            type="text"
-            required
-            autoComplete="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full Name"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
+          {formik.touched.name && formik.errors.name && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.name}</p>
+          )}
         </div>
 
         {/* Phone input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <Phone className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <Phone className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type="text"
+              autoComplete="phone"
+              placeholder="Phone Number"
+              {...formik.getFieldProps("phone")}
+              className={`block w-full rounded-xl border ${formik.touched.phone && formik.errors.phone ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
           </div>
-          <input
-            type="text"
-            required
-            autoComplete="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone Number"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
+          {formik.touched.phone && formik.errors.phone && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.phone}</p>
+          )}
         </div>
 
         {/* Email input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <Mail className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <Mail className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type="email"
+              autoComplete="email"
+              placeholder="Email Address"
+              {...formik.getFieldProps("email")}
+              className={`block w-full rounded-xl border ${formik.touched.email && formik.errors.email ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
           </div>
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email Address"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-4 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
+          {formik.touched.email && formik.errors.email && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.email}</p>
+          )}
         </div>
 
         {/* Password Input */}
-        <div className="relative flex items-center">
-          <div className="pointer-events-none absolute left-4 text-slate-400">
-            <Lock className="h-5 w-5" strokeWidth={1.8} />
+        <div>
+          <div className="relative flex items-center">
+            <div className="pointer-events-none absolute left-4 text-slate-400">
+              <Lock className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="Password"
+              {...formik.getFieldProps("password")}
+              className={`block w-full rounded-xl border ${formik.touched.password && formik.errors.password ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+            />
+            {/* Password Visibility Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 z-10 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" strokeWidth={1.8} />
+              ) : (
+                <Eye className="h-5 w-5" strokeWidth={1.8} />
+              )}
+            </button>
           </div>
-          <input
-            type={showPassword ? "text" : "password"}
-            required
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="block w-full rounded-xl border border-slate-200 bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-[16px] text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]"
-          />
-          {/* Password Visibility Toggle */}
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 z-10 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-          >
-            {showPassword ? (
-              <EyeOff className="h-5 w-5" strokeWidth={1.8} />
-            ) : (
-              <Eye className="h-5 w-5" strokeWidth={1.8} />
-            )}
-          </button>
+          {formik.touched.password && formik.errors.password && (
+            <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.password}</p>
+          )}
         </div>
 
         {/* Password Requirements Check */}
-        {password.length > 0 && (
+        {passwordVal.length > 0 && (
           <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100 text-[14px]">
-            <div className={password.length >= 8 ? "text-green-600 font-medium" : "text-red-500"}>
-              ✓ At least 8 characters long ({password.length}/8)
+            <div className={passwordVal.length >= 8 ? "text-green-600 font-medium" : "text-red-500"}>
+              ✓ At least 8 characters long ({passwordVal.length}/8)
             </div>
-            <div className={/[a-z]/.test(password) ? "text-green-600 font-medium" : "text-red-500"}>
+            <div className={/[a-z]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
               ✓ At least one lowercase letter
             </div>
-            <div className={/[A-Z]/.test(password) ? "text-green-600 font-medium" : "text-red-500"}>
+            <div className={/[A-Z]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
               ✓ At least one uppercase letter
             </div>
-            <div className={/[0-9]/.test(password) ? "text-green-600 font-medium" : "text-red-500"}>
+            <div className={/[0-9]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
               ✓ At least one number
             </div>
           </div>
@@ -270,18 +292,7 @@ function SignUpForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={
-            isLoading ||
-            isGoogleLoading ||
-            !name ||
-            !phone ||
-            !email ||
-            !password ||
-            password.length < 8 ||
-            !/[a-z]/.test(password) ||
-            !/[A-Z]/.test(password) ||
-            !/[0-9]/.test(password)
-          }
+          disabled={isLoading || isGoogleLoading || !formik.isValid || !formik.dirty}
           className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-[16px] font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none"
         >
           {isLoading ? (
