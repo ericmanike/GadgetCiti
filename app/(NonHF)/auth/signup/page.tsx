@@ -121,11 +121,8 @@ function SignUpForm() {
       {/* Title & Subtitle */}
       <div className="mb-6 space-y-1 text-left">
         <h1 className="text-[22px] font-bold tracking-tight text-[#0f172a]">
-          Create account
+          Create account to get started
         </h1>
-        <p className="text-[13px] font-medium text-slate-500">
-          Sign up to get started
-        </p>
       </div>
 
       {/* Google Sign Up - Disabled */}
