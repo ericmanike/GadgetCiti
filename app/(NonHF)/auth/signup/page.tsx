@@ -65,6 +65,11 @@ function SignUpForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!captchaToken) {
+      showToast("Please complete the security check (CAPTCHA)", "error");
+      return;
+    }
+
     if (password.length < 8) {
       showToast("Password must be at least 8 characters", "error");
       return;
@@ -255,6 +260,12 @@ function SignUpForm() {
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAEolcdFOtWjBK2n_"}
             onSuccess={(token) => {
               setCaptchaToken(token);
+            }}
+            onExpire={() => {
+              setCaptchaToken(undefined);
+            }}
+            onError={() => {
+              setCaptchaToken(undefined);
             }}
           />
         </div>
