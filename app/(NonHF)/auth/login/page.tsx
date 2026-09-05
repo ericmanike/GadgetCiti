@@ -231,7 +231,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={isLoading || isGoogleLoading || !formik.isValid || !formik.dirty}
-          className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-3.5 px-4 text-sm font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
+          className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#fbcb08] hover:bg-[#eab308] py-4 px-4 text-sm font-bold text-slate-900 shadow-sm transition-all duration-200 cursor-pointer select-none active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
         >
           {isLoading ? (
             <Spinner className="h-5 w-5" />
@@ -251,7 +251,7 @@ function LoginForm() {
           href={`/auth/signup?redirectTo=${encodeURIComponent(redirectTo)}`}
           className="font-bold text-[#fb923c] hover:text-[#f97316] transition-colors"
         >
-        Create one 
+        Create Account
         </Link>
       </p>
     </div>
