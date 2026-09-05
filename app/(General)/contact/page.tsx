@@ -1,114 +1,60 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, MessageSquare, Clock, ArrowRight, Sparkles } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import Link from 'next/link';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const contactSchema = Yup.object().shape({
+  name: Yup.string().trim().min(2, 'Name must be at least 2 characters').required('Full name is required'),
+  email: Yup.string().trim().email('Please enter a valid email address').required('Email address is required'),
+  phone: Yup.string().trim().matches(/^[0-9+\s()-]{10,}$/, 'Please enter a valid phone number').required('Phone number is required'),
+  subject: Yup.string(),
+  message: Yup.string().trim().min(10, 'Message must be at least 10 characters').required('Message is required'),
+});
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
-  });
-
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
-
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const validatePhone = (phone: string) => {
-    const re = /^[0-9+\s()-]{10,}$/;
-    return re.test(phone);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-
-    if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {
+  const formik = useFormik({
+    initialValues: {
       name: '',
       email: '',
       phone: '',
+      subject: '',
       message: ''
-    };
+    },
+    validationSchema: contactSchema,
+    onSubmit: async (values, { resetForm }) => {
+      setIsSubmitting(true);
 
-    let isValid = true;
+      try {
+        const response = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        });
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
-      isValid = false;
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
-      isValid = false;
+        const resData = await response.json();
+
+        if (!response.ok || resData.error) {
+          throw new Error(resData.error?.message || resData.error || 'Failed to send message');
+        }
+
+        setIsSubmitted(true);
+        resetForm();
+
+        setTimeout(() => setIsSubmitted(false), 6000);
+      } catch (err: any) {
+        console.error("Failed to send contact email:", err);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required';
-      isValid = false;
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-      isValid = false;
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-      isValid = false;
-    } else if (!validatePhone(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
-      isValid = false;
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-      isValid = false;
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitted(true);
-      setIsSubmitting(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
-
-      setTimeout(() => setIsSubmitted(false), 6000);
-    }, 1200);
-  };
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-20">
@@ -253,7 +199,7 @@ export default function ContactPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={formik.handleSubmit} className="space-y-5">
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
@@ -261,18 +207,16 @@ export default function ContactPage() {
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  placeholder="e.g. Kwame Mensah"
+                  {...formik.getFieldProps('name')}
                   className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
-                    errors.name
+                    formik.touched.name && formik.errors.name
                       ? 'border-red-500 focus:ring-red-200'
                       : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                   }`}
-                  placeholder="e.g. Kwame Mensah"
                 />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1 font-semibold">{errors.name}</p>
+                {formik.touched.name && formik.errors.name && (
+                  <p className="text-red-500 text-xs mt-1 font-semibold">{formik.errors.name}</p>
                 )}
               </div>
 
@@ -284,18 +228,16 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    placeholder="kwame@example.com"
+                    {...formik.getFieldProps('email')}
                     className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
-                      errors.email
+                      formik.touched.email && formik.errors.email
                         ? 'border-red-500 focus:ring-red-200'
                         : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                     }`}
-                    placeholder="kwame@example.com"
                   />
-                  {errors.email && (
-                    <p className="text-red-500 text-xs mt-1 font-semibold">{errors.email}</p>
+                  {formik.touched.email && formik.errors.email && (
+                    <p className="text-red-500 text-xs mt-1 font-semibold">{formik.errors.email}</p>
                   )}
                 </div>
 
@@ -305,18 +247,16 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
+                    placeholder="054 344 2518"
+                    {...formik.getFieldProps('phone')}
                     className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm ${
-                      errors.phone
+                      formik.touched.phone && formik.errors.phone
                         ? 'border-red-500 focus:ring-red-200'
                         : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                     }`}
-                    placeholder="054 344 2518"
                   />
-                  {errors.phone && (
-                    <p className="text-red-500 text-xs mt-1 font-semibold">{errors.phone}</p>
+                  {formik.touched.phone && formik.errors.phone && (
+                    <p className="text-red-500 text-xs mt-1 font-semibold">{formik.errors.phone}</p>
                   )}
                 </div>
               </div>
@@ -327,9 +267,7 @@ export default function ContactPage() {
                   Inquiry Topic
                 </label>
                 <select
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
+                  {...formik.getFieldProps('subject')}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white transition-all text-sm text-slate-800"
                 >
                   <option value="">Select a topic</option>
@@ -348,25 +286,23 @@ export default function ContactPage() {
                   Message <span className="text-red-500">*</span>
                 </label>
                 <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   rows={5}
+                  placeholder="Describe your inquiry or request..."
+                  {...formik.getFieldProps('message')}
                   className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all text-sm resize-none ${
-                    errors.message
+                    formik.touched.message && formik.errors.message
                       ? 'border-red-500 focus:ring-red-200'
                       : 'border-slate-200 focus:ring-1 focus:ring-[#1e293b] focus:border-[#1e293b] focus:bg-white'
                   }`}
-                  placeholder="Describe your inquiry or request..."
                 />
-                {errors.message && (
-                  <p className="text-red-500 text-xs mt-1 font-semibold">{errors.message}</p>
+                {formik.touched.message && formik.errors.message && (
+                  <p className="text-red-500 text-xs mt-1 font-semibold">{formik.errors.message}</p>
                 )}
               </div>
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !formik.isValid || !formik.dirty}
                 className="w-full bg-[#FF6900] hover:bg-orange-600 text-white py-3.5 px-6 rounded-xl font-extrabold uppercase tracking-wider text-sm transition-all shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed active:scale-[0.99] cursor-pointer"
               >
                 {isSubmitting ? (

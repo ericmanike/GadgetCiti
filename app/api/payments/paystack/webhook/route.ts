@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { supabase } from '@/lib/supabase';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
 
     // 2. Handle Successful Payment Event
     if (event.event === 'charge.success') {
+      console.log( "Paystack webhook payload: ", event)
       const { reference, amount, currency, customer, metadata, channel, paid_at } = event.data;
       const amountPaidGHS = amount / 100; // Paystack sends amount in pesewas (GHS * 100)
       const customerEmail = customer?.email || '';
@@ -237,6 +239,27 @@ export async function POST(request: Request) {
                 console.error('[Paystack Webhook] ❌ Exception inserting order_items:', itemException);
               }
             }
+
+            // 3. Send Order Confirmation Email to Checkout Customer
+            if (customerEmail) {
+              console.log(`[Paystack Webhook] 📧 Sending purchase confirmation email to: ${customerEmail}`);
+              const deliveryAddr = metadata?.custom_fields?.find((f: any) => f.variable_name === 'delivery_address')?.value;
+              
+              sendOrderConfirmationEmail({
+                to: customerEmail,
+                customerName: customerName,
+                orderReference: reference,
+                totalAmount: dbCalculatedTotal > 0 ? dbCalculatedTotal : amountPaidGHS,
+                items: verifiedItems.map((v: any) => ({
+                  name: v.name,
+                  quantity: v.quantity,
+                  unit_price: v.unit_price,
+                })),
+                deliveryAddress: deliveryAddr,
+              }).catch((emailErr) => {
+                console.error('[Paystack Webhook] ❌ Error sending purchase email:', emailErr);
+              });
+            }
           }
         } catch (dbErr) {
           console.error('[Paystack Webhook] ❌ DB Exception during Order & Line Items Creation:', dbErr);
@@ -251,3 +274,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

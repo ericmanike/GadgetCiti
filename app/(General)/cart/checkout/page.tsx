@@ -7,8 +7,19 @@ import { formatCurrency } from '@/lib/utils';
 import { useCart } from '@/components/CartContext';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const STEPS = ['Delivery', 'Review & Pay'];
+
+const checkoutSchema = Yup.object().shape({
+    fullName: Yup.string().trim().min(2, 'Full name is required').required('Full name is required'),
+    email: Yup.string().trim().email('Please enter a valid email address').required('Email address is required'),
+    phone: Yup.string().trim().matches(/^[0-9+\s()-]{10,}$/, 'Please enter a valid phone number').required('Phone number is required'),
+    address: Yup.string().trim().required('Street address is required'),
+    city: Yup.string().trim().required('City is required'),
+    region: Yup.string().trim().required('Region is required'),
+});
 
 export default function CheckoutPage() {
     const { cart, clearCart, totalPrice } = useCart();
@@ -18,15 +29,23 @@ export default function CheckoutPage() {
     const [isPaying, setIsPaying] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
-    const [form, setForm] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        region: '',
-        zip: '',
+
+    const formik = useFormik({
+        initialValues: {
+            fullName: user?.user_metadata?.full_name || '',
+            email: user?.email || '',
+            phone: '',
+            address: '',
+            city: '',
+            region: '',
+        },
+        validationSchema: checkoutSchema,
+        onSubmit: () => {
+            setStep(1);
+        }
     });
+
+    const form = formik.values;
 
     const displayItems = cart ? cart.map(item => ({
         id: item.product.id,
@@ -39,8 +58,6 @@ export default function CheckoutPage() {
     const subtotal = totalPrice;
     const shipping = 0;
     const total = subtotal + shipping;
-
-    const update = (field: string, val: string) => setForm(f => ({ ...f, [field]: val }));
 
     const sendOrderConfirmationSMS = async (customerName: string, phone: string, orderTotal: number) => {
         if (!phone) {
@@ -62,6 +79,30 @@ export default function CheckoutPage() {
             console.log('[CHECKOUT SMS RESULT]', data);
         } catch (e) {
             console.error('[CHECKOUT SMS ERROR] Failed to send SMS confirmation:', e);
+        }
+    };
+
+    const sendOrderConfirmationEmailClient = async (customerName: string, email: string, orderTotal: number, ref: string) => {
+        if (!email) return;
+        try {
+            await fetch('/api/payments/order-confirmation-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: email,
+                    customerName: customerName,
+                    orderReference: ref,
+                    totalAmount: orderTotal,
+                    items: cart ? cart.map(item => ({
+                        name: item.product.name,
+                        quantity: item.quantity,
+                        unit_price: item.product.price,
+                    })) : [],
+                    deliveryAddress: `${form.address}, ${form.city}, ${form.region}`
+                })
+            });
+        } catch (e) {
+            console.error('[CHECKOUT EMAIL ERROR]', e);
         }
     };
 
@@ -103,11 +144,9 @@ export default function CheckoutPage() {
                     user_id: user?.id || null,
                     cart_items: cart,
                     custom_fields: [
-                    
                         { display_name: 'Customer Name', variable_name: 'customer_name', value: form.fullName },
                         { display_name: 'Phone Number', variable_name: 'phone_number', value: form.phone },
                         { display_name: 'Delivery Address', variable_name: 'delivery_address', value: `${form.address}, ${form.city}, ${form.region}` }
-                        
                     ]
                 },
                 onSuccess: async (transaction: any) => {
@@ -124,9 +163,8 @@ export default function CheckoutPage() {
 
                         if (verifyData.success) {
                             setPlaced(true);
-                            console.log('cart_items', cart);
-                         
                             sendOrderConfirmationSMS(form.fullName, form.phone, total);
+                            sendOrderConfirmationEmailClient(form.fullName, form.email, total, txRef);
                         } else {
                             setErrorMessage(verifyData.error || 'Payment verification failed.');
                         }
@@ -135,6 +173,7 @@ export default function CheckoutPage() {
                         setPlaced(true);
                         clearCart();
                         sendOrderConfirmationSMS(form.fullName, form.phone, total);
+                        sendOrderConfirmationEmailClient(form.fullName, form.email, total, txRef);
                     } finally {
                         setIsPaying(false);
                     }
@@ -176,18 +215,10 @@ export default function CheckoutPage() {
                     <p className="text-xs font-black tracking-widest text-gray-400 uppercase mb-1">Order Total</p>
                     <p className="text-3xl font-black text-gray-900 mb-8">{formatCurrency(total)}</p>
                     <div className="flex flex-col gap-3">
-                       
-                        <button onClick={()=>{clearCart();
-                            router.push('/customer/orders');
-                        }
-                        }  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl transition-all">
+                        <button onClick={()=>{clearCart(); router.push('/customer/orders'); }} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl transition-all">
                           Track My Order
                         </button>
-                        <button
-                        onClick={()=>{clearCart();
-                            router.push('/buy');
-                        }
-                        }  className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
+                        <button onClick={()=>{clearCart(); router.push('/buy'); }} className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
                             Continue Shopping
                         </button>
                     </div>
@@ -237,59 +268,74 @@ export default function CheckoutPage() {
                             {step === 0 && (
                                 <motion.div key="delivery" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
                                     <h2 className="text-base font-black text-gray-900">Delivery Information</h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {[
-                                            { field: 'fullName', label: 'Full Name', placeholder: 'John Doe', col: 2 },
-                                            { field: 'email', label: 'Email Address', placeholder: 'john@example.com', col: 1 },
-                                            { field: 'phone', label: 'Phone Number', placeholder: '+233 XX XXX XXXX', col: 1 },
-                                            { field: 'address', label: 'Street Address', placeholder: '123 Main Street', col: 2 },
-                                            { field: 'city', label: 'City', placeholder: 'Accra', col: 1 },
-                                        ].map(({ field, label, placeholder, col }) => (
-                                            <div key={field} className={col === 2 ? 'sm:col-span-2' : ''}>
-                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
-                                                <input
-                                                    value={(form as any)[field]}
-                                                    onChange={e => update(field, e.target.value)}
-                                                    placeholder={placeholder}
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px]"
-                                                />
-                                            </div>
-                                        ))}
+                                    <form onSubmit={formik.handleSubmit} className="space-y-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            {[
+                                                { field: 'fullName', label: 'Full Name', placeholder: 'John Doe', col: 2 },
+                                                { field: 'email', label: 'Email Address', placeholder: 'john@example.com', col: 1 },
+                                                { field: 'phone', label: 'Phone Number', placeholder: '+233 XX XXX XXXX', col: 1 },
+                                                { field: 'address', label: 'Street Address', placeholder: '123 Main Street', col: 2 },
+                                                { field: 'city', label: 'City', placeholder: 'Accra', col: 1 },
+                                            ].map(({ field, label, placeholder, col }) => {
+                                                const fieldName = field as keyof typeof formik.values;
+                                                const hasError = formik.touched[fieldName] && formik.errors[fieldName];
+                                                return (
+                                                    <div key={field} className={col === 2 ? 'sm:col-span-2' : ''}>
+                                                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</label>
+                                                        <input
+                                                            placeholder={placeholder}
+                                                            {...formik.getFieldProps(fieldName)}
+                                                            className={`w-full px-4 py-3 rounded-xl border ${
+                                                                hasError ? 'border-red-400' : 'border-gray-200'
+                                                            } focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px]`}
+                                                        />
+                                                        {hasError && (
+                                                            <p className="text-red-500 text-xs mt-1 font-semibold">{String(formik.errors[fieldName])}</p>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
 
-                                        {/* Region — Select dropdown */}
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Region</label>
-                                            <select
-                                                value={form.region}
-                                                onChange={e => update('region', e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px] cursor-pointer"
-                                            >
-                                                <option value="" disabled>Select your region</option>
-                                                <option value="Greater Accra">Greater Accra</option>
-                                                <option value="Ashanti">Ashanti</option>
-                                                <option value="Western">Western</option>
-                                                <option value="Central">Central</option>
-                                                <option value="Eastern">Eastern</option>
-                                                <option value="Volta">Volta</option>
-                                                <option value="Northern">Northern</option>
-                                                <option value="Upper East">Upper East</option>
-                                                <option value="Upper West">Upper West</option>
-                                                <option value="Brong-Ahafo">Brong-Ahafo</option>
-                                                <option value="Bono">Bono</option>
-                                                <option value="Bono East">Bono East</option>
-                                                <option value="Ahafo">Ahafo</option>
-                                                <option value="Savannah">Savannah</option>
-                                                <option value="North East">North East</option>
-                                                <option value="Oti">Oti</option>
-                                                <option value="Western North">Western North</option>
-                                            </select>
+                                            {/* Region — Select dropdown */}
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Region</label>
+                                                <select
+                                                    {...formik.getFieldProps('region')}
+                                                    className={`w-full px-4 py-3 rounded-xl border ${
+                                                        formik.touched.region && formik.errors.region ? 'border-red-400' : 'border-gray-200'
+                                                    } bg-white text-gray-700 focus:border-[#1e293b] focus:ring-2 focus:ring-[#1e293b]/20 outline-none transition text-[16px] cursor-pointer`}
+                                                >
+                                                    <option value="" disabled>Select your region</option>
+                                                    <option value="Greater Accra">Greater Accra</option>
+                                                    <option value="Ashanti">Ashanti</option>
+                                                    <option value="Western">Western</option>
+                                                    <option value="Central">Central</option>
+                                                    <option value="Eastern">Eastern</option>
+                                                    <option value="Volta">Volta</option>
+                                                    <option value="Northern">Northern</option>
+                                                    <option value="Upper East">Upper East</option>
+                                                    <option value="Upper West">Upper West</option>
+                                                    <option value="Brong-Ahafo">Brong-Ahafo</option>
+                                                    <option value="Bono">Bono</option>
+                                                    <option value="Bono East">Bono East</option>
+                                                    <option value="Ahafo">Ahafo</option>
+                                                    <option value="Savannah">Savannah</option>
+                                                    <option value="North East">North East</option>
+                                                    <option value="Oti">Oti</option>
+                                                    <option value="Western North">Western North</option>
+                                                </select>
+                                                {formik.touched.region && formik.errors.region && (
+                                                    <p className="text-red-500 text-xs mt-1 font-semibold">{String(formik.errors.region)}</p>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <button onClick={() => setStep(1)} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 mt-2">
-                                        Continue to Review & Pay <ChevronRight size={18} />
-                                    </button>
+                                        <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer">
+                                            Continue to Review & Pay <ChevronRight size={18} />
+                                        </button>
+                                    </form>
                                 </motion.div>
                             )}
+
 
                             {/* Step 1 — Review & Pay */}
                             {step === 1 && (
