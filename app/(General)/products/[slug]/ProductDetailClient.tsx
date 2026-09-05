@@ -96,7 +96,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 <span className="text-gray-900 truncate">{product.name}</span>
             </nav>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 lg:gap-16">
                 {/* Left: Image Gallery */}
                 <div className="lg:col-span-4 flex flex-col gap-4">
                     <div 
@@ -208,7 +208,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 </div>
 
                 {/* Middle: Product Info */}
-                <div className="lg:col-span-5 flex flex-col gap-6">
+                <div className="lg:col-span-6 flex flex-col gap-6">
                     <div className="flex flex-col gap-1.5">
                         <div className="flex items-start justify-between">
                             <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
@@ -281,64 +281,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     </div>
                 </div>
 
-                {/* Right: Shipping & Seller Sidebar */}
-                <div className="lg:col-span-3 flex flex-col gap-6">
-                    <div className="p-6 rounded-3xl bg-white shadow-lg border border-slate-100 flex flex-col gap-5">
-                        {/* Store Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-orange-500/20 shrink-0">
-                                G
-                            </div>
-                            <div className="flex flex-col min-w-0">
-                                <div className="flex items-center gap-1.5">
-                                    <h3 className="text-sm font-black text-slate-900 truncate">Gadget CITi Official</h3>
-                                    <CheckCircle2 size={16} className="text-blue-500 shrink-0 fill-blue-500/10" />
-                                </div>
-                                <span className="text-[11px] font-bold text-orange-500">Verified Partner Store</span>
-                            </div>
-                        </div>
-
-                        {/* Store Location */}
-                        <div className="flex items-center gap-2 text-slate-600 bg-slate-50 px-3 py-2 rounded-xl text-xs font-semibold">
-                            <MapPin size={15} className="text-orange-500 shrink-0" />
-                            <span>Kumasi, KNUST Campus</span>
-                        </div>
-
-                        {/* Store Metrics Stats */}
-                        <div className="grid grid-cols-3 gap-2 text-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                            <div className="flex flex-col items-center">
-                                <span className="text-xs font-black text-slate-900">4.9 ★</span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Rating</span>
-                            </div>
-                            <div className="flex flex-col items-center border-x border-slate-200">
-                                <span className="text-xs font-black text-slate-900">98%</span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Positive</span>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <span className="text-xs font-black text-slate-900">10k+</span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Followers</span>
-                            </div>
-                        </div>
-
-                        {/* Store Action Buttons */}
-                        <div className="grid grid-cols-2 gap-2.5 pt-1">
-                            <button
-                                onClick={() => {
-                                    const text = encodeURIComponent(`Hello! I am chatting regarding ${product.name} on Letronix.`);
-                                    window.open(`https://wa.me/?text=${text}`, '_blank');
-                                }}
-                                className="w-full py-2.5 px-3 bg-[#632CF5] hover:bg-[#5223cb] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-indigo-500/20 active:scale-95 cursor-pointer"
-                            >
-                                <MessageSquare size={14} />
-                                <span>Chat</span>
-                            </button>
-                            <button className="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer">
-                                <Plus size={14} className="text-orange-500" />
-                                <span>Follow</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
 
             {/* Tabs Section */}
