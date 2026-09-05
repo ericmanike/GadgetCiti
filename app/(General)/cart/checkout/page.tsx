@@ -9,6 +9,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { supabase } from '@/lib/supabase';
 
 const STEPS = ['Delivery', 'Review & Pay'];
 
@@ -106,6 +107,70 @@ export default function CheckoutPage() {
         }
     };
 
+    const recordOrderLocallyAndInDatabase = async (txRef: string) => {
+        const newOrder = {
+            id: txRef,
+            created_at: new Date().toISOString(),
+            total: total,
+            status: 'Paid',
+            user_id: user?.id || null,
+            user_email: form.email,
+            user_name: form.fullName,
+            user_phone: form.phone,
+            delivery_address: `${form.address}, ${form.city}, ${form.region}`,
+            items: cart.map(i => ({
+                id: i.product.id,
+                name: i.product.name,
+                price: i.product.price,
+                quantity: i.quantity,
+                image: i.product.images?.[0] || ''
+            }))
+        };
+
+        // 1. Save to LocalStorage
+        try {
+            const existing = localStorage.getItem('gadgetciti_orders');
+            const parsed = existing ? JSON.parse(existing) : [];
+            const updated = [newOrder, ...parsed.filter((o: any) => o.id !== txRef)];
+            localStorage.setItem('gadgetciti_orders', JSON.stringify(updated));
+        } catch (e) {
+            console.warn('Could not save order locally:', e);
+        }
+
+        // 2. Save to Supabase DB
+        try {
+            const orderPayload: any = {
+                total: total,
+                status: 'Paid',
+                updated_at: new Date().toISOString()
+            };
+            if (user?.id) {
+                orderPayload.user_id = user.id;
+            }
+
+            const { data: orderData } = await supabase
+                .from('orders')
+                .insert([orderPayload])
+                .select('id')
+                .single();
+
+            if (orderData?.id) {
+                const itemsPayload = cart.map(i => ({
+                    order_id: orderData.id,
+                    product_id: parseInt(String(i.product.id), 10) || null,
+                    quantity: i.quantity,
+                    price: i.product.price
+                })).filter(i => i.product_id !== null);
+
+                if (itemsPayload.length > 0) {
+                    await supabase.from('order_items').insert(itemsPayload);
+                }
+            }
+        } catch (e) {
+            console.warn('Could not save order to Supabase directly:', e);
+        }
+    };
+
     // Paystack Inline Transaction Handler
     const handlePaystackPayment = async () => {
         setErrorMessage('');
@@ -152,6 +217,7 @@ export default function CheckoutPage() {
                 onSuccess: async (transaction: any) => {
                     console.log('[Paystack Payment Success]', transaction);
                     const txRef = transaction.reference || transaction.trxref || reference;
+                    await recordOrderLocallyAndInDatabase(txRef);
                     try {
                         const verifyRes = await fetch('/api/payments/paystack/verify', {
                             method: 'POST',
@@ -163,6 +229,7 @@ export default function CheckoutPage() {
 
                         if (verifyData.success) {
                             setPlaced(true);
+                            clearCart();
                             sendOrderConfirmationSMS(form.fullName, form.phone, total);
                             sendOrderConfirmationEmailClient(form.fullName, form.email, total, txRef);
                         } else {

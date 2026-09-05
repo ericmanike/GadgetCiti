@@ -1,5 +1,5 @@
 'use client';
-import { Menu, ShoppingBag, ShoppingCart, Truck, Headset, Search, Zap, Home, Wallet, MessageCircleMore } from 'lucide-react';
+import { Menu, ShoppingBag, ShoppingCart, Truck, Headset, Search, Zap, Home, Wallet, MessageCircleMore, Headphones } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import NotificationsPanel from './Notifications';
@@ -69,7 +69,7 @@ const Navbar = () => {
   return (
     <>
 
-      <nav className={`w-full bg-gray-400 shadow-md  top-0 left-0 z-50 transition-transform duration-600 `}>
+      <nav className={`w-full bg-gray-200 shadow-md  top-0 left-0 z-50 transition-transform duration-600 `}>
         <Marquee />
 
         {/* Top Row: Menu, Logo, Search, and Actions */}
@@ -143,7 +143,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Section: Inbox, Cart, Profile (Auth) */}
-          <div className="flex items-center gap-3 sm:gap-5 md:gap-7 shrink-0">
+          <div className="flex justify-between  items-center gap-5 sm:gap-6 md:gap-8 shrink-0">
             <Link
               href="/customer/inbox"
               className="p-2 hover:bg-gray-100 rounded-lg transition text-slate-800 flex items-center justify-center cursor-pointer"
@@ -182,10 +182,10 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/seller">
+            <ActiveLink href="/contact">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
-                <ShoppingCart size={18} className="group-hover:text-orange-500" />
-                <span className="text-sm font-semibold whitespace-nowrap">Start Selling </span>
+                <Headphones size={18} className="group-hover:text-orange-500" />
+                <span className="text-sm font-semibold whitespace-nowrap">Contact</span>
               </div>
             </ActiveLink>
 
@@ -215,12 +215,12 @@ const Navbar = () => {
 
       {/* Floating AI Chatbot / Notification Button */}
       <button
-        className="fixed bottom-6 right-6 z-50 p-3.5 bg-[#632CF5] hover:bg-[#5223cb] text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all active:scale-95 cursor-pointer flex items-center justify-center border-2 border-white shadow-[#632CF5]/30"
+        className="fixed bottom-6 right-6 z-50 p-4 bg-[#632CF5] hover:bg-[#5223cb] text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all active:scale-95 cursor-pointer flex items-center justify-center border-2 border-white shadow-[#632CF5]/40"
         onClick={() => setIsNotificationsOpen(true)}
         aria-label="AI Support & Notifications"
       >
-        <Headset size={24} className="text-white" strokeWidth={2.2} />
-        <span className="absolute top-0 right-0 mt-0 mr-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full"></span>
+        <Headset size={30} className="text-white" strokeWidth={2.4} />
+        <span className="absolute top-0 right-0 mt-0.5 mr-0.5 w-4 h-4 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
       </button>
 
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />

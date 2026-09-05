@@ -62,69 +62,115 @@ export default function AdminOrdersPage() {
   async function loadOrders() {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          id,
-          created_at,
-          total,
-          status,
-          user_id,
-          users (
-            name,
-            email,
-            phone
-          ),
-          order_items (
+      let allOrdersList: Order[] = [];
+
+      // 1. Load from localStorage
+      try {
+        const localData = localStorage.getItem('gadgetciti_orders');
+        if (localData) {
+          const parsed = JSON.parse(localData);
+          if (Array.isArray(parsed)) {
+            const mappedLocal: Order[] = parsed.map((row: any) => ({
+              id: String(row.id),
+              created_at: row.created_at || new Date().toISOString(),
+              total: Number(row.total) || 0,
+              status: row.status || 'Paid',
+              user_id: row.user_id || '',
+              isMock: true,
+              users: {
+                name: row.user_name || 'Checkout Customer',
+                email: row.user_email || 'No Email',
+                phone: row.user_phone || 'N/A'
+              },
+              order_items: (row.items || []).map((item: any) => ({
+                id: String(item.id || Math.random()),
+                quantity: Number(item.quantity || 1),
+                price: Number(item.price || 0),
+                products: {
+                  name: item.name || 'Gadget Item',
+                  brand: 'Gadget',
+                  product_images: item.image ? [{ image_url: item.image }] : []
+                }
+              }))
+            }));
+            allOrdersList.push(...mappedLocal);
+          }
+        }
+      } catch (e) {
+        console.warn('Error reading local orders in admin:', e);
+      }
+
+      // 2. Load from Supabase DB
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select(`
             id,
-            quantity,
-            price,
-            products (
-              name,
-              brand,
-              product_images (
-                image_url
+            created_at,
+            total,
+            status,
+            user_id,
+            order_items (
+              id,
+              quantity,
+              price,
+              products (
+                name,
+                brand,
+                product_images (
+                  image_url
+                )
               )
             )
-          )
-        `)
-        .order('created_at', { ascending: false });
+          `)
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error("Failed to query real orders:", error);
-        setOrders([]);
-      } else if (data && data.length > 0) {
-        // Map and set real database orders
-        const mapped: Order[] = data.map((row: any) => ({
-          id: row.id,
-          created_at: row.created_at,
-          total: Number(row.total) || 0,
-          status: row.status || 'Pending',
-          user_id: row.user_id,
-          users: row.users ? {
-            name: row.users.name || 'Anonymous User',
-            email: row.users.email || 'No Email',
-            phone: row.users.phone || 'N/A'
-          } : null,
-          order_items: (row.order_items || []).map((item: any) => ({
-            id: item.id,
-            quantity: Number(item.quantity) || 1,
-            price: Number(item.price) || 0,
-            products: item.products ? {
-              name: item.products.name || 'Unknown Product',
-              brand: item.products.brand || 'Generic',
-              product_images: item.products.product_images || []
+        if (!error && data && data.length > 0) {
+          const mappedDb: Order[] = data.map((row: any) => ({
+            id: String(row.id),
+            created_at: row.created_at,
+            total: Number(row.total) || 0,
+            status: row.status || 'Paid',
+            user_id: row.user_id || '',
+            users: row.users ? {
+              name: row.users.name || 'Registered Customer',
+              email: row.users.email || 'No Email',
+              phone: row.users.phone || 'N/A'
             } : {
-              name: 'Unknown Product',
-              brand: 'Generic',
-              product_images: []
+              name: 'Registered Customer',
+              email: row.user_id ? `User #${String(row.user_id).slice(0, 8)}` : 'Guest Checkout',
+              phone: 'N/A'
+            },
+            order_items: (row.order_items || []).map((item: any) => ({
+              id: String(item.id),
+              quantity: Number(item.quantity) || 1,
+              price: Number(item.price) || 0,
+              products: item.products ? {
+                name: item.products.name || 'Gadget Item',
+                brand: item.products.brand || 'Generic',
+                product_images: item.products.product_images || []
+              } : {
+                name: 'Gadget Item',
+                brand: 'Generic',
+                product_images: []
+              }
+            }))
+          }));
+
+          // Merge DB orders without duplicating IDs
+          mappedDb.forEach(dbOrd => {
+            if (!allOrdersList.some(o => o.id === dbOrd.id)) {
+              allOrdersList.push(dbOrd);
             }
-          }))
-        }));
-        setOrders(mapped);
-      } else {
-        setOrders([]);
+          });
+        }
+      } catch (dbErr) {
+        console.warn('Failed to query database orders:', dbErr);
       }
+
+      // Sort by newest
+      allOrdersList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setOrders(allOrdersList);
     } catch (err) {
       console.error("Failed to load orders:", err);
       setOrders([]);

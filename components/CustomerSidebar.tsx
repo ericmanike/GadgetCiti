@@ -77,48 +77,55 @@ const CustomerSidebar = () => {
 
     return (
         <div className="w-full bg-white shadow-sm overflow-hidden h-full border-r border-gray-200 flex flex-col justify-between">
-            <nav className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
+            <nav className="flex flex-col flex-1 overflow-y-auto no-scrollbar py-2">
                 <Link 
                     href="/customer/account"
-                    className="w-full bg-gray-800 p-3 md:p-4 py-3 gap-2.5 md:gap-3 flex justify-start items-center hover:bg-gray-700 transition-colors cursor-pointer group"
+                    className="w-full bg-gray-800 p-3 md:p-4 py-3.5 gap-2.5 md:gap-3 flex justify-start items-center hover:bg-gray-700 transition-colors cursor-pointer group mb-3 shadow-xs"
                 >
                     <CircleUser className="w-6 h-6 md:w-8 md:h-8 text-white shrink-0 group-hover:scale-105 transition-transform" color="white" />
                     <div className="flex flex-col min-w-0">
-                        <span className="text-white text-[14px] font-normal truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
+                        <span className="text-white text-[15px] font-medium truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
                     </div>
                 </Link>
-                {menuItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`flex items-center gap-3 px-4 py-3 text-[14px] font-normal transition-colors hover:text-orange-500 hover:bg-orange-50/30 ${
-                                isActive ? 'text-orange-500 bg-orange-50/50 font-bold border-r-4 border-orange-500' : 'text-black'
-                            }`}
-                        >
-                            <item.icon size={18} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
-                            <span className="truncate leading-tight">{item.label}</span>
-                        </Link>
-                    );
-                })}
 
-                <div className="pt-4 mt-4 border-t border-gray-100 space-y-1">
-                    <p className="px-4 py-1 text-[14px] font-bold text-[#1E2939] tracking-wide mx-2 mb-1">Account Settings</p>
-                    {managementItems.map((item) => {
+                {/* Main Navigation Items with vertical spacing */}
+                <div className="flex flex-col gap-2 px-2">
+                    {menuItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`block px-4 py-3 text-[14px] font-normal hover:text-orange-500 hover:bg-orange-50/40 transition-colors truncate leading-tight rounded-xl mx-2 ${
-                                    isActive ? 'text-orange-500 bg-orange-50/60 font-bold' : 'text-black'
+                                className={`flex items-center gap-3.5 px-4 py-3 text-[15px] font-normal transition-all rounded-xl hover:text-orange-500 hover:bg-orange-50/40 select-none ${
+                                    isActive ? 'text-orange-500 bg-orange-50/80 font-bold shadow-2xs' : 'text-black'
                                 }`}
                             >
-                                {item.label}
+                                <item.icon size={20} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
+                                <span className="truncate leading-tight">{item.label}</span>
                             </Link>
                         );
                     })}
+                </div>
+
+                {/* Account Settings with vertical spacing */}
+                <div className="pt-4 mt-4 border-t border-gray-100 flex flex-col gap-2">
+                    <p className="px-5 py-1 text-[13px] font-bold text-[#1E2939] uppercase tracking-wider opacity-70">Account Settings</p>
+                    <div className="flex flex-col gap-2 px-2">
+                        {managementItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`block px-4 py-3 text-[15px] font-normal hover:text-orange-500 hover:bg-orange-50/40 transition-all truncate leading-tight rounded-xl ${
+                                        isActive ? 'text-orange-500 bg-orange-50/80 font-bold shadow-2xs' : 'text-black'
+                                    }`}
+                                >
+                                    {item.label}
+                                </Link>
+                            );
+                        })}
+                    </div>
                 </div>
             </nav>
 

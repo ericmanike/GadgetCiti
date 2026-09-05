@@ -97,25 +97,25 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       </div>
 
       {/* Grouped menu sections */}
-      <div className="flex-1 py-3 flex flex-col gap-5 overflow-y-auto no-scrollbar">
+      <div className="flex-1 py-5 flex flex-col gap-7 overflow-y-auto no-scrollbar">
         {menuSections.map((section, sIdx) => (
-          <div key={sIdx} className="w-full flex flex-col">
+          <div key={sIdx} className="w-full flex flex-col border-b border-slate-100/80 last:border-none pb-4 last:pb-0">
             {/* Section title */}
-            <div className="px-5 py-1 text-[14px] font-bold tracking-wide text-[#1E2939]">
+            <div className="px-5 py-1 text-[14px] font-bold tracking-wide text-[#1E2939] mb-2 uppercase text-[12px] opacity-70">
               {section.title}
             </div>
             
-            {/* Section items list */}
-            <div className="flex flex-col mt-1">
+            {/* Section items list with generous spacing */}
+            <div className="flex flex-col gap-2 px-3">
               {section.items.map((menu) => (
                 <Link
                   key={menu.id}
                   href={menu.href}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3.5 px-5 py-3 hover:bg-slate-50 transition-colors group cursor-pointer text-black hover:text-orange-500 select-none"
+                  className="flex items-center gap-3.5 px-4 py-3 rounded-xl hover:bg-slate-100 transition-all group cursor-pointer text-black hover:text-orange-500 select-none shadow-2xs"
                 >
-                  <menu.icon className="text-[#1E2939] w-5 h-5 transition-transform group-hover:scale-105" strokeWidth={2} />
-                  <span className="text-[14px] font-normal tracking-wide leading-none">{menu.name}</span>
+                  <menu.icon className="text-[#1E2939] w-5 h-5 transition-transform group-hover:scale-110 group-hover:text-orange-500" strokeWidth={2} />
+                  <span className="text-[15px] font-medium tracking-wide leading-none">{menu.name}</span>
                 </Link>
               ))}
             </div>

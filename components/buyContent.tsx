@@ -202,7 +202,7 @@ export default function BuyPage() {
             <h2 className="text-xl font-bold mb-4 flex justify-between w-full items-center">
               <span>Filters</span>
               <div className="flex items-center gap-3">
-                <button className="text-red-500 text-xs font-bold hover:underline cursor-pointer"
+                <button className="text-red-500 text-sm font-bold hover:underline cursor-pointer"
                   onClick={() => {
                     setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
                     router.push('?');
@@ -241,14 +241,14 @@ export default function BuyPage() {
                     <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                   )}
                 </div>
-                <div className="ml-3 flex items-center text-sm font-bold text-gray-900 group-hover:text-slate-700 transition-colors">
+                <div className="ml-3 flex items-center text-[15px] md:text-[16px] font-bold text-gray-900 group-hover:text-slate-700 transition-colors">
                   <span>Falaa Deals Only</span>
                 </div>
               </label>
             </div>
 
             <div className="mb-6">
-              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Category</label>
+              <label className="block mb-3 font-bold text-[16px] text-gray-900 border-b border-gray-100 pb-1">Category</label>
               <div className="space-y-2.5">
                 {[
                   { id: 'smartphones', label: 'Smartphones', value: 'smartphones' },
@@ -277,7 +277,7 @@ export default function BuyPage() {
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
+                    <span className="ml-3 text-[15px] md:text-[16px] font-semibold text-gray-700 group-hover:text-orange-500 transition-colors">
                       {cat.label}
                     </span>
                   </label>
@@ -286,9 +286,9 @@ export default function BuyPage() {
             </div>
             {/* Price Range Slider */}
             <div className="mb-8">
-              <label className="block mb-4 font-bold text-base text-gray-900 border-b border-gray-100 pb-1 flex justify-between items-center">
+              <label className="block mb-4 font-bold text-[16px] text-gray-900 border-b border-gray-100 pb-1 flex justify-between items-center">
                 Price Range
-                <span className="text-orange-500 text-xs font-black">Up to {formatCurrency(Number(filteredProducts.priceRange) || 25000)}</span>
+                <span className="text-orange-500 text-sm font-black">Up to {formatCurrency(Number(filteredProducts.priceRange) || 25000)}</span>
               </label>
               <div className="px-1">
                 <input
@@ -306,7 +306,7 @@ export default function BuyPage() {
                   }}
                   className="w-full h-1.5 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500 [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-orange-500 [&::-moz-range-thumb]:border-none"
                 />
-                <div className="flex justify-between mt-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                <div className="flex justify-between mt-3 text-xs font-black text-gray-500 uppercase tracking-widest">
                   <span>0 GHS</span>
                   <span>25K GHS</span>
                 </div>
@@ -315,8 +315,8 @@ export default function BuyPage() {
 
             {/* Brand Filter */}
             <div className="mb-6">
-              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Brand</label>
-              <div className="space-y-2.5 max-h-[160px] overflow-y-auto thin-scrollbar pr-1">
+              <label className="block mb-3 font-bold text-[16px] text-gray-900 border-b border-gray-100 pb-1">Brand</label>
+              <div className="space-y-2.5 max-h-[180px] overflow-y-auto thin-scrollbar pr-1">
                 {Array.from(new Set(allProducts.map(p => p.brand).filter(Boolean))).sort().map((brand) => (
                   <label key={brand} className="flex items-center group cursor-pointer">
                     <div className="relative flex items-center justify-center">
@@ -338,7 +338,7 @@ export default function BuyPage() {
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
+                    <span className="ml-3 text-[15px] md:text-[16px] font-semibold text-gray-700 group-hover:text-orange-500 transition-colors">
                       {brand}
                     </span>
                   </label>
@@ -346,10 +346,8 @@ export default function BuyPage() {
               </div>
             </div>
 
-
-
             <div className="mb-6">
-              <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Condition</label>
+              <label className="block mb-3 font-bold text-[16px] text-gray-900 border-b border-gray-100 pb-1">Condition</label>
               <div className="space-y-3">
                 {[
                   { id: 'c-new', label: 'New', value: 'new' },
@@ -376,7 +374,7 @@ export default function BuyPage() {
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
                       )}
                     </div>
-                    <span className="ml-3 text-sm font-semibold text-gray-600 group-hover:text-orange-500 transition-colors">
+                    <span className="ml-3 text-[15px] md:text-[16px] font-semibold text-gray-700 group-hover:text-orange-500 transition-colors">
                       {cond.label}
                     </span>
                   </label>
@@ -392,16 +390,15 @@ export default function BuyPage() {
                   setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
                   router.push('?');
                 }}
-                className="flex-1 py-3 px-4 rounded-xl border border-gray-250 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer active:scale-98"
+                className="flex-1 py-3 px-4 rounded-xl border border-gray-250 text-sm font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer active:scale-98"
               >
                 Reset Filters
               </button>
               <button
                 type="button"
                 onClick={() => setIsFilterOpen(false)}
-                className="flex-1 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-xs font-bold text-white transition cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 shadow-sm"
+                className="flex-1 py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-sm font-bold text-white transition cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 shadow-sm"
               >
-               
                 Apply All
               </button>
             </div>
@@ -520,14 +517,14 @@ export default function BuyPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 active:scale-95 transition shadow-xs"
+                  className="md:hidden flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 active:scale-95 transition shadow-xs"
                 >
-                  <Filter size={14} className="text-orange-500" />
+                  <Filter size={16} className="text-orange-500" />
                   <span>Filters</span>
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider hidden sm:inline">Sort By:</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider hidden sm:inline">Sort By:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => {
@@ -536,7 +533,7 @@ export default function BuyPage() {
                     params.delete("page");
                     router.push(`?${params.toString()}`);
                   }}
-                  className="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] cursor-pointer shadow-xs transition"
+                  className="bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] cursor-pointer shadow-xs transition"
                 >
                   <option value="newest">Newest First</option>
                   <option value="price-asc">Price: Low to High</option>
