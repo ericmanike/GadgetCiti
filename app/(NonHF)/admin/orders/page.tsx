@@ -64,43 +64,7 @@ export default function AdminOrdersPage() {
       setLoading(true);
       let allOrdersList: Order[] = [];
 
-      // 1. Load from localStorage
-      try {
-        const localData = localStorage.getItem('gadgetciti_orders');
-        if (localData) {
-          const parsed = JSON.parse(localData);
-          if (Array.isArray(parsed)) {
-            const mappedLocal: Order[] = parsed.map((row: any) => ({
-              id: String(row.id),
-              created_at: row.created_at || new Date().toISOString(),
-              total: Number(row.total) || 0,
-              status: row.status || 'Paid',
-              user_id: row.user_id || '',
-              isMock: true,
-              users: {
-                name: row.user_name || 'Checkout Customer',
-                email: row.user_email || 'No Email',
-                phone: row.user_phone || 'N/A'
-              },
-              order_items: (row.items || []).map((item: any) => ({
-                id: String(item.id || Math.random()),
-                quantity: Number(item.quantity || 1),
-                price: Number(item.price || 0),
-                products: {
-                  name: item.name || 'Gadget Item',
-                  brand: 'Gadget',
-                  product_images: item.image ? [{ image_url: item.image }] : []
-                }
-              }))
-            }));
-            allOrdersList.push(...mappedLocal);
-          }
-        }
-      } catch (e) {
-        console.warn('Error reading local orders in admin:', e);
-      }
-
-      // 2. Load from Supabase DB
+      // Query directly from Supabase DB
       try {
         const { data, error } = await supabase
           .from('orders')
@@ -126,7 +90,7 @@ export default function AdminOrdersPage() {
           .order('created_at', { ascending: false });
 
         if (!error && data && data.length > 0) {
-          const mappedDb: Order[] = data.map((row: any) => ({
+          allOrdersList = data.map((row: any) => ({
             id: String(row.id),
             created_at: row.created_at,
             total: Number(row.total) || 0,
@@ -156,20 +120,11 @@ export default function AdminOrdersPage() {
               }
             }))
           }));
-
-          // Merge DB orders without duplicating IDs
-          mappedDb.forEach(dbOrd => {
-            if (!allOrdersList.some(o => o.id === dbOrd.id)) {
-              allOrdersList.push(dbOrd);
-            }
-          });
         }
       } catch (dbErr) {
         console.warn('Failed to query database orders:', dbErr);
       }
 
-      // Sort by newest
-      allOrdersList.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setOrders(allOrdersList);
     } catch (err) {
       console.error("Failed to load orders:", err);

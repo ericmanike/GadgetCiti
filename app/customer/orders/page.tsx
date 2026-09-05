@@ -38,29 +38,9 @@ export default function OrdersPage() {
 
   const fetchCustomerOrders = async () => {
     setLoading(true);
-    let combinedOrders: Order[] = [];
+    let databaseOrders: Order[] = [];
 
-    // 1. Fetch from LocalStorage fallback
-    try {
-      const localData = localStorage.getItem('gadgetciti_orders');
-      if (localData) {
-        const parsed: Order[] = JSON.parse(localData);
-        if (Array.isArray(parsed)) {
-          // If user is logged in, filter by user email or user_id, or include all local orders created on this device
-          const userLocalOrders = parsed.filter(o => 
-            !user || 
-            !o.user_email || 
-            o.user_email.toLowerCase() === user.email?.toLowerCase() ||
-            o.user_id === user.id
-          ).map(o => ({ ...o, isLocal: true }));
-          combinedOrders.push(...userLocalOrders);
-        }
-      }
-    } catch (e) {
-      console.warn('Error reading local orders:', e);
-    }
-
-    // 2. Fetch from Supabase orders database
+    // Fetch directly from Supabase orders database
     try {
       let query = supabase.from('orders').select(`
         id,
@@ -90,7 +70,7 @@ export default function OrdersPage() {
       const { data, error } = await query;
 
       if (!error && data && data.length > 0) {
-        const mappedDbOrders: Order[] = data.map((row: any) => ({
+        databaseOrders = data.map((row: any) => ({
           id: String(row.id),
           created_at: row.created_at || new Date().toISOString(),
           total: Number(row.total) || 0,
@@ -103,22 +83,12 @@ export default function OrdersPage() {
             image: item.products?.product_images?.[0]?.image_url || ''
           }))
         }));
-
-        // Deduplicate with local orders by ID
-        mappedDbOrders.forEach(dbOrd => {
-          if (!combinedOrders.some(o => o.id === dbOrd.id)) {
-            combinedOrders.push(dbOrd);
-          }
-        });
       }
     } catch (e) {
       console.warn('Supabase fetch orders exception:', e);
     }
 
-    // Sort by newest created_at date
-    combinedOrders.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-    setOrders(combinedOrders);
+    setOrders(databaseOrders);
     setLoading(false);
   };
 
