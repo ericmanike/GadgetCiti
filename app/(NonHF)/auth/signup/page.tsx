@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
+import { Turnstile } from '@marsidev/react-turnstile';
 
 import { useToast } from "@/components/toastProvider";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -23,6 +24,7 @@ function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -79,6 +81,7 @@ function SignUpForm() {
         email,
         password,
         options: {
+          captchaToken,
           data: {
             full_name: name,
             phone: phone,
@@ -245,6 +248,16 @@ function SignUpForm() {
             </div>
           </div>
         )}
+
+        {/* Turnstile CAPTCHA */}
+        <div className="flex justify-center my-3">
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAEolcdFOtWjBK2n_"}
+            onSuccess={(token) => {
+              setCaptchaToken(token);
+            }}
+          />
+        </div>
 
         {/* Submit Button */}
         <button

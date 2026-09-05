@@ -16,7 +16,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/components/toastProvider';
 
 // Time range type
-type TimeRange = '7d' | '30d' | '90d' | '1y';
+type TimeRange = '7d' | '30d' | '60d';
 
 // Color Palette definitions
 const CHART_COLORS = {
@@ -111,8 +111,8 @@ export default function AdminReportsPage() {
     switch (timeRange) {
       case '7d': return 7;
       case '30d': return 30;
-      case '90d': return 90;
-      case '1y': return 365;
+      case '60d': return 60;
+      default: return 30;
     }
   }, [timeRange]);
 
@@ -309,7 +309,7 @@ export default function AdminReportsPage() {
   // Export report functionality
   const handleExportCSV = () => {
     const csvContent = [
-      ['Date', 'Revenue ($)', 'Orders', 'Customers'].join(','),
+      ['Date', 'Revenue (GHS)', 'Orders', 'Customers'].join(','),
       ...analytics.timeline.map(row => [row.date, row.revenue, row.orders, row.customers].join(','))
     ].join('\n');
 
@@ -337,30 +337,30 @@ export default function AdminReportsPage() {
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-8">
       
       {/* Top Header & Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl text-white">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-blue-600 via-blue-650 to-blue-700 border border-blue-500 p-6 rounded-3xl shadow-xl shadow-blue-600/20 text-white">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
-            <div className="p-2 bg-orange-500/20 text-orange-500 rounded-xl">
+            <div className="p-2 bg-white/20 text-white rounded-xl backdrop-blur-xs">
               <BarChart3 size={24} />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Analytics & Reports</h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">Analytics & Reports</h1>
           </div>
-          <p className="text-slate-400 text-sm">
+          <p className="text-blue-100 text-sm font-medium">
             Monitor sales performance, revenue metrics, order velocity, and customer trends.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Time Range Selector */}
-          <div className="bg-slate-950 border border-slate-800 rounded-2xl p-1 flex items-center space-x-1">
-            {(['7d', '30d', '90d', '1y'] as TimeRange[]).map((range) => (
+          <div className="bg-blue-800/60 border border-blue-400/30 rounded-2xl p-1 flex items-center space-x-1 backdrop-blur-xs">
+            {(['7d', '30d', '60d'] as TimeRange[]).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   timeRange === range
-                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                    ? 'bg-white text-blue-700 shadow-md'
+                    : 'text-blue-100 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {range.toUpperCase()}
@@ -368,24 +368,11 @@ export default function AdminReportsPage() {
             ))}
           </div>
 
-          {/* Toggle Real vs Demo Data */}
-          <button
-            onClick={() => setUseDemoData(!useDemoData)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center space-x-2 border transition-all cursor-pointer ${
-              useDemoData 
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20' 
-                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
-            }`}
-            title="Toggle between Live Database stats and Sample Analytics dataset"
-          >
-            <Sparkles size={14} />
-            <span>{useDemoData ? 'Mode: Demo Analytics' : 'Mode: Real Database'}</span>
-          </button>
 
           {/* Refresh & Export */}
           <button
             onClick={fetchData}
-            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition border border-slate-700 cursor-pointer"
+            className="p-2.5 bg-white/15 hover:bg-white/25 text-white rounded-xl transition border border-white/20 cursor-pointer backdrop-blur-xs"
             title="Refresh Data"
           >
             <RefreshCw size={16} />
@@ -393,7 +380,7 @@ export default function AdminReportsPage() {
 
           <button
             onClick={handleExportCSV}
-            className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-orange-500/20 transition cursor-pointer"
+            className="flex items-center space-x-2 bg-white hover:bg-blue-50 text-blue-700 font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-md transition cursor-pointer"
           >
             <Download size={15} />
             <span>Export CSV</span>
@@ -503,7 +490,7 @@ export default function AdminReportsPage() {
             <div className="flex items-center space-x-4 text-xs font-semibold">
               <div className="flex items-center space-x-1.5">
                 <span className="w-3 h-3 rounded-full bg-orange-500 inline-block" />
-                <span className="text-slate-600">Revenue ($)</span>
+                <span className="text-slate-600">Revenue (GHS)</span>
               </div>
               <div className="flex items-center space-x-1.5">
                 <span className="w-3 h-3 rounded-full bg-blue-500 inline-block" />
@@ -537,7 +524,7 @@ export default function AdminReportsPage() {
                   tick={{ fontSize: 11, fill: '#64748b' }} 
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={(val) => `$${val}`}
+                  tickFormatter={(val) => `GH₵${val}`}
                 />
                 <YAxis 
                   yAxisId="right"
@@ -762,33 +749,31 @@ export default function AdminReportsPage() {
         </div>
 
         {/* AI & Executive Insights Card */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-6 flex flex-col justify-between">
+        <div className="bg-white border border-blue-100 text-slate-900 rounded-3xl p-6 shadow-xl shadow-blue-500/5 space-y-6 flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="flex items-center space-x-2 text-orange-400">
-              <Sparkles size={20} />
-              <h3 className="font-extrabold text-sm tracking-wider uppercase">Executive Insights</h3>
+            <div className="flex items-center space-x-2 text-blue-600">
+              <h3 className="font-extrabold text-sm tracking-wider uppercase text-blue-900">Executive Insights</h3>
             </div>
             
             <div className="space-y-3">
-              <div className="bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl space-y-1">
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Top Revenue Segment</p>
+              <div className="bg-blue-600 border border-blue-500 p-4 rounded-2xl space-y-1 text-white shadow-sm">
+                <p className="text-[11px] text-blue-100 font-bold uppercase tracking-wider">Top Revenue Segment</p>
                 <p className="text-sm font-extrabold text-white">Smartphones & Mobile</p>
-                <p className="text-xs text-slate-300">Generates 38% of store revenue with average unit margin of 24%.</p>
+                <p className="text-xs text-blue-50 font-medium">Generates 38% of store revenue with average unit margin of 24%.</p>
               </div>
 
-              <div className="bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl space-y-1">
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Fulfillment Health</p>
-                <p className="text-sm font-extrabold text-emerald-400">92.4% Delivery Completion</p>
-                <p className="text-xs text-slate-300">Average fulfillment velocity: 1.8 days from order creation.</p>
+              <div className="bg-blue-600 border border-blue-500 p-4 rounded-2xl space-y-1 text-white shadow-sm">
+                <p className="text-[11px] text-blue-100 font-bold uppercase tracking-wider">Fulfillment Health</p>
+                <p className="text-sm font-extrabold text-white">92.4% Delivery Completion</p>
+                <p className="text-xs text-blue-50 font-medium">Average fulfillment velocity: 1.8 days from order creation.</p>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <div className="pt-4 border-t border-blue-100 flex items-center justify-between text-xs font-semibold text-blue-600">
             <span className="flex items-center">
-              <ShieldCheck size={14} className="mr-1 text-emerald-400" /> System Metrics Active
+              <ShieldCheck size={15} className="mr-1 text-blue-600" /> System Metrics Active
             </span>
-            <span>Refreshed live</span>
           </div>
         </div>
 

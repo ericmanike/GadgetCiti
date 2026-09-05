@@ -123,7 +123,7 @@ export default function AdminDashboard() {
         id: row.id,
         fullName: row.name || "Anonymous User",
         email: row.email || "No Email",
-        role: row.email && ADMIN_EMAILS.includes(row.email.toLowerCase()) ? 'Admin' : 'Buyer/Seller'
+        role: row.email && ADMIN_EMAILS.includes(row.email.toLowerCase()) ? 'Admin' : 'User'
       })) || [];
 
       setRecentUsers(mappedUsers);

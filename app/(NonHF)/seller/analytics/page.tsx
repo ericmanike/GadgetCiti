@@ -266,7 +266,7 @@ export default function SellerAnalyticsPage() {
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-2xs space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h3 className="text-sm font-black text-slate-900 tracking-tight">Sales Revenue Trend</h3>
-          <span className="text-xs font-semibold text-slate-400">Daily Revenue ($)</span>
+          <span className="text-xs font-semibold text-slate-400">Daily Revenue (GHS)</span>
         </div>
 
         <div className="h-[240px] w-full">
@@ -280,7 +280,7 @@ export default function SellerAnalyticsPage() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={(v) => `GH₵${v}`} />
               <Tooltip 
                 contentStyle={{ backgroundColor: '#0f172a', borderRadius: '10px', border: 'none', color: '#fff', fontSize: '12px' }}
                 formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue']}

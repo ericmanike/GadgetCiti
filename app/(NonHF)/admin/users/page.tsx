@@ -44,7 +44,7 @@ export default function AdminUsersPage() {
         fullName: row.name || "Anonymous User",
         email: row.email || "No Email",
         phone: row.phone || "N/A",
-        role: row.email && ADMIN_EMAILS.includes(row.email.toLowerCase()) ? 'Admin' : 'Buyer/Seller'
+        role: row.email && ADMIN_EMAILS.includes(row.email.toLowerCase()) ? 'Admin' : 'User'
       })) || [];
 
       setUsers(mappedUsers);
@@ -133,7 +133,7 @@ export default function AdminUsersPage() {
           >
             <option value="">All Roles</option>
             <option value="Admin">Administrator</option>
-            <option value="Buyer/Seller">Buyer/Seller</option>
+            <option value="User">User</option>
           </select>
         </div>
       </div>

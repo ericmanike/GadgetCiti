@@ -34,7 +34,7 @@ export default function RecycoProfile() {
   const { showToast } = useToast();
   const [profile, setProfile] = useState({
     name: '',
-    role: 'Buyer/Seller',
+    role: 'User',
     email: '',
     location: 'Ghana',
     startDate: new Date().toISOString().split('T')[0],
@@ -89,7 +89,7 @@ export default function RecycoProfile() {
     if (user) {
       setProfile({
         name: user.user_metadata?.full_name || 'Anonymous User',
-        role: user.user_metadata?.role || 'Buyer/Seller',
+        role: user.user_metadata?.role || 'User',
         email: user.email || '',
         location: user.user_metadata?.location || 'Ghana',
         startDate: user.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
@@ -318,7 +318,7 @@ export default function RecycoProfile() {
                         className={`border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1e293b] focus:border-[#1e293b] w-full max-w-xs text-gray-900 ${formik.touched.role && formik.errors.role ? 'border-red-500' : 'border-gray-300'
                           }`}
                       >
-                        <option value="Buyer/Seller">Buyer/Seller</option>
+                        <option value="User">User</option>
                         <option value="Pickup Driver">Pickup Driver</option>
                       </select>
                       {formik.touched.role && formik.errors.role && (
