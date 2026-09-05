@@ -83,6 +83,15 @@ export default function FalaaDealsComponent() {
             Exclusive lightning-fast gadget deals available for a limited time.
             Claim yours before they're gone!
           </p>
+          <div className="mt-6 flex justify-center">
+            <a
+              href="/buy?deals=true"
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+             
+              Shop All Falaa Discount Deals
+            </a>
+          </div>
         </div>
 
         {/* Deals Grid */}

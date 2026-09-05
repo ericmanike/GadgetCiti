@@ -204,17 +204,17 @@ export default function HeroSlider({
                   </div>
                 </div>
 
-                {/* Right Image Column (Framed Image Link) */}
+                {/* Right Image Column (Framed Image Link with Custom Top-Left & Bottom-Right Rounded Styling) */}
                 <Link
                   href={slide.ctaLink}
-                  className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 overflow-hidden rounded border border-slate-200 bg-slate-100 shadow-xl shadow-slate-200/70 group cursor-pointer block"
+                  className="relative w-[160px] h-[160px] sm:w-[280px] sm:h-[240px] lg:w-[420px] lg:h-[300px] shrink-0 overflow-hidden rounded-tl-[32px] rounded-br-[32px] sm:rounded-tl-[54px] sm:rounded-br-[54px] rounded-tr-lg rounded-bl-lg border-2 border-slate-200/90 bg-slate-100 shadow-2xl shadow-slate-200/80 group cursor-pointer block transition-all duration-300 hover:border-[#FF6900]/60 hover:shadow-orange-500/15"
                 >
                   <Image
                     src={slide.backgroundImage}
                     alt={slide.imageAlt || slide.title}
                     fill
                     priority={index === 1}
-                    className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105 rounded"
+                    className="object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-105 rounded-tl-[30px] rounded-br-[30px] sm:rounded-tl-[52px] sm:rounded-br-[52px] rounded-tr-md rounded-bl-md"
                     sizes="(max-width: 768px) 50vw, 40vw"
                   />
                 </Link>

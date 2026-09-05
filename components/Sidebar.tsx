@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList, Info, MessageSquareQuote, ShieldCheck, FileText, Scale, RefreshCw, Home, Store } from 'lucide-react';
+import { MapPin, HelpCircle, ShoppingBagIcon, LayoutDashboard, SquareUser, Zap, Wallet, ClipboardList, Info, MessageSquareQuote, ShieldCheck, FileText, Scale, RefreshCw, Home, Store, Headphones } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from './AuthContext';
 
@@ -25,7 +25,11 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -40,7 +44,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         { id: 2, name: 'Shop now', href: '/buy', icon: ShoppingBagIcon },
         { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
         { id: 15, name: 'Become a Seller', href: '/seller', icon: Store },
-        { id: 7, name: 'Falaa Deals', href: '/buy', icon: Zap },
+        { id: 7, name: 'Falaa Deals', href: '/buy?deals=true', icon: Zap },
       ]
     },
     {
@@ -53,6 +57,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       title: 'Support',
       items: [
         { id: 10, name: 'About Us', href: '/about', icon: Info },
+        { id: 16, name: 'Contact Us', href: '/contact', icon: Headphones },
         { id: 11, name: 'Customer Reviews', href: '/reviews', icon: MessageSquareQuote },
         { id: 5, name: 'FAQs', href: '/faq', icon: HelpCircle },
       ]

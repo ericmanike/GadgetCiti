@@ -198,9 +198,9 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/buy">
+            <ActiveLink href="/buy?deals=true">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
-                <Zap size={18} className="group-hover:text-orange-500" />
+                <Zap size={18} className="group-hover:text-orange-500 text-orange-500 fill-orange-500/20" />
                 <span className="text-xs md:text-sm font-semibold">Falaa Deals</span>
               </div>
             </ActiveLink>

@@ -66,13 +66,20 @@
     --chart-5: 340 75% 55%;
   }
 
-  input:focus,
+  input:not([type="checkbox"]):not([type="radio"]):focus,
   textarea:focus,
   select:focus {
     border-color: #1e293b !important;
     --tw-ring-color: #1e293b !important;
     outline: none !important;
     box-shadow: 0 0 0 1px #1e293b !important;
+  }
+
+  input[type="checkbox"]:focus,
+  input[type="radio"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
   }
 }
 .logo{

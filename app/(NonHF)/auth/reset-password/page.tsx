@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,10 +12,7 @@ import { supabase } from "@/lib/supabase";
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(/[a-z]/, "Password must contain a lowercase letter")
-    .matches(/[A-Z]/, "Password must contain an uppercase letter")
-    .matches(/[0-9]/, "Password must contain a number")
+    .min(6, "Password must be at least 6 characters")
     .required("New password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
@@ -24,11 +21,21 @@ const resetPasswordSchema = Yup.object().shape({
 
 function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).catch((err) => {
+        console.error("Error exchanging code for session:", err);
+      });
+    }
+  }, [searchParams]);
 
   const formik = useFormik({
     initialValues: {
@@ -48,6 +55,7 @@ function ResetPasswordForm() {
           showToast(updateError.message, "error");
         } else {
           setSuccess(true);
+          showToast("Password updated successfully!", "success");
           setTimeout(() => {
             router.push("/auth/login");
           }, 2000);
@@ -59,8 +67,6 @@ function ResetPasswordForm() {
       }
     },
   });
-
-  const passwordVal = formik.values.password;
 
   if (success) {
     return (
@@ -79,22 +85,27 @@ function ResetPasswordForm() {
       <div className="mb-6 space-y-1">
         <h1 className="text-[22px] font-bold text-[#0f172a] tracking-tight">Reset Password</h1>
         <p className="text-[13px] font-medium text-slate-500">
-          Enter your new password below.
+          Update your account password to secure your account credentials.
         </p>
       </div>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-        {/* Password Input */}
+        {/* New Password Input */}
         <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            New Password
+          </label>
           <div className="relative flex items-center">
             <div className="pointer-events-none absolute left-4 text-slate-400">
               <Lock className="h-5 w-5" strokeWidth={1.8} />
             </div>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="New Password"
+              placeholder="Min. 6 characters"
               {...formik.getFieldProps("password")}
-              className={`block w-full rounded-xl border ${formik.touched.password && formik.errors.password ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+              className={`block w-full rounded-xl border ${
+                formik.touched.password && formik.errors.password ? "border-red-400" : "border-slate-200"
+              } bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
             />
             <button
               type="button"
@@ -113,17 +124,22 @@ function ResetPasswordForm() {
           )}
         </div>
 
-        {/* Confirm Password Input */}
+        {/* Confirm New Password Input */}
         <div>
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            Confirm New Password
+          </label>
           <div className="relative flex items-center">
             <div className="pointer-events-none absolute left-4 text-slate-400">
               <Lock className="h-5 w-5" strokeWidth={1.8} />
             </div>
             <input
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm New Password"
+              placeholder="Re-enter new password"
               {...formik.getFieldProps("confirmPassword")}
-              className={`block w-full rounded-xl border ${formik.touched.confirmPassword && formik.errors.confirmPassword ? "border-red-400" : "border-slate-200"} bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
+              className={`block w-full rounded-xl border ${
+                formik.touched.confirmPassword && formik.errors.confirmPassword ? "border-red-400" : "border-slate-200"
+              } bg-[#f4f5f7] py-3.5 pl-12 pr-12 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#1e293b] focus:bg-white focus:ring-1 focus:ring-[#1e293b]`}
             />
             <button
               type="button"
@@ -142,24 +158,6 @@ function ResetPasswordForm() {
           )}
         </div>
 
-        {/* Password Requirements Check */}
-        {passwordVal.length > 0 && (
-          <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs">
-            <div className={passwordVal.length >= 8 ? "text-green-600 font-medium" : "text-red-500"}>
-              ✓ At least 8 characters long ({passwordVal.length}/8)
-            </div>
-            <div className={/[a-z]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
-              ✓ At least one lowercase letter
-            </div>
-            <div className={/[A-Z]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
-              ✓ At least one uppercase letter
-            </div>
-            <div className={/[0-9]/.test(passwordVal) ? "text-green-600 font-medium" : "text-red-500"}>
-              ✓ At least one number
-            </div>
-          </div>
-        )}
-
         <button
           type="submit"
           disabled={loading || !formik.isValid || !formik.dirty}
@@ -168,10 +166,10 @@ function ResetPasswordForm() {
           {loading ? (
             <>
               <Spinner className="h-5 w-5" />
-              Resetting...
+              Updating Password...
             </>
           ) : (
-            "Reset Password"
+            "Update Password"
           )}
         </button>
 
@@ -192,3 +190,4 @@ export default function ResetPasswordPage() {
     </Suspense>
   );
 }
+

@@ -1,5 +1,5 @@
 'use client';
-import { Filter, Check, X, ScanSearch, ChevronLeft, ChevronRight } from "lucide-react";
+import { Filter, Check, X, ScanSearch, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "./ProductCard";
@@ -28,11 +28,13 @@ export default function BuyPage() {
   const priceRange = searchParams.get("priceRange") || "";
   const brandParam = searchParams.get("brand") || "";
   const conditionParam = searchParams.get("condition") || "";
+  const dealsParam = searchParams.get("deals") === "true";
   const pageParam = Number(searchParams.get("page")) || 1;
 
   const selectedCategories = categoryParam ? categoryParam.split(",") : [];
   const selectedBrands = brandParam ? brandParam.split(",") : [];
   const selectedConditions = conditionParam ? conditionParam.split(",") : [];
+  const hasActiveFilters = dealsParam || selectedCategories.length > 0 || selectedBrands.length > 0 || (Boolean(priceRange) && priceRange !== 'All') || selectedConditions.length > 0;
 
   const categoryFilter = (values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -92,6 +94,11 @@ export default function BuyPage() {
 
     let updated = [...allProducts];
 
+    // Filter by Falaa Deals (discounted items)
+    if (dealsParam) {
+      updated = updated.filter(p => (p.discount && p.discount > 0) || (p.oldPrice && p.oldPrice > p.price));
+    }
+
     // Filter by categories
     if (selectedCategories.length > 0) {
       updated = updated.filter(p => selectedCategories.some(cat => p.category?.toLowerCase() === cat.toLowerCase()));
@@ -134,7 +141,7 @@ export default function BuyPage() {
     }
 
     setDisplayProducts(updated);
-  }, [allProducts, categoryParam, priceRange, brandParam, conditionParam, sortBy]);
+  }, [allProducts, categoryParam, priceRange, brandParam, conditionParam, dealsParam, sortBy]);
 
   // Pagination calculation
   const itemsPerPage = 6;
@@ -210,6 +217,36 @@ export default function BuyPage() {
                 </button>
               </div>
             </h2>
+            
+            {/* Falaa Deals Special Filter Toggle */}
+            <div className="mb-6 pb-4 border-b border-gray-100">
+              <label className="flex items-center group cursor-pointer select-none">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={dealsParam}
+                    onChange={(e) => {
+                      const params = new URLSearchParams(searchParams.toString());
+                      if (e.target.checked) {
+                        params.set("deals", "true");
+                      } else {
+                        params.delete("deals");
+                      }
+                      params.delete("page");
+                      router.push(`?${params.toString()}`);
+                    }}
+                    className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer flex items-center justify-center"
+                  />
+                  {dealsParam && (
+                    <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
+                  )}
+                </div>
+                <div className="ml-3 flex items-center text-sm font-bold text-gray-900 group-hover:text-slate-700 transition-colors">
+                  <span>Falaa Deals Only</span>
+                </div>
+              </label>
+            </div>
+
             <div className="mb-6">
               <label className="block mb-3 font-bold text-base text-gray-900 border-b border-gray-100 pb-1">Category</label>
               <div className="space-y-2.5">
@@ -234,7 +271,7 @@ export default function BuyPage() {
                           setFilteredProducts(prev => ({ ...prev, categories: newCategories }));
                           categoryFilter(newCategories);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer flex items-center justify-center"
                       />
                       {filteredProducts.categories.includes(cat.value) && (
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
@@ -295,7 +332,7 @@ export default function BuyPage() {
                           setFilteredProducts(prev => ({ ...prev, brands: newBrands }));
                           brandFilter(newBrands);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer flex items-center justify-center"
                       />
                       {filteredProducts.brands.includes(brand) && (
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
@@ -333,7 +370,7 @@ export default function BuyPage() {
                           setFilteredProducts(prev => ({ ...prev, conditions: newConditions }));
                           handleConditionChange(newConditions);
                         }}
-                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 transition-all cursor-pointer flex items-center justify-center"
+                        className="appearance-none w-5 h-5 border-2 border-gray-200 rounded-md checked:border-orange-500 checked:bg-orange-500 outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 transition-all cursor-pointer flex items-center justify-center"
                       />
                       {filteredProducts.conditions.includes(cond.value) && (
                         <Check size={12} className="absolute text-white pointer-events-none" strokeWidth={4} />
@@ -369,13 +406,115 @@ export default function BuyPage() {
               </button>
             </div>
           </div>
-          {/*  Slider   */}
-
-
-
-
         </div>
+
         <div ref={productGridRef} className="flex-1 p-2 md:p-4 overflow-hidden w-full flex flex-col gap-4">
+          {/* Active Filter Badges Bar */}
+          {hasActiveFilters && (
+            <div className="mx-2 mb-2 flex flex-wrap items-center gap-2 py-1 px-1 animate-in fade-in duration-200">
+
+              {/* Falaa Deals Badge */}
+              {dealsParam && (
+                <span className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold px-3 py-1 rounded-lg shadow-2xs">
+                  Falaa Deals (Discounted)
+                  <button
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams.toString());
+                      params.delete("deals");
+                      params.delete("page");
+                      router.push(`?${params.toString()}`);
+                    }}
+                    className="ml-0.5 text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5 rounded"
+                    title="Remove Falaa Deals filter"
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
+                </span>
+              )}
+
+              {/* Selected Categories Badges */}
+              {selectedCategories.map((cat) => (
+                <span key={cat} className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold px-3 py-1 rounded-lg capitalize shadow-2xs">
+                  {cat}
+                  <button
+                    onClick={() => {
+                      const newCats = selectedCategories.filter(c => c !== cat);
+                      categoryFilter(newCats);
+                    }}
+                    className="ml-0.5 text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5 rounded"
+                    title={`Remove ${cat} filter`}
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
+                </span>
+              ))}
+
+              {/* Selected Brands Badges */}
+              {selectedBrands.map((b) => (
+                <span key={b} className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold px-3 py-1 rounded-lg capitalize shadow-2xs">
+                  {b}
+                  <button
+                    onClick={() => {
+                      const newBrands = selectedBrands.filter(brand => brand !== b);
+                      brandFilter(newBrands);
+                    }}
+                    className="ml-0.5 text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5 rounded"
+                    title={`Remove ${b} filter`}
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
+                </span>
+              ))}
+
+              {/* Selected Price Range Badge */}
+              {priceRange && priceRange !== 'All' && (
+                <span className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold px-3 py-1 rounded-lg shadow-2xs">
+                  Under {formatCurrency(Number(priceRange))}
+                  <button
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams.toString());
+                      params.delete("priceRange");
+                      params.delete("page");
+                      router.push(`?${params.toString()}`);
+                    }}
+                    className="ml-0.5 text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5 rounded"
+                    title="Remove price range filter"
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
+                </span>
+              )}
+
+              {/* Selected Condition Badges */}
+              {selectedConditions.map((cond) => (
+                <span key={cond} className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold px-3 py-1 rounded-lg capitalize shadow-2xs">
+                  {cond}
+                  <button
+                    onClick={() => {
+                      const newConds = selectedConditions.filter(c => c !== cond);
+                      handleConditionChange(newConds);
+                    }}
+                    className="ml-0.5 text-slate-400 hover:text-slate-700 transition cursor-pointer p-0.5 rounded"
+                    title={`Remove ${cond} filter`}
+                  >
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
+                </span>
+              ))}
+
+              {/* Clear All Filters Button */}
+              <button
+                onClick={() => {
+                  setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
+                  router.push('/buy');
+                }}
+                className="ml-auto text-xs font-bold text-red-500 hover:text-red-600 hover:underline cursor-pointer transition flex items-center gap-1 pl-2"
+              >
+                Clear All
+                <X size={12} />
+              </button>
+            </div>
+          )}
           {!loading && (
             <div className="flex items-center justify-between px-2 mb-2 w-full flex-wrap gap-2">
               <div className="flex items-center gap-2">

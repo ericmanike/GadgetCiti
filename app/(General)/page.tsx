@@ -17,10 +17,10 @@ const COMPUTER_SLIDES = [
 
    {
     id: 4,
-    title: 'Become a Verified Seller',
-    description: 'Grow your  business on Gadgets CIti. Reach thousands of buyers with 0% commission options.',
-    ctaText: 'Start Selling Today',
-    ctaLink: '/seller',
+    title: 'Partner With Us',
+    description: 'Grow your business on Gadgets CIti. Reach thousands of buyers with 0% commission options.',
+    ctaText: 'Contact Us',
+    ctaLink: '/contact',
     backgroundImage: '/Seller.jpg',
   },
   {

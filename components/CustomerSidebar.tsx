@@ -60,7 +60,6 @@ const CustomerSidebar = () => {
     const managementItems = [
         { label: 'Profile Information', href: '/customer/account' },
         { label: 'Address Book', href: '/customer/address' },
-        { label: 'Change Password', href: '/customer/password' },
     ];
 
     const handleLogout = async () => {
