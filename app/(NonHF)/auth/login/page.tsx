@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useToast } from "@/components/toastProvider";
@@ -18,6 +19,7 @@ const loginSchema = Yup.object().shape({
 });
 
 function LoginForm() {
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -55,12 +57,20 @@ function LoginForm() {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
+      if (!captchaToken) {
+        showToast("Please complete the security check (CAPTCHA)", "error");
+        return;
+      }
+
       setIsLoading(true);
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: values.email,
           password: values.password,
+          options: {
+            captchaToken,
+          },
         });
 
         if (error) {
@@ -199,6 +209,22 @@ function LoginForm() {
           >
             Forgot password?
           </Link>
+        </div>
+
+        {/* Turnstile CAPTCHA */}
+        <div className="flex justify-center my-3">
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAEolcdFOtWjBK2n_"}
+            onSuccess={(token) => {
+              setCaptchaToken(token);
+            }}
+            onExpire={() => {
+              setCaptchaToken(undefined);
+            }}
+            onError={() => {
+              setCaptchaToken(undefined);
+            }}
+          />
         </div>
 
         {/* Yellow Submit CTA */}
