@@ -72,12 +72,12 @@ export function ProductCard({ product }: ProductCardProps) {
         />
         <div className="absolute left-2 top-2 z-10 flex flex-col gap-1 items-start">
           {discountPercent > 0 && (
-            <span className="rounded bg-red-600 px-2 py-0.5 text-xs sm:text-sm font-bold text-white shadow-xs">
+            <span className="rounded bg-red-600 px-2.5 py-0.5 text-[14px] font-bold text-white shadow-xs">
               -{discountPercent}% OFF
             </span>
           )}
           {!product.inStock && (
-            <span className="rounded bg-slate-900/90 px-2 py-0.5 text-xs sm:text-sm font-semibold text-white shadow-xs backdrop-blur-xs">
+            <span className="rounded bg-slate-900/90 px-2.5 py-0.5 text-[14px] font-semibold text-white shadow-xs backdrop-blur-xs">
               Out of stock
             </span>
           )}
@@ -100,27 +100,25 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="flex flex-1 flex-col gap-2 p-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-xs sm:text-sm font-black uppercase tracking-widest text-orange-500">
-              {product.brand}
-            </p>
+           
             <Link
               href={`/products/${product.slug}`}
-              className="line-clamp-2 text-sm sm:text-base font-semibold text-slate-900 hover:text-orange-500 transition-colors"
+              className="line-clamp-2 text-[16px] font-bold text-orange-500 hover:text-orange-500 transition-colors line-clamp-2"
             >
               {product.name}
             </Link>
           </div>
         </div>
-        <p className="line-clamp-2 text-xs sm:text-sm text-gray-600">
+        <p className="line-clamp-2 text-[14px] text-gray-600">
           {product.description}
         </p>
         <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-2">
           <div>
-            <p className="text-base md:text-lg font-bold text-gray-900">
+            <p className="text-[16px] md:text-lg font-bold text-gray-900">
               {formatCurrency(product.price)}
             </p>
             {product.oldPrice && (
-              <p className="text-xs sm:text-sm text-gray-500 line-through">
+              <p className="text-[14px] text-gray-500 line-through">
                 {formatCurrency(product.oldPrice)}
               </p>
             )}
@@ -128,7 +126,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={!product.inStock}
-            className="w-full sm:w-auto rounded-full bg-white px-3 py-2 md:px-4 md:py-2 text-xs sm:text-sm font-bold text-gray-900 hover:text-white border border-gray-900 shadow-md transition-all hover:bg-orange-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 text-center whitespace-nowrap"
+            className="w-full sm:w-auto rounded-full bg-white px-3 py-2 md:px-4 md:py-2 text-[14px] font-bold text-gray-900 hover:text-white border border-gray-900 shadow-md transition-all hover:bg-orange-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 text-center whitespace-nowrap"
           >
             {product.inStock ? "Add to cart" : "Notify me"}
           </button>
