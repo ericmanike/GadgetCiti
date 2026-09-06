@@ -254,7 +254,7 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Total Orders Card */}
         <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition">
           <div className="flex justify-between items-start">
@@ -269,23 +269,6 @@ export default function AdminOrdersPage() {
           <div className="text-[10px] text-slate-500 mt-4 flex items-center gap-1.5 font-semibold">
             <TrendingUp size={12} className="text-emerald-600 animate-bounce" />
             <span>Active transactions processed</span>
-          </div>
-        </div>
-
-        {/* Pending Card */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group hover:border-slate-300 transition">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Pending Orders</span>
-              <h2 className="text-3xl font-black text-amber-600">{pendingOrdersCount}</h2>
-            </div>
-            <div className="w-12 h-12 bg-amber-550/10 border border-amber-100 rounded-2xl flex items-center justify-center text-amber-600 shadow-xs">
-              <Clock size={22} />
-            </div>
-          </div>
-          <div className="text-[10px] text-slate-550 mt-4 flex items-center gap-1.5 font-semibold">
-            <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping shrink-0" />
-            <span>Awaiting fulfillment</span>
           </div>
         </div>
 

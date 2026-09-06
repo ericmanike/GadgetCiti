@@ -230,14 +230,14 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
             e.preventDefault();
             handleSend();
           }}
-          className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-[#632CF5] focus-within:bg-white transition-all"
+          className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-[#632CF5]/40 focus-within:ring-2 focus-within:ring-[#632CF5]/15 focus-within:bg-white transition-all shadow-xs"
         >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask AI anything..."
-            className="flex-1 bg-transparent py-2 text-base text-slate-800 outline-none placeholder-slate-400"
+            className="flex-1 bg-transparent py-2 text-base text-slate-800 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 border-none placeholder-slate-400"
           />
           <button
             type="submit"
