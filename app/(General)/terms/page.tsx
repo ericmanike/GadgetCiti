@@ -1,8 +1,29 @@
-'use client';
-
 import React from 'react';
 import { ShieldCheck, Scale, AlertCircle, FileText, CreditCard, Truck, RefreshCw, HelpCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | Gadget CITi',
+  description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+  alternates: {
+    canonical: `${siteUrl}/terms`,
+  },
+  openGraph: {
+    title: 'Terms of Service | Gadget CITi',
+    description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+    url: `${siteUrl}/terms`,
+    siteName: 'Gadget CITi',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Terms of Service | Gadget CITi',
+    description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+  },
+};
 
 export default function TermsOfServicePage() {
   const lastUpdated = 'August 2026';

@@ -1,8 +1,29 @@
-'use client';
-
 import React from 'react';
 import { ShieldCheck, Lock, Eye, Database, Server, UserCheck, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Gadget CITi',
+  description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+  alternates: {
+    canonical: `${siteUrl}/privacy`,
+  },
+  openGraph: {
+    title: 'Privacy Policy | Gadget CITi',
+    description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+    url: `${siteUrl}/privacy`,
+    siteName: 'Gadget CITi',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Privacy Policy | Gadget CITi',
+    description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

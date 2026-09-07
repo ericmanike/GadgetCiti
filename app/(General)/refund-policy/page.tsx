@@ -1,8 +1,29 @@
-'use client';
-
 import React from 'react';
 import { RefreshCw, CheckCircle, Clock, AlertTriangle, ShieldCheck, HelpCircle, ArrowRight, PackageCheck, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+
+export const metadata: Metadata = {
+  title: 'Return & Refund Policy | Gadget CITi',
+  description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+  alternates: {
+    canonical: `${siteUrl}/refund-policy`,
+  },
+  openGraph: {
+    title: 'Return & Refund Policy | Gadget CITi',
+    description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+    url: `${siteUrl}/refund-policy`,
+    siteName: 'Gadget CITi',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Return & Refund Policy | Gadget CITi',
+    description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+  },
+};
 
 export default function RefundPolicyPage() {
   return (
