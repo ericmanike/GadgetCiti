@@ -58,7 +58,7 @@ export const FirstVisitPopup: React.FC = () => {
                   Welcome to<br />Gadget's CITi!
                 </h2>
                 <p className="text-orange-100 text-sm mt-1 font-medium">
-                  Your one-stop for premium gadgets
+                  Find the best tech for your home or office
                 </p>
               </div>
 

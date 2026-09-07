@@ -88,8 +88,8 @@ const CustomerSidebar = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-3.5 px-4 py-3.5 text-[15px] font-medium transition-all rounded-xl hover:text-orange-500 hover:bg-orange-50/50 select-none ${
-                                    isActive ? 'text-orange-500 bg-orange-50/90 font-bold shadow-2xs' : 'text-slate-800'
+                                className={`flex items-center gap-3.5 px-4 py-3.5 text-[15px] font-medium transition-all rounded-xl hover:text-orange-500  select-none ${
+                                    isActive ? 'text-orange-500 shadow-md font-bold shadow-2xs' : 'text-slate-800'
                                 }`}
                             >
                                 <item.icon size={20} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
@@ -109,8 +109,8 @@ const CustomerSidebar = () => {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`block px-4 py-3.5 text-[15px] font-medium hover:text-orange-500 hover:bg-orange-50/50 transition-all truncate leading-tight rounded-xl ${
-                                        isActive ? 'text-orange-500 bg-orange-50/90 font-bold shadow-2xs' : 'text-slate-800'
+                                    className={`block px-4 py-3.5 text-[15px] font-medium hover:text-orange-500  transition-all truncate leading-tight rounded-xl ${
+                                        isActive ? 'text-orange-500 shadow-md font-bold shadow-2xs' : 'text-slate-800'
                                     }`}
                                 >
                                     {item.label}

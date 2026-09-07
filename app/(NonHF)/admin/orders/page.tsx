@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/toastProvider';
 import { formatCurrency } from '@/lib/utils';
+import SlimReceiptModal, { ReceiptOrder } from '@/components/SlimReceiptModal';
 
 interface ProductImage {
   image_url: string;
@@ -53,6 +54,7 @@ export default function AdminOrdersPage() {
   
   // Selection / Detail Panel
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [receiptModalOrder, setReceiptModalOrder] = useState<ReceiptOrder | null>(null);
 
   // Lookups & Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -571,7 +573,31 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-slate-50/50 border-t border-slate-200 flex justify-end">
+            <div className="p-4 bg-slate-50/50 border-t border-slate-200 flex items-center justify-between gap-3">
+              <button
+                onClick={() => {
+                  const receiptObj: ReceiptOrder = {
+                    id: selectedOrder.id,
+                    created_at: selectedOrder.created_at,
+                    total: selectedOrder.total,
+                    status: selectedOrder.status,
+                    user_name: selectedOrder.users?.name,
+                    user_email: selectedOrder.users?.email,
+                    user_phone: selectedOrder.users?.phone,
+                    items: selectedOrder.order_items.map(i => ({
+                      name: i.products.name,
+                      quantity: i.quantity,
+                      price: i.price,
+                      brand: i.products.brand
+                    }))
+                  };
+                  setReceiptModalOrder(receiptObj);
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl transition shadow-md cursor-pointer"
+              >
+                <span>Download Image Receipt</span>
+              </button>
+
               <button
                 onClick={() => setSelectedOrder(null)}
                 className="px-5 py-2.5 bg-slate-200 hover:bg-slate-350 text-slate-800 text-xs font-bold rounded-xl transition cursor-pointer border border-slate-300"
@@ -581,6 +607,14 @@ export default function AdminOrdersPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Slim Receipt Modal */}
+      {receiptModalOrder && (
+        <SlimReceiptModal
+          order={receiptModalOrder}
+          onClose={() => setReceiptModalOrder(null)}
+        />
       )}
 
     </div>

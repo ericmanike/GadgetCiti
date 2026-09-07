@@ -30,11 +30,14 @@ interface Order {
   isLocal?: boolean;
 }
 
+import SlimReceiptModal, { ReceiptOrder } from '@/components/SlimReceiptModal';
+
 export default function OrdersPage() {
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [receiptModalOrder, setReceiptModalOrder] = useState<ReceiptOrder | null>(null);
 
   const fetchCustomerOrders = async () => {
     setLoading(true);
@@ -75,11 +78,14 @@ export default function OrdersPage() {
           created_at: row.created_at || new Date().toISOString(),
           total: Number(row.total) || 0,
           status: row.status || 'Paid',
+          user_name: user?.user_metadata?.full_name || user?.email?.split('@')[0],
+          user_email: user?.email,
           items: (row.order_items || []).map((item: any) => ({
             id: item.id,
             name: item.products?.name || 'Gadget Product',
             price: Number(item.price) || 0,
             quantity: Number(item.quantity) || 1,
+            brand: item.products?.brand || 'Gadgets Citi',
             image: item.products?.product_images?.[0]?.image_url || ''
           }))
         }));
@@ -217,10 +223,10 @@ export default function OrdersPage() {
                       <span className="text-base md:text-lg font-black text-slate-900">{formatCurrency(order.total)}</span>
                     </div>
                     <button
-                      onClick={() => setSelectedOrder(order)}
-                      className="inline-flex items-center gap-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+                      onClick={() => setReceiptModalOrder(order as ReceiptOrder)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
                     >
-                      <span>View Receipt</span>
+                      <span>Download Receipt</span>
                       <ChevronRight size={14} />
                     </button>
                   </div>
@@ -231,82 +237,12 @@ export default function OrdersPage() {
         )}
       </div>
 
-      {/* Order Detail Modal */}
-      {selectedOrder && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
-              <div>
-                <h3 className="text-base md:text-lg font-bold">Order Details</h3>
-                <p className="text-xs text-slate-300 font-mono mt-0.5">Ref: {selectedOrder.id}</p>
-              </div>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-5 overflow-y-auto space-y-4 flex-1 text-slate-800">
-              <div className="flex items-center justify-between p-3.5 bg-orange-50 border border-orange-100 rounded-2xl">
-                <span className="text-xs font-bold text-orange-900 uppercase tracking-wider">Status</span>
-                <span className="text-xs font-black text-orange-600 uppercase">{selectedOrder.status}</span>
-              </div>
-
-              {selectedOrder.delivery_address && (
-                <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl space-y-1">
-                  <div className="flex items-center gap-1.5 text-slate-500 text-xs font-bold uppercase tracking-wider">
-                    <MapPin size={14} className="text-orange-500" />
-                    <span>Delivery Location</span>
-                  </div>
-                  <p className="text-xs font-medium text-slate-800 pl-5">{selectedOrder.delivery_address}</p>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Items Purchased</span>
-                <div className="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/40">
-                  {selectedOrder.items.map((item, idx) => (
-                    <div key={idx} className="p-3 flex items-center justify-between text-xs md:text-sm">
-                      <div className="flex items-center gap-3">
-                        {item.image ? (
-                          <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded-lg border border-slate-200 shrink-0" />
-                        ) : (
-                          <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0">
-                            📦
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-bold text-slate-900">{item.name}</p>
-                          <p className="text-xs text-slate-500">{formatCurrency(item.price)} × {item.quantity}</p>
-                        </div>
-                      </div>
-                      <span className="font-black text-slate-900">{formatCurrency(item.price * item.quantity)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-sm font-bold text-slate-700">Total Paid:</span>
-                <span className="text-xl font-black text-slate-900">{formatCurrency(selectedOrder.total)}</span>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Slim Receipt Modal */}
+      {receiptModalOrder && (
+        <SlimReceiptModal
+          order={receiptModalOrder}
+          onClose={() => setReceiptModalOrder(null)}
+        />
       )}
     </div>
   );
