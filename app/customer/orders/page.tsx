@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Package, Calendar, Clock, ChevronRight, RefreshCw, MapPin, CheckCircle, Truck, AlertCircle } from 'lucide-react';
+import { ShoppingBag, CircleStar, Calendar, Clock, ChevronRight, RefreshCw, MapPin, CheckCircle, Truck, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
@@ -158,13 +158,13 @@ export default function OrdersPage() {
               return (
                 <div
                   key={order.id}
-                  className="border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-orange-200 transition-all bg-white shadow-2xs hover:shadow-sm flex flex-col gap-4"
+                  className="border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-slate-400 transition-all bg-white shadow-lg  flex flex-col gap-4"
                 >
                   {/* Order Top Line */}
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
-                        <Package size={20} />
+                        <CircleStar size={20} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
