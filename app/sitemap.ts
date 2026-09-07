@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { fetchAllProducts } from '@/lib/products'
 
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com'
 
@@ -13,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: product.createdAt ? new Date(product.createdAt) : new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
-    }))
+    })) 
   } catch (error) {
     console.error('Error generating sitemap product entries:', error)
   }

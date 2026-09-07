@@ -22,7 +22,7 @@ const outfit = Outfit({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.gadgetciti.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.gadgetsciti.com"),
   title: "Gadget CITi - Your Trusted Plug for Quality Gadgets",
   description: "Buy quality and trusted gadgets on Gadget CITi - your trusted platform for all phones, laptop and accessories - gadgets.",
   twitter: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Gadget CITi - Your Trusted Plug for Quality Gadgets",
     description: "Buy quality and trusted gadgets on Gadget CITi - your trusted platform for all phones, laptop and accessories - gadgets.",
-    url: "https://www.gadgetciti.com",
+    url: "https://www.gadgetsciti.com",
     siteName: "Gadget CITi",
     images: [
       {
