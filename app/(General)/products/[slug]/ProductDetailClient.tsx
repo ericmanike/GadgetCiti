@@ -259,7 +259,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                             <button
-                                className="bg-orange-600 hover:bg-orange-700 text-white font-black text-xs md:text-sm py-5 md:py-5 px-4 rounded-xl flex 
+                                className="bg-orange-600 hover:bg-orange-700 text-white font-black text-xs md:text-sm py-5 md:py-4 px-4 rounded-xl flex 
                                 items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md
                                  disabled:bg-gray-300 cursor-pointer"
                                 disabled={!product.inStock}
@@ -272,15 +272,27 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                                     const text = encodeURIComponent(`Hello, I want to inquire about ${product.name} (${formatCurrency(product.price)})`);
                                     window.open(`https://wa.me/?text=${text}`, '_blank');
                                 }}
-                                className="bg-black hover:bg-gray-900 text-white font-black text-xs md:text-sm py-5 md:py-5 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md cursor-pointer"
+                                className="bg-black hover:bg-gray-900 text-white font-black text-xs md:text-sm py-5 md:py-4 px-4 rounded-xl flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md cursor-pointer"
                             >
                                 <Phone size={16} />
                                 WHATSAPP
                             </button>
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const event = new CustomEvent('open-ai-chat', { detail: `Tell me more about ${product.name}` });
+                                window.dispatchEvent(event);
+                            }}
+                            className="w-full mt-2 py-3 px-4 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#632CF5] font-extrabold text-xs flex items-center justify-center gap-2 border border-purple-200/80 transition-all cursor-pointer shadow-2xs hover:shadow-xs"
+                        >
+                            <Bot size={16} />
+                            <span>ASK AI CONSULTANT ABOUT THIS ITEM</span>
+                        </button>
                     </div>
                 </div>
-
+    
                 
             </div>
 
@@ -290,9 +302,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     <button
                         onClick={() => setActiveTab("overview")}
                         className={`pb-4 text-[9px] md:text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "overview" ? "text-slate-900" : "text-gray-400"
-                            }`}
+                            }`} 
                     >
-                        About & Specification
+                        Specs & Overview
                         {activeTab === "overview" && (
                             <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-1 bg-orange-600 rounded-t-full" />
                         )}

@@ -56,6 +56,20 @@ export function ProductCard({ product }: ProductCardProps) {
         ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
         : 0);
 
+  const capitalizeWords = (str: string) => {
+    if (!str) return '';
+    return str
+      .split(' ')
+      .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ''))
+      .join(' ');
+  };
+
+  const toSentenceCase = (str: string) => {
+    if (!str) return '';
+    const trimmed = str.trim();
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  };
+
   return (
     <article
       onClick={handleCardClick}
@@ -103,14 +117,14 @@ export function ProductCard({ product }: ProductCardProps) {
            
             <Link
               href={`/products/${product.slug}`}
-              className="line-clamp-2 text-[16px] font-bold text-orange-500 hover:text-orange-500 transition-colors line-clamp-2"
+              className="line-clamp-2 text-[16px] font-bold text-orange-500 hover:text-orange-500 transition-colors capitalize"
             >
-              {product.name}
+              {capitalizeWords(product.name)}
             </Link>
           </div>
         </div>
         <p className="line-clamp-2 text-[14px] text-gray-600">
-          {product.description}
+          {toSentenceCase(product.description)}
         </p>
         <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-2">
           <div>

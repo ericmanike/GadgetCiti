@@ -97,12 +97,7 @@ export default function ContactPage() {
                 054 344 2518
               </p>
               <div className="flex gap-3">
-                <a
-                  href="tel:0543442518"
-                  className="flex-1 text-center py-2.5 px-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-orange-500/20 active:scale-95"
-                >
-                  Direct Call
-                </a>
+            
                 <a
                   href="https://wa.me/233543442518"
                   target="_blank"
@@ -114,69 +109,8 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Email Support Card */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900">Email Support</h3>
-                  <p className="text-xs text-slate-500">Inquiries, quotes & partnerships</p>
-                </div>
-              </div>
-              <a href="mailto:support@gadgetciti.com" className="text-base font-bold text-blue-600 hover:underline">
-                support@gadgetciti.com
-              </a>
-            </div>
-
-            {/* Store Location & Hours */}
-            <div className="bg-white rounded-3xl p-6 shadow-xl border border-slate-100 hover:shadow-2xl transition-all duration-300 space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900">Physical Store Location</h3>
-                  <p className="text-sm font-medium text-slate-700 mt-1">KNUST Campus, Kumasi, Ghana</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Visit us for in-store pickup, inspection, or repairs.</p>
-                </div>
-              </div>
-
-              <hr className="border-slate-100" />
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900">Working Hours</h3>
-                  <p className="text-sm font-semibold text-slate-800 mt-1">Monday – Saturday: 8:00 AM – 8:00 PM</p>
-                  <p className="text-xs text-slate-500">Sunday: Closed (Online orders active)</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links Card */}
-            <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl space-y-3">
-              <h4 className="text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-orange-400" />
-                Need Quick Help?
-              </h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Check our Frequently Asked Questions or explore our Pay Small Small layaway financing guide.
-              </p>
-              <div className="flex flex-col gap-2 pt-2">
-                <Link href="/faq" className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-colors">
-                  <span>Browse FAQ's</span>
-                  <ArrowRight size={14} className="text-orange-400" />
-                </Link>
-                <Link href="/customer/pay-small-small" className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-colors">
-                  <span>Pay Small Small Guide</span>
-                  <ArrowRight size={14} className="text-orange-400" />
-                </Link>
-              </div>
-            </div>
+           
+      
 
           </div>
 

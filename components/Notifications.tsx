@@ -20,7 +20,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: '1',
     sender: 'ai',
-    text: "Hello! 👋 Welcome to Letronix AI Assistant. I can help you find products, track orders, check Falaa Deals, or explain Pay Small Small layaway financing. How can I assist you today?",
+    text: "Hello! 👋 Welcome to Gadget CITi AI Support Consultant. I can help you find products, track orders, check Falaa Deals, or explain Pay Small Small layaway financing. How can I assist you today?",
     time: 'Just now',
   },
 ];
@@ -66,6 +66,20 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleOpenAiChat = (e: Event) => {
+      setIsOpen(true);
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && typeof customEvent.detail === 'string') {
+        setTimeout(() => {
+          handleSend(customEvent.detail);
+        }, 300);
+      }
+    };
+    window.addEventListener('open-ai-chat', handleOpenAiChat);
+    return () => window.removeEventListener('open-ai-chat', handleOpenAiChat);
+  }, []);
+
   const handleSend = (textToSend?: string) => {
     const query = (textToSend || input).trim();
     if (!query) return;
@@ -82,7 +96,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
     setIsTyping(true);
 
     setTimeout(() => {
-      let aiResponseText = "Thank you for reaching out! Our team is available 24/7. You can also contact us directly at 054 344 2518 or support@gadgetciti.com.";
+      let aiResponseText = "Thank you for reaching out! Our team is available 24/7. You can also contact us directly at 054 344 2518 or support@gadgetsciti.com.";
       let actionLink: Message['actionLink'] | undefined = undefined;
 
       const lower = query.toLowerCase();
@@ -96,10 +110,10 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         aiResponseText = "📦 You can view and track your orders live in your Customer Dashboard under Orders.";
         actionLink = { label: 'My Orders', href: '/customer/orders' };
       } else if (lower.includes('location') || lower.includes('store') || lower.includes('where') || lower.includes('kumasi') || lower.includes('knust')) {
-        aiResponseText = "🏪 Our physical store is located on the KNUST Campus, Kumasi, Ghana. We are open Monday – Saturday from 8:00 AM to 8:00 PM.";
+        aiResponseText = "🏪 Our store is located in Ghana. We are open Monday – Saturday from 8:00 AM to 8:00 PM.";
         actionLink = { label: 'Contact Us', href: '/contact' };
       } else if (lower.includes('contact') || lower.includes('call') || lower.includes('phone') || lower.includes('whatsapp')) {
-        aiResponseText = "📞 You can call or WhatsApp us directly at 054 344 2518 or email support@gadgetciti.com.";
+        aiResponseText = "📞 You can call or WhatsApp us directly at 054 344 2518 or email support@gadgetsciti.com.";
         actionLink = { label: 'Contact Page', href: '/contact' };
       } else if (lower.includes('phone') || lower.includes('laptop') || lower.includes('buy') || lower.includes('gadget')) {
         aiResponseText = "⚡ Explore our vast catalog of verified laptops, smartphones, audio, and accessories!";
@@ -126,7 +140,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
   return (
     <div
       className={`${isOpen ? 'translate-x-0' : 'translate-x-full'
-        } w-full sm:w-[420px] h-screen flex flex-col bg-white fixed right-0 z-[60] top-0 transition-all duration-300 ease-in-out shadow-2xl border-l border-slate-100`}
+        } w-full sm:w-[420px] h-[100dvh] max-h-[100dvh] flex flex-col bg-white fixed right-0 z-[60] top-0 transition-all duration-300 ease-in-out shadow-2xl border-l border-slate-100`}
       ref={panelRef}
     >
       {/* Header */}
@@ -137,11 +151,11 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-white tracking-tight">Letronix AI Bot</h2>
+              <h2 className="text-base font-bold text-white tracking-tight">AI Support Consultant</h2>
               <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className=" absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
+              </span> 
             </div>
             <p className="text-[11px] text-slate-300 font-medium">Online · Shopping & Support</p>
           </div>
@@ -224,20 +238,29 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       </div>
 
       {/* Input Box */}
-      <div className="p-3 bg-white border-t border-slate-100 shrink-0">
+      <div className="p-3 mb-10 md:mb-5 pb-6 sm:pb-3 bg-white border-t border-slate-100 shrink-0 sticky bottom-0 z-10">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
           }}
-          className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-[#632CF5]/40 focus-within:ring-2 focus-within:ring-[#632CF5]/15 focus-within:bg-white transition-all shadow-xs"
+          className="flex items-center gap-2 bg-slate-50 border border-slate-700 rounded-xl px-3 py-1.5 shadow-xs"
         >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask AI anything..."
-            className="flex-1 bg-transparent py-2 text-base text-slate-800 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 border-none placeholder-slate-400"
+            style={{
+              outline: 'none',
+              border: 'none',
+              borderWidth: '0px',
+              borderStyle: 'none',
+              boxShadow: 'none',
+              appearance: 'none',
+              WebkitAppearance: 'none'
+            }}
+            className="no-border flex-1 bg-transparent py-2 text-base text-slate-800 border-0 border-none outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-none placeholder-slate-400"
           />
           <button
             type="submit"

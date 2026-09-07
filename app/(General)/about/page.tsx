@@ -155,9 +155,9 @@ export default function AboutPage() {
               Have questions about products, financing, or IT repairs? Our expert team is ready to assist you in person or online.
             </p>
             <div className="flex flex-wrap gap-4 pt-2 justify-center md:justify-start text-xs font-semibold text-white">
-              <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Kumasi, KNUST, Ghana</span>
+              <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Ghana</span>
               <span className="flex items-center gap-1.5"><Phone className="w-4 h-4" /> 054 344 2518</span>
-              <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> support@gadgetciti.com</span>
+              <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> support@gadgetsciti.com</span>
             </div>
           </div>
 

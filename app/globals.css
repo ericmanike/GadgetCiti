@@ -66,13 +66,22 @@
     --chart-5: 340 75% 55%;
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):focus,
-  textarea:focus,
-  select:focus {
+  input:not([type="checkbox"]):not([type="radio"]):not(.no-border):focus,
+  textarea:not(.no-border):focus,
+  select:not(.no-border):focus {
     border-color: #1e293b !important;
     --tw-ring-color: #1e293b !important;
     outline: none !important;
     box-shadow: 0 0 0 1px #1e293b !important;
+  }
+
+  input.no-border:focus,
+  textarea.no-border:focus {
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    outline: none !important;
   }
 
   input[type="checkbox"]:focus,

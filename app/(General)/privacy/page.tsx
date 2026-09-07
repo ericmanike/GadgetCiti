@@ -123,8 +123,8 @@ export default function PrivacyPolicyPage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base ">Support Desk</h3>
-            <p className="text-xs ">Gadget CITi | Kumasi, KNUST, Ghana</p>
-            <p className="text-xs ">Email: support@gadgetciti.com | Phone: 054 344 2518</p>
+            <p className="text-xs ">Gadget CITi | Ghana</p>
+            <p className="text-xs ">Email: support@gadgetsciti.com | Phone: 054 344 2518</p>
           </div>
 
         </div>

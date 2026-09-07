@@ -66,7 +66,7 @@ export default function RefundPolicyPage() {
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-2 text-center">
             <div className="w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 font-extrabold flex items-center justify-center mx-auto text-sm">2</div>
             <h3 className="font-bold text-slate-900 text-sm">Inspection</h3>
-            <p className="text-xs text-slate-500">Drop off at our Kumasi store or dispatch via courier for technical check.</p>
+            <p className="text-xs text-slate-500">Drop off at our store in Ghana or dispatch via courier for technical check.</p>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-2 text-center">
@@ -122,7 +122,7 @@ export default function RefundPolicyPage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base "> For Returns</h3>
-            <p className="text-xs ">Call Support: 054 344 2518 | Email: support@gadgetciti.com</p>
+            <p className="text-xs ">Call Support: 054 344 2518 | Email: support@gadgetsciti.com</p>
 
           </div>
 

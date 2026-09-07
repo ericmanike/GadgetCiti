@@ -68,7 +68,7 @@ export default function TermsOfServicePage() {
               <h2 className="text-xl font-bold text-slate-900">General & Business Overview</h2>
             </div>
             <p className="text-slate-600">
-              Gadget CITi (also operating as CITi Hub) is a registered consumer electronics retail and services firm in Kumasi, Ghana. We specialize in flagship smartphones, laptops, tablets, IT hardware, trade-in programs, and installment financing solutions.
+              Gadget CITi (also operating as CITi Hub) is a registered consumer electronics retail and services firm in Ghana. We specialize in flagship smartphones, laptops, tablets, IT hardware, trade-in programs, and installment financing solutions.
             </p>
             <p className="text-slate-600">
               By engaging our platform, you affirm that you are at least 18 years old or operating under legal parental consent.
@@ -101,7 +101,7 @@ export default function TermsOfServicePage() {
               We dispatch orders nationwide across Ghana using verified courier networks. Delivery durations provided at checkout are estimates.
             </p>
             <p className="text-slate-600">
-              For in-store pick-up at our Kumasi location, customers must present valid identification (Ghana Card) and the order receipt code.
+              For in-store pick-up at our location in Ghana, customers must present valid identification (Ghana Card) and the order receipt code.
             </p>
           </section>
 
@@ -142,8 +142,8 @@ export default function TermsOfServicePage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base text-white">Contact Us</h3>
-            <p className="text-xs text-white">Gadget CITi | Kumasi, KNUST, Ghana</p>
-            <p className="text-xs text-white">Email: support@gadgetciti.com | Phone: 0543442518</p>
+            <p className="text-xs text-white">Gadget CITi | Ghana</p>
+            <p className="text-xs text-white">Email: support@gadgetsciti.com | Phone: 0543442518</p>
           </div>
 
         </div>

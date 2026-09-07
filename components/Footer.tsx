@@ -2,10 +2,18 @@
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { fetchAllProducts, Product } from '@/lib/products';
+import AutoScrollProductRow from '@/components/AutoScrollProductRow';
 
 export default function Footer() {
     const pathname = usePathname();
     const hideFooter = pathname === '/checkout';
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        fetchAllProducts().then((data) => setProducts(data.slice(0, 10)));
+    }, []);
 
     if (hideFooter) {
         return null;
@@ -13,6 +21,8 @@ export default function Footer() {
     
     return (
         <footer className="bg-slate-900 text-gray-300 border-t border-slate-800 z-0 font-sans">
+        
+
             <div className="container mx-auto px-4 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
                     {/* Brand Section */}
@@ -26,7 +36,7 @@ export default function Footer() {
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-6 w-6" /></a>
-                            <a href="mailto:support@gadgetciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
+                            <a href="mailto:support@gadgetsciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
                         </div>
                     </div>
 
@@ -60,7 +70,7 @@ export default function Footer() {
                         <ul className="space-y-3.5 text-base">
                             <li className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-orange-500 shrink-0 mt-1" />
-                                <span>Kumasi, KNUST, Ghana</span>
+                                <span>Ghana</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 text-orange-500 shrink-0" />
@@ -68,7 +78,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-orange-500 shrink-0" />
-                                <span>support@gadgetciti.com</span>
+                                <span>support@gadgetsciti.com</span>
                             </li>
                         </ul>
                     </div>
