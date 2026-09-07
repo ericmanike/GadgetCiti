@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
@@ -9,12 +11,29 @@ import {
   CreditCard, Upload, CheckCircle2, Eye, Trash2, AlertCircle, Lock
 } from 'lucide-react';
 
+const accountSchema = Yup.object().shape({
+  fullName: Yup.string().trim().min(2, 'Full name is too short').required('Full name is required'),
+  email: Yup.string().trim().email('Please enter a valid email address').required('Email address is required'),
+  phone: Yup.string()
+    .trim()
+    .transform((value) => (value === '' ? null : value))
+    .matches(/^[0-9+\s()-]{8,20}$/, 'Please enter a valid phone number')
+    .nullable(),
+  location: Yup.string().trim().nullable(),
+  ghanaCardNumber: Yup.string()
+    .trim()
+    .transform((value) => (value === '' ? null : value))
+    .matches(/^(GHA-\d{9}-\d|[A-Za-z0-9-]{8,20})$/i, 'Invalid Ghana Card format (e.g. GHA-000000000-0)')
+    .nullable(),
+});
+
 export default function AccountPage() {
     const { user, loading } = useAuth();
     const { showToast } = useToast();
 
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [savingCardNumber, setSavingCardNumber] = useState(false);
 
     // Ghana Card upload state
     const [ghanaCardFront, setGhanaCardFront] = useState<string | null>(null);
@@ -22,20 +41,54 @@ export default function AccountPage() {
     const [uploadingCard, setUploadingCard] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        location: ''
+    const formik = useFormik({
+        initialValues: {
+            fullName: '',
+            email: '',
+            phone: '',
+            location: '',
+            ghanaCardNumber: ''
+        },
+        validationSchema: accountSchema,
+        enableReinitialize: true,
+        onSubmit: async (values) => {
+            setSaving(true);
+            try {
+                const updatePayload: any = {
+                    data: {
+                        full_name: values.fullName,
+                        phone: values.phone,
+                        location: values.location,
+                        ghana_card_number: values.ghanaCardNumber
+                    }
+                };
+
+                if (values.email && values.email !== user?.email) {
+                    updatePayload.email = values.email;
+                }
+
+                const { error } = await supabase.auth.updateUser(updatePayload);
+
+                if (error) throw error;
+
+                showToast('Account details updated successfully!', 'success');
+                setIsEditing(false);
+            } catch (err: any) {
+                showToast(err.message || 'Failed to update account details', 'error');
+            } finally {
+                setSaving(false);
+            }
+        }
     });
 
     useEffect(() => {
         if (user) {
-            setFormData({
+            formik.setValues({
                 fullName: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
                 email: user.email || '',
                 phone: user.user_metadata?.phone || user.phone || '',
-                location: user.user_metadata?.location || 'Ghana'
+                location: user.user_metadata?.location || 'Ghana',
+                ghanaCardNumber: user.user_metadata?.ghana_card_number || ''
             });
 
             if (user.user_metadata?.ghana_card_front) {
@@ -47,33 +100,32 @@ export default function AccountPage() {
         }
     }, [user]);
 
-    const handleSave = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSaving(true);
+    // Quick save for Ghana Card Number
+    const handleQuickSaveCardNumber = async () => {
+        if (formik.errors.ghanaCardNumber) {
+            showToast(formik.errors.ghanaCardNumber, 'error');
+            return;
+        }
+        if (!formik.values.ghanaCardNumber) {
+            showToast('Please enter your Ghana Card Number', 'error');
+            return;
+        }
 
+        setSavingCardNumber(true);
         try {
-            const updatePayload: any = {
+            const { error } = await supabase.auth.updateUser({
                 data: {
-                    full_name: formData.fullName,
-                    phone: formData.phone,
-                    location: formData.location
+                    ghana_card_number: formik.values.ghanaCardNumber
                 }
-            };
-
-            if (formData.email && formData.email !== user?.email) {
-                updatePayload.email = formData.email;
-            }
-
-            const { error } = await supabase.auth.updateUser(updatePayload);
+            });
 
             if (error) throw error;
 
-            showToast('Account details updated successfully!', 'success');
-            setIsEditing(false);
+            showToast('Ghana Card Number saved successfully!', 'success');
         } catch (err: any) {
-            showToast(err.message || 'Failed to update account details', 'error');
+            showToast(err.message || 'Failed to save Ghana Card Number', 'error');
         } finally {
-            setSaving(false);
+            setSavingCardNumber(false);
         }
     };
 
@@ -178,49 +230,76 @@ export default function AccountPage() {
                 </div>
             </div>
 
-            {/* User Details Grid / Form */}
+            {/* User Details Grid / Formik Form */}
             {isEditing ? (
-                <form onSubmit={handleSave} className="bg-white rounded-3xl p-6 shadow-xs border border-gray-200 space-y-6">
+                <form onSubmit={formik.handleSubmit} className="bg-white rounded-3xl p-6 shadow-xs border border-gray-200 space-y-6">
                     <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-b border-gray-100 pb-3">Update Personal Details</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Full Name */}
                         <div>
                             <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">Full Name</label>
                             <input
                                 type="text"
-                                value={formData.fullName}
-                                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
-                                required
+                                {...formik.getFieldProps('fullName')}
+                                className={`w-full px-4 py-2.5 bg-slate-50 border ${formik.touched.fullName && formik.errors.fullName ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition`}
                             />
+                            {formik.touched.fullName && formik.errors.fullName && (
+                                <p className="mt-1 text-[11px] font-bold text-red-500">{formik.errors.fullName}</p>
+                            )}
                         </div>
+
+                        {/* Email */}
                         <div>
                             <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">Email Address</label>
                             <input
                                 type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
-                                required
+                                {...formik.getFieldProps('email')}
+                                className={`w-full px-4 py-2.5 bg-slate-50 border ${formik.touched.email && formik.errors.email ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition`}
                             />
+                            {formik.touched.email && formik.errors.email && (
+                                <p className="mt-1 text-[11px] font-bold text-red-500">{formik.errors.email}</p>
+                            )}
                         </div>
+
+                        {/* Phone */}
                         <div>
                             <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">Phone Number</label>
                             <input
                                 type="text"
-                                value={formData.phone}
-                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                {...formik.getFieldProps('phone')}
                                 placeholder="+233 XX XXX XXXX"
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
+                                className={`w-full px-4 py-2.5 bg-slate-50 border ${formik.touched.phone && formik.errors.phone ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition`}
                             />
+                            {formik.touched.phone && formik.errors.phone && (
+                                <p className="mt-1 text-[11px] font-bold text-red-500">{formik.errors.phone}</p>
+                            )}
                         </div>
+
+                        {/* Location */}
                         <div>
                             <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">Location / Address</label>
                             <input
                                 type="text"
-                                value={formData.location}
-                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-gray-200 rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition"
+                                {...formik.getFieldProps('location')}
+                                className={`w-full px-4 py-2.5 bg-slate-50 border ${formik.touched.location && formik.errors.location ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition`}
                             />
+                            {formik.touched.location && formik.errors.location && (
+                                <p className="mt-1 text-[11px] font-bold text-red-500">{formik.errors.location}</p>
+                            )}
+                        </div>
+
+                        {/* Ghana Card Number */}
+                        <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">Ghana Card Number</label>
+                            <input
+                                type="text"
+                                {...formik.getFieldProps('ghanaCardNumber')}
+                                placeholder="GHA-000000000-0"
+                                className={`w-full px-4 py-2.5 bg-slate-50 border ${formik.touched.ghanaCardNumber && formik.errors.ghanaCardNumber ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] focus:bg-white transition`}
+                            />
+                            {formik.touched.ghanaCardNumber && formik.errors.ghanaCardNumber && (
+                                <p className="mt-1 text-[11px] font-bold text-red-500">{formik.errors.ghanaCardNumber}</p>
+                            )}
                         </div>
                     </div>
 
@@ -281,12 +360,48 @@ export default function AccountPage() {
                     </div>
 
                     {/* Member Since */}
-                    <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-xs space-y-2 md:col-span-2">
+                    <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-xs space-y-2">
                         <div className="flex items-center gap-2 text-gray-400">
                             <Calendar size={16} className="text-orange-500" />
                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Member Since</span>
                         </div>
                         <p className="text-base font-bold text-slate-900">{memberSince}</p>
+                    </div>
+
+                    {/* Ghana Card Number Input */}
+                    <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-xs space-y-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-400">
+                                <CreditCard size={16} className="text-orange-500" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Ghana Card Number</span>
+                            </div>
+                            {user?.user_metadata?.ghana_card_number && (
+                                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                    Saved
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex flex-col space-y-1 pt-0.5">
+                            <div className="flex gap-2 items-center">
+                                <input
+                                    type="text"
+                                    {...formik.getFieldProps('ghanaCardNumber')}
+                                    placeholder="GHA-000000000-0"
+                                    className={`w-full px-3.5 py-2 bg-slate-50 border ${formik.touched.ghanaCardNumber && formik.errors.ghanaCardNumber ? 'border-red-400' : 'border-gray-200'} rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-[#1e293b] focus:bg-white transition`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleQuickSaveCardNumber}
+                                    disabled={savingCardNumber}
+                                    className="px-3.5 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl transition shrink-0 cursor-pointer shadow-xs disabled:opacity-50"
+                                >
+                                    {savingCardNumber ? 'Saving...' : 'Save'}
+                                </button>
+                            </div>
+                            {formik.touched.ghanaCardNumber && formik.errors.ghanaCardNumber && (
+                                <p className="text-[11px] font-bold text-red-500">{formik.errors.ghanaCardNumber}</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

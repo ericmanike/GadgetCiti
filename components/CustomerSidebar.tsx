@@ -69,27 +69,27 @@ const CustomerSidebar = () => {
 
     return (
         <div className="w-full bg-white shadow-sm overflow-hidden h-full border-r border-gray-200 flex flex-col justify-between">
-            <nav className="flex flex-col flex-1 overflow-y-auto no-scrollbar py-2">
+            <nav className="flex flex-col flex-1 overflow-y-auto no-scrollbar py-3">
                 <Link 
                     href="/customer/account"
-                    className="w-full bg-gray-800 p-3 md:p-4 py-3.5 gap-2.5 md:gap-3 flex justify-start items-center hover:bg-gray-700 transition-colors cursor-pointer group mb-3 shadow-xs"
+                    className="w-full bg-gray-800 p-3.5 md:p-4 py-4 gap-3 flex justify-start items-center hover:bg-gray-700 transition-colors cursor-pointer group mb-5 shadow-xs"
                 >
                     <CircleUser className="w-6 h-6 md:w-8 md:h-8 text-white shrink-0 group-hover:scale-105 transition-transform" color="white" />
                     <div className="flex flex-col min-w-0">
-                        <span className="text-white text-[15px] font-medium truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
+                        <span className="text-white text-[15px] font-semibold truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
                     </div>
                 </Link>
 
-                {/* Main Navigation Items with vertical spacing */}
-                <div className="flex flex-col gap-2 px-2">
+                {/* Main Navigation Items with enhanced vertical spacing */}
+                <div className="flex flex-col gap-3 px-3">
                     {menuItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-3.5 px-4 py-3 text-[15px] font-normal transition-all rounded-xl hover:text-orange-500 hover:bg-orange-50/40 select-none ${
-                                    isActive ? 'text-orange-500 bg-orange-50/80 font-bold shadow-2xs' : 'text-black'
+                                className={`flex items-center gap-3.5 px-4 py-3.5 text-[15px] font-medium transition-all rounded-xl hover:text-orange-500 hover:bg-orange-50/50 select-none ${
+                                    isActive ? 'text-orange-500 bg-orange-50/90 font-bold shadow-2xs' : 'text-slate-800'
                                 }`}
                             >
                                 <item.icon size={20} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
@@ -99,18 +99,18 @@ const CustomerSidebar = () => {
                     })}
                 </div>
 
-                {/* Account Settings with vertical spacing */}
-                <div className="pt-4 mt-4 border-t border-gray-100 flex flex-col gap-2">
-                    <p className="px-5 py-1 text-[13px] font-bold text-[#1E2939] uppercase tracking-wider opacity-70">Account Settings</p>
-                    <div className="flex flex-col gap-2 px-2">
+                {/* Account Settings with enhanced vertical spacing */}
+                <div className="pt-6 mt-6 border-t border-gray-150 flex flex-col gap-3">
+                    <p className="px-5 py-1 text-[12px] font-extrabold text-[#1E2939] uppercase tracking-wider opacity-75">Account Settings</p>
+                    <div className="flex flex-col gap-3 px-3">
                         {managementItems.map((item) => {
                             const isActive = pathname === item.href;
                             return (
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`block px-4 py-3 text-[15px] font-normal hover:text-orange-500 hover:bg-orange-50/40 transition-all truncate leading-tight rounded-xl ${
-                                        isActive ? 'text-orange-500 bg-orange-50/80 font-bold shadow-2xs' : 'text-black'
+                                    className={`block px-4 py-3.5 text-[15px] font-medium hover:text-orange-500 hover:bg-orange-50/50 transition-all truncate leading-tight rounded-xl ${
+                                        isActive ? 'text-orange-500 bg-orange-50/90 font-bold shadow-2xs' : 'text-slate-800'
                                     }`}
                                 >
                                     {item.label}
@@ -121,17 +121,17 @@ const CustomerSidebar = () => {
                 </div>
             </nav>
 
-            <div className="pt-2 border-t border-gray-150 bg-white p-2 w-full space-y-1 pb-8 md:pb-6">
+            <div className="pt-4 border-t border-gray-150 bg-white p-3 w-full space-y-2.5 pb-8 md:pb-6">
                 <Link
                     href="/buy"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-black hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-medium tracking-wider cursor-pointer border border-gray-200 rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[14px] text-slate-800 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
-                    <ArrowLeft size={12} className="text-[#1E2939]" />
+                    <ArrowLeft size={14} className="text-[#1E2939]" />
                     Back to Shop
                 </Link>
                 <button 
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] text-orange-500 hover:bg-orange-50 transition-colors uppercase font-medium tracking-wider cursor-pointer rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[14px] text-orange-500 hover:bg-orange-50 transition-colors uppercase font-bold tracking-wider cursor-pointer rounded-xl"
                 >
                     <LogOut size={16} />
                     Logout
