@@ -13,8 +13,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     productRoutes = products.map((product) => ({
       url: `${baseUrl}/products/${product.slug}`,
       lastModified: product.createdAt ? new Date(product.createdAt) : new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
+      changeFrequency: 'daily',
+      priority: 0.9,
     })) 
   } catch (error) {
     console.error('Error generating sitemap product entries:', error)
