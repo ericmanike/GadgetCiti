@@ -64,62 +64,81 @@ export default function AdminOrdersPage() {
       setLoading(true);
       let allOrdersList: Order[] = [];
 
-      // Query directly from Supabase DB
+      // Query directly from Supabase DB (Orders & Users)
       try {
-        const { data, error } = await supabase
-          .from('orders')
-          .select(`
-            id,
-            created_at,
-            total,
-            status,
-            user_id,
-            order_items (
+        const [ordersRes, usersRes] = await Promise.all([
+          supabase
+            .from('orders')
+            .select(`
               id,
-              quantity,
-              price,
-              products (
+              created_at,
+              total,
+              status,
+              user_id,
+              users (
+                id,
                 name,
-                brand,
-                product_images (
-                  image_url
+                email,
+                phone
+              ),
+              order_items (
+                id,
+                quantity,
+                price,
+                products (
+                  name,
+                  brand,
+                  product_images (
+                    image_url
+                  )
                 )
               )
-            )
-          `)
-          .order('created_at', { ascending: false });
+            `)
+            .order('created_at', { ascending: false }),
+          supabase.from('users').select('id, name, email, phone')
+        ]);
 
-        if (!error && data && data.length > 0) {
-          allOrdersList = data.map((row: any) => ({
-            id: String(row.id),
-            created_at: row.created_at,
-            total: Number(row.total) || 0,
-            status: row.status || 'Paid',
-            user_id: row.user_id || '',
-            users: row.users ? {
-              name: row.users.name || 'Registered Customer',
-              email: row.users.email || 'No Email',
-              phone: row.users.phone || 'N/A'
-            } : {
-              name: 'Registered Customer',
-              email: row.user_id ? `User #${String(row.user_id).slice(0, 8)}` : 'Guest Checkout',
-              phone: 'N/A'
-            },
-            order_items: (row.order_items || []).map((item: any) => ({
-              id: String(item.id),
-              quantity: Number(item.quantity) || 1,
-              price: Number(item.price) || 0,
-              products: item.products ? {
-                name: item.products.name || 'Gadget Item',
-                brand: item.products.brand || 'Generic',
-                product_images: item.products.product_images || []
-              } : {
-                name: 'Gadget Item',
-                brand: 'Generic',
-                product_images: []
-              }
-            }))
-          }));
+        const userMap: Record<string, any> = {};
+        if (usersRes.data) {
+          usersRes.data.forEach((u: any) => {
+            if (u.id) userMap[u.id] = u;
+          });
+        }
+
+        if (!ordersRes.error && ordersRes.data && ordersRes.data.length > 0) {
+          allOrdersList = ordersRes.data.map((row: any) => {
+            const userObj = row.users || (row.user_id ? userMap[row.user_id] : null);
+            const userName = userObj?.name || userObj?.full_name || (userObj?.email ? userObj.email.split('@')[0] : (row.user_id ? `Customer (${String(row.user_id).slice(0, 8)})` : 'Guest Customer'));
+            const userEmail = userObj?.email || (row.user_id ? `user-${String(row.user_id).slice(0, 8)}@gadgetsciti.com` : 'Guest Checkout');
+            const userPhone = userObj?.phone || userObj?.phone_number || 'N/A';
+
+            return {
+              id: String(row.id),
+              created_at: row.created_at,
+              total: Number(row.total) || 0,
+              status: row.status || 'Paid',
+              user_id: row.user_id || '',
+              users: {
+                name: userName,
+                email: userEmail,
+                phone: userPhone
+              },
+              order_items: (row.order_items || []).map((item: any) => ({
+                id: String(item.id),
+                quantity: Number(item.quantity) || 1,
+                price: Number(item.price) || 0,
+                products: item.products ? {
+                  name: item.products.name || 'Gadget Item',
+                  brand: item.products.brand || 'Generic',
+                  product_images: item.products.product_images || []
+                } : {
+                  name: 'Gadget Item',
+                  brand: 'Generic',
+                  product_images: []
+                }
+              }))
+            };
+          });
         }
       } catch (dbErr) {
         console.warn('Failed to query database orders:', dbErr);

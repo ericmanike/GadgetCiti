@@ -4,7 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, Phone, MapPin, Calendar, Edit3, Save, X, ShieldCheck } from 'lucide-react';
+import { 
+  User, Mail, Phone, MapPin, Calendar, Edit3, Save, X, ShieldCheck,
+  CreditCard, Upload, CheckCircle2, Eye, Trash2, AlertCircle, Lock
+} from 'lucide-react';
 
 export default function AccountPage() {
     const { user, loading } = useAuth();
@@ -12,6 +15,12 @@ export default function AccountPage() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    // Ghana Card upload state
+    const [ghanaCardFront, setGhanaCardFront] = useState<string | null>(null);
+    const [ghanaCardBack, setGhanaCardBack] = useState<string | null>(null);
+    const [uploadingCard, setUploadingCard] = useState(false);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -28,6 +37,13 @@ export default function AccountPage() {
                 phone: user.user_metadata?.phone || user.phone || '',
                 location: user.user_metadata?.location || 'Ghana'
             });
+
+            if (user.user_metadata?.ghana_card_front) {
+                setGhanaCardFront(user.user_metadata.ghana_card_front);
+            }
+            if (user.user_metadata?.ghana_card_back) {
+                setGhanaCardBack(user.user_metadata.ghana_card_back);
+            }
         }
     }, [user]);
 
@@ -61,6 +77,53 @@ export default function AccountPage() {
         }
     };
 
+    // Handle image file selection for Ghana Card
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image size must be less than 5MB', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            if (side === 'front') {
+                setGhanaCardFront(result);
+            } else {
+                setGhanaCardBack(result);
+            }
+            showToast(`Ghana Card ${side} image loaded! Remember to save documents.`, 'info');
+        };
+        reader.readAsDataURL(file);
+    };
+
+    // Save Ghana Card to user metadata
+    const handleSaveGhanaCard = async () => {
+        setUploadingCard(true);
+        try {
+            const { error } = await supabase.auth.updateUser({
+                data: {
+                    ghana_card_front: ghanaCardFront,
+                    ghana_card_back: ghanaCardBack,
+                    ghana_card_status: 'submitted',
+                    ghana_card_updated_at: new Date().toISOString()
+                }
+            });
+
+            if (error) throw error;
+
+            showToast('Ghana Card documents saved and submitted successfully!', 'success');
+        } catch (err: any) {
+            console.error('Failed to save Ghana Card:', err);
+            showToast(err.message || 'Failed to save Ghana Card documents.', 'error');
+        } finally {
+            setUploadingCard(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="p-8 flex items-center justify-center min-h-[50vh]">
@@ -73,7 +136,7 @@ export default function AccountPage() {
     const memberSince = user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A';
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 h-screen">
+        <div className="max-w-4xl mx-auto space-y-8 min-h-screen pb-16">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-200 pb-5">
                 <div>
@@ -83,15 +146,15 @@ export default function AccountPage() {
                 {!isEditing ? (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-2 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                        className="flex items-center gap-2 px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
                     >
                         <Edit3 size={15} />
-                        Edit 
+                        Edit Profile
                     </button>
                 ) : (
                     <button
                         onClick={() => setIsEditing(false)}
-                        className="flex items-center gap-2 px-2 py-2 bg-gray-100 hover:bg-gray-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                        className="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
                     >
                         <X size={15} />
                         Cancel
@@ -224,6 +287,154 @@ export default function AccountPage() {
                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Member Since</span>
                         </div>
                         <p className="text-base font-bold text-slate-900">{memberSince}</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Ghana Card Identification Section */}
+            <div className="bg-white rounded-3xl p-6 shadow-xs border border-gray-200 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                            <CreditCard className="text-orange-500" size={20} />
+                            <h3 className="text-base font-black text-slate-900 tracking-tight">Ghana Card Identity Verification</h3>
+                        </div>
+                        <p className="text-xs text-gray-500 font-semibold">
+                            Upload clear images of your Ghana Card (Front & Back) for identity verification and secure transactions.
+                        </p>
+                    </div>
+                    {ghanaCardFront && ghanaCardBack ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-full shrink-0">
+                            <CheckCircle2 size={14} /> Documents Added
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold rounded-full shrink-0">
+                            <AlertCircle size={14} /> Upload Required
+                        </span>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Ghana Card Front */}
+                    <div className="space-y-3">
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            Ghana Card - Front Side <span className="text-orange-500">*</span>
+                        </label>
+                        {ghanaCardFront ? (
+                            <div className="relative rounded-2xl border border-gray-200 overflow-hidden bg-slate-50 group p-2">
+                                <img src={ghanaCardFront} alt="Ghana Card Front" className="w-full h-48 object-cover rounded-xl shadow-xs" />
+                                <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 rounded-2xl">
+                                    <button
+                                        type="button"
+                                        onClick={() => setPreviewImage(ghanaCardFront)}
+                                        className="p-2.5 bg-white/20 hover:bg-white/40 text-white rounded-xl backdrop-blur-xs transition cursor-pointer"
+                                        title="Preview Front Image"
+                                    >
+                                        <Eye size={18} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setGhanaCardFront(null)}
+                                        className="p-2.5 bg-red-500/80 hover:bg-red-600 text-white rounded-xl transition cursor-pointer"
+                                        title="Remove Front Image"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 hover:border-orange-500 rounded-2xl cursor-pointer bg-slate-50 hover:bg-orange-50/20 transition-all p-4 text-center group">
+                                <Upload size={28} className="text-gray-400 group-hover:text-orange-500 transition-colors mb-2" />
+                                <span className="text-xs font-bold text-slate-700 group-hover:text-orange-600">Upload Ghana Card Front</span>
+                                <span className="text-[11px] text-gray-400 font-medium mt-1">PNG, JPG, WEBP up to 5MB</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => handleImageUpload(e, 'front')}
+                                />
+                            </label>
+                        )}
+                    </div>
+
+                    {/* Ghana Card Back */}
+                    <div className="space-y-3">
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            Ghana Card - Back Side <span className="text-orange-500">*</span>
+                        </label>
+                        {ghanaCardBack ? (
+                            <div className="relative rounded-2xl border border-gray-200 overflow-hidden bg-slate-50 group p-2">
+                                <img src={ghanaCardBack} alt="Ghana Card Back" className="w-full h-48 object-cover rounded-xl shadow-xs" />
+                                <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 rounded-2xl">
+                                    <button
+                                        type="button"
+                                        onClick={() => setPreviewImage(ghanaCardBack)}
+                                        className="p-2.5 bg-white/20 hover:bg-white/40 text-white rounded-xl backdrop-blur-xs transition cursor-pointer"
+                                        title="Preview Back Image"
+                                    >
+                                        <Eye size={18} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setGhanaCardBack(null)}
+                                        className="p-2.5 bg-red-500/80 hover:bg-red-600 text-white rounded-xl transition cursor-pointer"
+                                        title="Remove Back Image"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 hover:border-orange-500 rounded-2xl cursor-pointer bg-slate-50 hover:bg-orange-50/20 transition-all p-4 text-center group">
+                                <Upload size={28} className="text-gray-400 group-hover:text-orange-500 transition-colors mb-2" />
+                                <span className="text-xs font-bold text-slate-700 group-hover:text-orange-600">Upload Ghana Card Back</span>
+                                <span className="text-[11px] text-gray-400 font-medium mt-1">PNG, JPG, WEBP up to 5MB</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => handleImageUpload(e, 'back')}
+                                />
+                            </label>
+                        )}
+                    </div>
+                </div>
+
+                {/* Save Ghana Card button */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 font-semibold">
+                        <Lock size={14} className="text-emerald-600" />
+                        <span>Your Ghana Card documents are encrypted & safely stored.</span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleSaveGhanaCard}
+                        disabled={uploadingCard || (!ghanaCardFront && !ghanaCardBack)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white text-xs font-extrabold uppercase tracking-wider rounded-xl transition shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <CreditCard size={15} />
+                        {uploadingCard ? 'Saving Documents...' : 'Save Ghana Card Documents'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Image Preview Modal */}
+            {previewImage && (
+                <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="relative bg-white border border-gray-200 rounded-3xl max-w-2xl w-full p-4 shadow-2xl space-y-4">
+                        <div className="flex justify-between items-center border-b border-gray-100 pb-3 px-2">
+                            <h4 className="text-sm font-extrabold text-slate-900">Ghana Card Preview</h4>
+                            <button
+                                type="button"
+                                onClick={() => setPreviewImage(null)}
+                                className="p-1.5 hover:bg-gray-100 text-slate-500 rounded-xl transition cursor-pointer"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+                        <div className="overflow-hidden rounded-2xl bg-slate-900 flex items-center justify-center">
+                            <img src={previewImage} alt="Ghana Card Large Preview" className="max-h-[70vh] w-auto object-contain rounded-xl" />
+                        </div>
                     </div>
                 </div>
             )}

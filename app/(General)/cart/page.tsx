@@ -9,7 +9,7 @@ import { useCart } from '@/components/CartContext';
 export default function CartPage() {
   const { cart: items, updateQuantity, removeFromCart: removeItem, clearCart, totalItems, totalPrice: subtotal } = useCart();
 
-  const shipping = items.length > 0 ? 15.00 : 0;
+  const shipping = 0;
   const total = subtotal + shipping;
 
   return (
