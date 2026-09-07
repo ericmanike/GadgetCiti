@@ -35,30 +35,22 @@ const CustomerSidebar = () => {
             href: '/customer/inbox',
             icon: Mail,
         },
-        // {
-        //     label: 'Gadget Requests',
-        //     href: '/customer/requests',
-        //     icon: MailPlus,
-        // },
-        {
-            label: 'All Reviews',
-            href: '/customer/reviews',
-            icon: Star,
-        },
-        // {
-        //     label: 'Rewards',
-        //     href: '/customer/vouchers',
-        //     icon: Ticket,
-        // },
+      
+     
         {
             label: 'Saved Items',
             href: '/customer/wishlist',
             icon: Heart,
-        }
+        },
+           {
+            label: 'Write a Review',
+            href: '/customer/reviews',
+            icon: Star,
+        },
     ];
 
     const managementItems = [
-        { label: 'Profile Information', href: '/customer/account' },
+        { label: 'My Profile', href: '/customer/account' },
         { label: 'Address Book', href: '/customer/address' },
     ];
 
