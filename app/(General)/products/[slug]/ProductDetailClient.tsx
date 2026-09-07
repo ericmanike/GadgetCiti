@@ -288,7 +288,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                             className="w-full mt-2 py-3 px-4 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#632CF5] font-extrabold text-xs flex items-center justify-center gap-2 border border-purple-200/80 transition-all cursor-pointer shadow-2xs hover:shadow-xs"
                         >
                             <Bot size={16} />
-                            <span>ASK AI CONSULTANT ABOUT THIS ITEM</span>
+                            <span>ASK AI ABOUT THIS PRODUCT</span>
                         </button>
                     </div>
                 </div>
