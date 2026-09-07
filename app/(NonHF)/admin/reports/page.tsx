@@ -401,13 +401,6 @@ export default function AdminReportsPage() {
           </div>
           <div>
             <h3 className="text-2xl font-black text-slate-900">{formatCurrency(analytics.metrics.totalRevenue)}</h3>
-            <div className="flex items-center space-x-1.5 mt-1">
-              <span className="flex items-center text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                <TrendingUp size={12} className="mr-0.5" />
-                {analytics.metrics.revenueGrowth}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">vs. previous period</span>
-            </div>
           </div>
         </div>
 
@@ -421,13 +414,6 @@ export default function AdminReportsPage() {
           </div>
           <div>
             <h3 className="text-2xl font-black text-slate-900">{analytics.metrics.totalOrders.toLocaleString()}</h3>
-            <div className="flex items-center space-x-1.5 mt-1">
-              <span className="flex items-center text-xs font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                <TrendingUp size={12} className="mr-0.5" />
-                {analytics.metrics.ordersGrowth}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">volume growth</span>
-            </div>
           </div>
         </div>
 
@@ -441,13 +427,6 @@ export default function AdminReportsPage() {
           </div>
           <div>
             <h3 className="text-2xl font-black text-slate-900">{formatCurrency(analytics.metrics.avgOrderValue)}</h3>
-            <div className="flex items-center space-x-1.5 mt-1">
-              <span className="flex items-center text-xs font-extrabold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
-                <TrendingUp size={12} className="mr-0.5" />
-                {analytics.metrics.aovGrowth}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">per order basket</span>
-            </div>
           </div>
         </div>
 
@@ -466,11 +445,6 @@ export default function AdminReportsPage() {
               <span className="text-slate-300">•</span>
               <span className="text-sm font-bold text-slate-700">{analytics.metrics.totalUsersCount}</span>
               <span className="text-xs font-bold text-slate-500">Users</span>
-            </div>
-            <div className="flex items-center space-x-1.5 mt-1">
-              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
-                Conversion Rate: {analytics.metrics.conversionRate}
-              </span>
             </div>
           </div>
         </div>
