@@ -50,8 +50,8 @@ const CustomerSidebar = () => {
     ];
 
     const managementItems = [
-        { label: 'My Profile', href: '/customer/account' },
         { label: 'Address Book', href: '/customer/address' },
+         { label: 'My Profile', href: '/customer/account' },
     ];
 
     const handleLogout = async () => {

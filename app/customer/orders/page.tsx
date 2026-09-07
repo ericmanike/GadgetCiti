@@ -163,7 +163,7 @@ export default function OrdersPage() {
                   {/* Order Top Line */}
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center shrink-0">
                         <CircleStar size={20} />
                       </div>
                       <div>
