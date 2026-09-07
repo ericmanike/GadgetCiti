@@ -215,10 +215,7 @@ export default function AccountPage() {
             </div>
 
             {/* Profile Overview Card */}
-            <div className="bg-white rounded-3xl p-6 shadow-xs border border-gray-200 flex flex-col md:flex-row items-center gap-6">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-slate-800 text-white font-black text-base md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center shadow-md uppercase shrink-0">
-                    {displayName.charAt(0)}
-                </div>
+            <div className="bg-white rounded-3xl p-6 shadow-xs border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex-1 text-center md:text-left space-y-1">
                     <div className="flex items-center justify-center md:justify-start gap-2">
                         <h2 className="text-xl font-black text-slate-900">{displayName}</h2>
@@ -227,6 +224,9 @@ export default function AccountPage() {
                         </span>
                     </div>
                     <p className="text-xs text-gray-500 font-semibold">{user?.email}</p>
+                </div>
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-slate-800 text-white font-black text-base md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center shadow-md uppercase shrink-0">
+                    {displayName.charAt(0)}
                 </div>
             </div>
 

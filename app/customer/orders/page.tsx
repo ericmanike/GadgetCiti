@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, CircleStar, Calendar, Clock, ChevronRight, RefreshCw, MapPin, CheckCircle, Truck, AlertCircle } from 'lucide-react';
+import { ShoppingBag, CircleStar, Calendar, Clock, Download, RefreshCw, MapPin, CheckCircle, Truck, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthContext';
@@ -117,7 +117,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg min-h-[80vh]  overflow-hidden flex flex-col">
+    <div className="bg-slate-50 rounded-2xl shadow-lg min-h-[90vh]  overflow-hidden flex flex-col">
       {/* Header */}
       <div className="p-4 md:p-6 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
         <div>
@@ -227,7 +227,7 @@ export default function OrdersPage() {
                       className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
                     >
                       <span>Download Receipt</span>
-                      <ChevronRight size={14} />
+                             <Download size={16} />
                     </button>
                   </div>
                 </div>

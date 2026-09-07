@@ -33,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             
             <div className="w-full mx-auto">
                 {/* Mobile Top Navigation Bar */}
-                <div className="md:hidden flex items-center justify-between bg-white px-4 py-3 shadow-lg mb-4 border border-gray-200">
+                <div className="md:hidden flex items-center justify-between bg-white px-4 py-6 shadow-lg mb-4 border border-gray-200">
                     <div className="flex items-center gap-2">
                     
                         <span className="logo text-sm ">Gadget's CITi</span>
@@ -75,7 +75,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                     transition={{ type: 'spring', damping: 25, stiffness: 220 }}
                                     className="relative flex flex-col w-[280px] max-w-[85%] h-full bg-white shadow-2xl z-10 overflow-hidden"
                                 >
-                                    <div className="flex justify-between items-center p-4 border-b border-gray-150 bg-gray-50 flex-shrink-0">
+                                    <div className="flex justify-between items-center p-4  border-b border-gray-150 bg-gray-50 flex-shrink-0">
                                         <span className="font-bold text-slate-800 text-sm">Dashboard Menu</span>
                                         <button 
                                             onClick={() => setIsMobileSidebarOpen(false)}

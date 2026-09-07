@@ -214,7 +214,7 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
         {/* Modal Bottom Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
           <p className="text-xs text-slate-400 font-medium">
-            Export  receipt as  image.
+            
           </p>
           <button
             onClick={handleDownload}
