@@ -99,7 +99,7 @@ export default function OrdersPage() {
   const getStatusBadge = (status: string) => {
     const s = status.toLowerCase();
     if (s.includes('paid') || s.includes('delivered') || s.includes('success')) {
-      return { label: 'Paid / Delivered', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle };
+      return { label: 'Delivered', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle };
     }
     if (s.includes('shipped') || s.includes('processing')) {
       return { label: 'Processing & Shipping', bg: 'bg-blue-50 text-blue-700 border-blue-200', icon: Truck };
@@ -111,7 +111,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm min-h-[80vh] border border-gray-150 overflow-hidden flex flex-col">
+    <div className="bg-white rounded-2xl shadow-lg min-h-[80vh]  overflow-hidden flex flex-col">
       {/* Header */}
       <div className="p-4 md:p-6 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
         <div>

@@ -86,7 +86,7 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="w-full order-last py-3 md:py-0 mt-1 md:mt-0 md:order-none md:flex-1 md:w-auto max-w-2xl px-0 md:px-2">
+          <div className="w-full order-last py-4 md:py-0 mt-1 md:mt-0 md:order-none md:flex-1 md:w-auto max-w-2xl px-0 md:px-2">
             <div className="relative" ref={searchRef}>
               <form
                 onSubmit={handleSearchSubmit}
@@ -107,7 +107,7 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className={`w-full h-11 md:h-12 pl-10 md:pl-11 pr-8 bg-transparent outline-none placeholder:text-gray-500 text-[16px] md:text-base ${
+                    className={`w-full h-12 md:h-12 pl-10 md:pl-11 pr-8 bg-transparent outline-none placeholder:text-gray-500 text-[16px] md:text-base ${
                       isSearchOpen ? 'rounded-tl-2xl' : 'rounded-l-2xl'
                     }`}
                   />
