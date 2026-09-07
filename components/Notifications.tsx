@@ -140,7 +140,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
   return (
     <div
       className={`${isOpen ? 'translate-x-0' : 'translate-x-full'
-        } w-full sm:w-[420px] h-[100dvh] max-h-[100dvh] flex flex-col bg-white fixed right-0 z-[60] top-0 transition-all duration-300 ease-in-out shadow-2xl border-l border-slate-100`}
+        } w-full sm:w-[420px] fixed top-0 right-0 inset-y-0 h-full flex flex-col bg-white z-[60] transition-all duration-300 ease-in-out shadow-2xl border-l border-slate-100`}
       ref={panelRef}
     >
       {/* Header */}
@@ -238,7 +238,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       </div>
 
       {/* Input Box */}
-      <div className="p-3 mb-10 md:mb-5 pb-6 sm:pb-3 bg-white border-t border-slate-100 shrink-0 sticky bottom-0 z-10">
+      <div className="p-3 bg-white border-t border-slate-100 shrink-0 sticky bottom-0 z-10">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -252,6 +252,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask AI anything..."
             style={{
+              fontSize: '16px',
               outline: 'none',
               border: 'none',
               borderWidth: '0px',
@@ -260,7 +261,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
               appearance: 'none',
               WebkitAppearance: 'none'
             }}
-            className="no-border flex-1 bg-transparent py-2 text-base text-slate-800 border-0 border-none outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-none placeholder-slate-400"
+            className="no-border flex-1 bg-transparent py-2 text-[16px] text-slate-800 border-0 border-none outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-none placeholder-slate-400"
           />
           <button
             type="submit"

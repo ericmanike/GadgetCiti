@@ -169,6 +169,15 @@ export default function AdminDashboard() {
   const handleDeleteUser = async (id: string) => {
     try {
       setSubmitting(true);
+
+      // Unlink foreign key dependencies (orders, addresses) so delete query succeeds
+      try {
+        await supabase.from('orders').update({ user_id: null }).eq('user_id', id);
+        await supabase.from('addresses').delete().eq('user_id', id);
+      } catch (e) {
+        console.warn('Cleanup before user delete warning:', e);
+      }
+
       const { error } = await supabase.from('users').delete().eq('id', id);
       if (error) throw error;
 

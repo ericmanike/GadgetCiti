@@ -1,7 +1,7 @@
 'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { CircleUser } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import {
@@ -11,47 +11,30 @@ import {
     Star,
     LogOut,
     Wallet,
+    MapPin,
+    User,
     ArrowLeft
 } from 'lucide-react';
+
+interface MenuItem {
+    name: string;
+    href: string;
+    icon: React.ComponentType<any>;
+}
 
 const CustomerSidebar = () => {
     const pathname = usePathname();
     const router = useRouter();
     const { user, signOut } = useAuth();
 
-    const menuItems = [
-        {
-            label: 'Orders',
-            href: '/customer/orders',
-            icon: ShoppingBag,
-        },
-        {
-            label: 'Pay Small Small',
-            href: '/customer/pay-small-small',
-            icon: Wallet,
-        },
-        {
-            label: 'Inbox',
-            href: '/customer/inbox',
-            icon: Mail,
-        },
-      
-     
-        {
-            label: 'Saved Items',
-            href: '/customer/wishlist',
-            icon: Heart,
-        },
-           {
-            label: 'Write a Review',
-            href: '/customer/reviews',
-            icon: Star,
-        },
-    ];
-
-    const managementItems = [
-        { label: 'Address Book', href: '/customer/address' },
-         { label: 'My Profile', href: '/customer/account' },
+    const menuItems: MenuItem[] = [
+        { name: 'Orders', href: '/customer/orders', icon: ShoppingBag },
+        { name: 'Pay Small Small', href: '/customer/pay-small-small', icon: Wallet },
+        { name: 'Inbox', href: '/customer/inbox', icon: Mail },
+        { name: 'Saved Items', href: '/customer/wishlist', icon: Heart },
+        { name: 'Write a Review', href: '/customer/reviews', icon: Star },
+        { name: 'Address Book', href: '/customer/address', icon: MapPin },
+        { name: 'My Profile', href: '/customer/account', icon: User },
     ];
 
     const handleLogout = async () => {
@@ -63,78 +46,69 @@ const CustomerSidebar = () => {
         }
     };
 
-    let displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
-    displayName = displayName.split(' ')[0];
-  
+    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Customer';
 
     return (
-        <div className="w-full bg-white shadow-sm overflow-hidden h-full border-r border-gray-200 flex flex-col justify-between">
-            <nav className="flex flex-col flex-1 overflow-y-auto no-scrollbar py-3">
-                <Link 
-                    href="/customer/account"
-                    className="w-full bg-gray-800 p-3.5 md:p-4 py-4 gap-3 flex justify-start items-center hover:bg-gray-700 transition-colors cursor-pointer group mb-5 shadow-xs"
-                >
-                    <CircleUser className="w-6 h-6 md:w-8 md:h-8 text-white shrink-0 group-hover:scale-105 transition-transform" color="white" />
-                    <div className="flex flex-col min-w-0">
-                        <span className="text-white text-[15px] font-semibold truncate group-hover:text-orange-400 transition-colors">Hello, {displayName}</span>
+        <div className="w-full bg-white shadow-sm overflow-hidden h-full border-r border-gray-200 flex flex-col justify-between p-6 space-y-6">
+            <div className="flex flex-col flex-1 space-y-6 overflow-y-auto no-scrollbar">
+                {/* Header */}
+                <div className="flex items-center space-x-3 pb-6 border-b border-gray-150 shrink-0">
+                    <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-lg tracking-wider shadow-lg shadow-orange-500/30">
+                        C
                     </div>
-                </Link>
+                    <span className="font-black text-xl text-slate-900 tracking-widest uppercase">
+                        Gadget CITi<span className="text-orange-500 text-xs font-bold block leading-none">MY ACCOUNT</span>
+                    </span>
+                </div>
 
-                {/* Main Navigation Items with enhanced vertical spacing */}
-                <div className="flex flex-col gap-3 px-3">
+                {/* Navigation Items */}
+                <nav className="flex-1 space-y-2">
                     {menuItems.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive = pathname === item.href || (item.href !== '/customer' && pathname.startsWith(item.href));
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`flex items-center gap-3.5 px-4 py-3.5 text-[15px] font-medium transition-all rounded-xl hover:text-orange-500  select-none ${
-                                    isActive ? 'text-orange-500 shadow-md font-bold shadow-2xs' : 'text-slate-800'
-                                }`}
-                            >
-                                <item.icon size={20} className={isActive ? 'text-orange-500' : 'text-[#1E2939]'} />
-                                <span className="truncate leading-tight">{item.label}</span>
+                            <Link key={item.href} href={item.href}>
+                                <button
+                                    className={`w-full flex items-center space-x-4 px-4 py-3 mb-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                                        isActive 
+                                            ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 font-bold' 
+                                            : 'text-slate-800 hover:bg-slate-50'
+                                    }`}
+                                >
+                                    <item.icon size={20} className={isActive ? 'text-white' : 'text-[#1E2939]'} />
+                                    <span>{item.name}</span>
+                                </button>
                             </Link>
                         );
                     })}
-                </div>
+                </nav>
+            </div>
 
-                {/* Account Settings with enhanced vertical spacing */}
-                <div className="pt-6 mt-6 border-t border-gray-150 flex flex-col gap-3">
-                    <p className="px-5 py-1 text-[12px] font-extrabold text-[#1E2939] uppercase tracking-wider opacity-75">Account Settings</p>
-                    <div className="flex flex-col gap-3 px-3">
-                        {managementItems.map((item) => {
-                            const isActive = pathname === item.href;
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`block px-4 py-3.5 text-[15px] font-medium hover:text-orange-500  transition-all truncate leading-tight rounded-xl ${
-                                        isActive ? 'text-orange-500 shadow-md font-bold shadow-2xs' : 'text-slate-800'
-                                    }`}
-                                >
-                                    {item.label}
-                                </Link>
-                            );
-                        })}
+            {/* Bottom Section */}
+            <div className="pt-4 border-t border-gray-150 space-y-3 shrink-0">
+                <div className="flex items-center space-x-3 px-2">
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-xs text-white uppercase select-none shrink-0">
+                        {displayName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="truncate flex-1">
+                        <p className="text-xs font-bold text-slate-800 truncate">{displayName}</p>
+                        <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
                     </div>
                 </div>
-            </nav>
 
-            <div className="pt-4 border-t border-gray-150 bg-white p-3 w-full space-y-2.5 pb-8 md:pb-6">
                 <Link
                     href="/buy"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[14px] text-slate-800 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
                     <ArrowLeft size={14} className="text-[#1E2939]" />
-                    Back to Shop
+                    <span>Back to Shop</span>
                 </Link>
+
                 <button 
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[14px] text-orange-500 hover:bg-orange-50 transition-colors uppercase font-bold tracking-wider cursor-pointer rounded-xl"
+                    className="w-full flex items-center justify-center space-x-2 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-500 font-semibold py-2.5 px-4 rounded-xl text-sm transition-all duration-200 cursor-pointer border border-gray-200 hover:border-red-100"
                 >
                     <LogOut size={16} />
-                    Logout
+                    <span>Logout</span>
                 </button>
             </div>
         </div>

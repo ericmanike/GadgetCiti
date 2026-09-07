@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -19,7 +19,12 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
-
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.gadgetsciti.com"),
@@ -56,10 +61,6 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-
-
-
-
 };
 
 

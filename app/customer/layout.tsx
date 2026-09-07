@@ -33,17 +33,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             
             <div className="w-full mx-auto">
                 {/* Mobile Top Navigation Bar */}
-                <div className="md:hidden flex items-center justify-between bg-white px-4 py-6 shadow-lg mb-4 border border-gray-200">
+                <div className="md:hidden flex items-center justify-between bg-white px-5 py-4 shadow-md mb-4 border-b border-gray-200">
                     <div className="flex items-center gap-2">
-                    
-                        <span className="logo text-sm ">Gadget's CITi</span>
+                        <span className="logo text-base font-extrabold">Gadget's CITi</span>
                     </div>
                     <button
                         onClick={() => setIsMobileSidebarOpen(true)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
+                        className="flex items-center gap-2 px-3.5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
                     >
-                        <Menu size={16} />
-                      
+                        <Menu size={18} />
+                        <span>Menu</span>
                     </button>
                 </div>
 
@@ -73,15 +72,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                     animate={{ x: 0 }}
                                     exit={{ x: '-100%' }}
                                     transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-                                    className="relative flex flex-col w-[280px] max-w-[85%] h-full bg-white shadow-2xl z-10 overflow-hidden"
+                                    className="relative flex flex-col w-[330px] max-w-[90%] h-full bg-white shadow-2xl z-10 overflow-hidden"
                                 >
-                                    <div className="flex justify-between items-center p-4  border-b border-gray-150 bg-gray-50 flex-shrink-0">
-                                        <span className="font-bold text-slate-800 text-sm">Dashboard Menu</span>
+                                    <div className="flex justify-between items-center px-5 py-4 border-b border-gray-150 bg-gray-50 flex-shrink-0">
+                                        <span className="font-extrabold text-slate-900 text-base">Dashboard Menu</span>
                                         <button 
                                             onClick={() => setIsMobileSidebarOpen(false)}
-                                            className="p-1 rounded-md text-slate-500 hover:bg-gray-100 transition-colors cursor-pointer"
+                                            className="p-1.5 rounded-xl text-slate-500 hover:bg-gray-200 transition-colors cursor-pointer"
                                         >
-                                            <X size={20} />
+                                            <X size={22} />
                                         </button>
                                     </div>
                                     <div className="flex-1 overflow-hidden" onClick={() => setIsMobileSidebarOpen(false)}>

@@ -7,8 +7,8 @@ import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { supabase } from '@/lib/supabase';
 import { 
-  User, Mail, Phone, MapPin, Calendar, Edit3, Save, X, ShieldCheck,
-  CreditCard, Upload, CheckCircle2, Eye, Trash2, AlertCircle, Lock
+  User, Mail, Phone, MapPin, Calendar, Edit3, Save, X,  BadgeCheck,
+  CreditCard, Upload, CheckCircle2, Eye, Trash2, AlertCircle, Lock, Clock, ShieldCheck
 } from 'lucide-react';
 
 const accountSchema = Yup.object().shape({
@@ -35,11 +35,13 @@ export default function AccountPage() {
     const [saving, setSaving] = useState(false);
     const [savingCardNumber, setSavingCardNumber] = useState(false);
 
-    // Ghana Card upload state
+    // Ghana Card upload & verification status state
     const [ghanaCardFront, setGhanaCardFront] = useState<string | null>(null);
     const [ghanaCardBack, setGhanaCardBack] = useState<string | null>(null);
     const [uploadingCard, setUploadingCard] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [verificationStatus, setVerificationStatus] = useState<'unverified' | 'pending' | 'verified' | 'rejected'>('unverified');
+    const [rejectionReason, setRejectionReason] = useState<string | null>(null);
 
     const formik = useFormik({
         initialValues: {
@@ -71,6 +73,14 @@ export default function AccountPage() {
 
                 if (error) throw error;
 
+                // Sync with user_verifications table
+                if (user) {
+                    await supabase.from('user_verifications').upsert({
+                        user_id: user.id,
+                        ghana_card_number: values.ghanaCardNumber
+                    }, { onConflict: 'user_id' });
+                }
+
                 showToast('Account details updated successfully!', 'success');
                 setIsEditing(false);
             } catch (err: any) {
@@ -80,6 +90,37 @@ export default function AccountPage() {
             }
         }
     });
+
+    // Load user verification status from Supabase user_verifications table
+    const loadVerificationStatus = async () => {
+        if (!user) return;
+        try {
+            const { data, error } = await supabase
+                .from('user_verifications')
+                .select('*')
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            if (error) {
+                console.error('Could not fetch from user_verifications table:', error);
+                return;
+            }
+
+            if (data) {
+                setVerificationStatus(data.status || 'pending');
+                setRejectionReason(data.rejection_reason || null);
+                if (data.ghana_card_front) setGhanaCardFront(data.ghana_card_front);
+                if (data.ghana_card_back) setGhanaCardBack(data.ghana_card_back);
+                if (data.ghana_card_number) {
+                    formik.setFieldValue('ghanaCardNumber', data.ghana_card_number);
+                }
+            } else if (user.user_metadata?.ghana_card_status) {
+                setVerificationStatus(user.user_metadata.ghana_card_status);
+            }
+        } catch (err) {
+            console.error('Error querying user_verifications:', err);
+        }
+    };
 
     useEffect(() => {
         if (user) {
@@ -97,6 +138,8 @@ export default function AccountPage() {
             if (user.user_metadata?.ghana_card_back) {
                 setGhanaCardBack(user.user_metadata.ghana_card_back);
             }
+
+            loadVerificationStatus();
         }
     }, [user]);
 
@@ -121,7 +164,17 @@ export default function AccountPage() {
 
             if (error) throw error;
 
-            showToast('Ghana Card Number saved successfully!', 'success');
+            if (user) {
+                await supabase.from('user_verifications').upsert({
+                    user_id: user.id,
+                    ghana_card_number: formik.values.ghanaCardNumber,
+                    ghana_card_front: ghanaCardFront,
+                    ghana_card_back: ghanaCardBack,
+                    status: 'pending'
+                }, { onConflict: 'user_id' });
+            }
+
+            showToast('Ghana Card Number saved to verification status table!', 'success');
         } catch (err: any) {
             showToast(err.message || 'Failed to save Ghana Card Number', 'error');
         } finally {
@@ -152,7 +205,7 @@ export default function AccountPage() {
         reader.readAsDataURL(file);
     };
 
-    // Save Ghana Card to user metadata
+    // Save Ghana Card to user_verifications database table
     const handleSaveGhanaCard = async () => {
         setUploadingCard(true);
         try {
@@ -160,14 +213,30 @@ export default function AccountPage() {
                 data: {
                     ghana_card_front: ghanaCardFront,
                     ghana_card_back: ghanaCardBack,
-                    ghana_card_status: 'submitted',
+                    ghana_card_status: 'pending',
                     ghana_card_updated_at: new Date().toISOString()
                 }
             });
 
             if (error) throw error;
 
-            showToast('Ghana Card documents saved and submitted successfully!', 'success');
+            if (user) {
+                const { error: dbError } = await supabase.from('user_verifications').upsert({
+                    user_id: user.id,
+                    ghana_card_number: formik.values.ghanaCardNumber,
+                    ghana_card_front: ghanaCardFront,
+                    ghana_card_back: ghanaCardBack,
+                    status: 'pending'
+                }, { onConflict: 'user_id' });
+
+                if (dbError) {
+                    console.error('Error saving to user_verifications table:', dbError);
+                } else {
+                    setVerificationStatus('pending');
+                }
+            }
+
+            showToast('Ghana Card documents saved to user_verifications table and submitted for review!', 'success');
         } catch (err: any) {
             console.error('Failed to save Ghana Card:', err);
             showToast(err.message || 'Failed to save Ghana Card documents.', 'error');
@@ -220,12 +289,12 @@ export default function AccountPage() {
                     <div className="flex items-center justify-center md:justify-start gap-2">
                         <h2 className="text-xl font-black text-slate-900">{displayName}</h2>
                         <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                            <ShieldCheck size={12} /> Verified Account
+                            < BadgeCheck size={12} /> Verified
                         </span>
                     </div>
                     <p className="text-xs text-gray-500 font-semibold">{user?.email}</p>
                 </div>
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-slate-800 text-white font-black text-base md:text-2xl rounded-xl md:rounded-2xl flex items-center justify-center shadow-md uppercase shrink-0">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-blue-600 text-white font-black text-sm md:text-lg rounded-xl md:rounded-2xl flex items-center justify-center shadow-md uppercase shrink-0">
                     {displayName.charAt(0)}
                 </div>
             </div>
@@ -418,13 +487,24 @@ export default function AccountPage() {
                             Upload clear images of your Ghana Card (Front & Back) for identity verification and secure transactions.
                         </p>
                     </div>
-                    {ghanaCardFront && ghanaCardBack ? (
+                    {verificationStatus === 'verified' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-full shrink-0">
-                            <CheckCircle2 size={14} /> Documents Added
+                            <CheckCircle2 size={14} /> Verified Account
                         </span>
-                    ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold rounded-full shrink-0">
-                            <AlertCircle size={14} /> Upload Required
+                    )}
+                    {verificationStatus === 'pending' && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold rounded-full shrink-0 animate-pulse">
+                            <Clock size={14} /> Verification Under Review
+                        </span>
+                    )}
+                    {verificationStatus === 'rejected' && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-200 text-red-700 text-xs font-bold rounded-full shrink-0">
+                            <AlertCircle size={14} /> Verification Rejected
+                        </span>
+                    )}
+                    {verificationStatus === 'unverified' && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold rounded-full shrink-0">
+                            <AlertCircle size={14} /> Unverified
                         </span>
                     )}
                 </div>

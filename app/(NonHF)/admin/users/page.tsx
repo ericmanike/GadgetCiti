@@ -63,17 +63,27 @@ export default function AdminUsersPage() {
   const handleDeleteUser = async (id: string) => {
     try {
       setSubmitting(true);
+
+      // Unlink foreign key dependencies (orders, addresses) so delete query succeeds
+      try {
+        await supabase.from('orders').update({ user_id: null }).eq('user_id', id);
+        await supabase.from('addresses').delete().eq('user_id', id);
+      } catch (e) {
+        console.warn('Cleanup before user delete warning:', e);
+      }
+
       const { error } = await supabase.from('users').delete().eq('id', id);
       if (error) {
-        console.log('Error occured deleting user'+error)
-        throw error;}
+        console.error('Error occurred deleting user:', error);
+        throw error;
+      }
 
       showToast("User profile deleted successfully!", "success");
       setUsers(users.filter(u => u.id !== id));
       setDeletingId(null);
     } catch (err: any) {
       console.error("Error deleting user:", err);
-      showToast(err.message || "Failed to delete user.", "error");
+      showToast(err.message || "Failed to delete user. Check database permissions.", "error");
     } finally {
       setSubmitting(false);
     }
