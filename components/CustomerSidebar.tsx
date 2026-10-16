@@ -29,10 +29,9 @@ const CustomerSidebar = () => {
 
     const menuItems: MenuItem[] = [
         { name: 'Orders', href: '/customer/orders', icon: ShoppingBag },
-        { name: 'Pay Small Small', href: '/customer/pay-small-small', icon: Wallet },
         { name: 'Inbox', href: '/customer/inbox', icon: Mail },
         { name: 'Saved Items', href: '/customer/wishlist', icon: Heart },
-        // { name: 'Write a Review', href: '/customer/reviews', icon: Star },
+        { name: 'Pay Small Small', href: '/customer/pay-small-small', icon: Wallet },
         { name: 'Address Book', href: '/customer/address', icon: MapPin },
         { name: 'My Profile', href: '/customer/account', icon: User },
     ];
