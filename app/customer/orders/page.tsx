@@ -104,10 +104,10 @@ export default function OrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const s = status.toLowerCase();
-    if (s.includes('paid') || s.includes('delivered') || s.includes('success')) {
+    if ( s.includes('delivered') || s.includes('success')) {
       return { label: 'Delivered', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle };
     }
-    if (s.includes('shipped') || s.includes('processing')) {
+    if (s.includes('paid')  || s.includes('shipped') || s.includes('processing')) {
       return { label: 'Processing & Shipping', bg: 'bg-blue-50 text-blue-700 border-blue-200', icon: Truck };
     }
     if (s.includes('cancel')) {

@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     // 2. Handle Successful Payment Event
     if (event.event === 'charge.success') {
       console.log( "Paystack webhook payload: ", event)
-      const { reference, amount, currency, customer, metadata, channel, paid_at } = event.data;
+      const { reference, amount, currency, customer, metadata, channel } = event.data;
       const amountPaidGHS = amount / 100; // Paystack sends amount in pesewas (GHS * 100)
       const customerEmail = customer?.email || '';
       const customerPhone = customer?.phone || metadata?.phone_number || '';
