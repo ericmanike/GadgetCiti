@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag, Trash2, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import { Heart, ShoppingBag, ShoppingCart, Trash2, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '@/components/WishlistContext';
 import { useCart } from '@/components/CartContext';
@@ -11,7 +11,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export default function WishlistPage() {
     const { wishlist, removeFromWishlist, clearWishlist, totalWishlistItems, loading } = useWishlist();
-    const { addToCart } = useCart();
+    const { addToCart, totalItems } = useCart();
 
     return (
         <div className="bg-white rounded-2xl shadow-xs border border-slate-100 min-h-[calc(100vh-6rem)] overflow-hidden flex flex-col">
@@ -21,7 +21,7 @@ export default function WishlistPage() {
 
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">My Wishlist</h1>
+                            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Saved Items</h1>
                             <span className="bg-slate-200 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-full">
                                 {totalWishlistItems} {totalWishlistItems === 1 ? 'item' : 'items'}
                             </span>
@@ -30,15 +30,21 @@ export default function WishlistPage() {
                     </div>
                 </div>
 
-                {totalWishlistItems > 0 && (
-                    <button
-                        onClick={clearWishlist}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                    >
-                        <Trash2 size={14} />
-                        Clear All
-                    </button>
-                )}
+                <Link
+                    href="/cart"
+                    className="flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 hover:border-orange-500 hover:bg-orange-50/50 rounded-xl text-xs font-bold text-slate-800 hover:text-orange-600 transition-all shadow-xs cursor-pointer group"
+                    title="View My Cart"
+                >
+                    <div className="relative flex items-center justify-center">
+                        <ShoppingCart size={16} className="text-slate-700 group-hover:text-orange-500 transition-colors" />
+                        {totalItems > 0 && (
+                            <span className="absolute -top-2 -right-2.5 min-w-[16px] h-4 px-1 bg-orange-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none">
+                                {totalItems}
+                            </span>
+                        )}
+                    </div>
+                    <span>My Cart</span>
+                </Link>
             </div>
 
             {/* Content Body */}

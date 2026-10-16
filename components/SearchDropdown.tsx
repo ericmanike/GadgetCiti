@@ -32,7 +32,7 @@ export default function SearchDropdown({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.12 }}
-                className="absolute left-0 right-0 top-full bg-white rounded-b-2xl shadow-2xl border border-gray-200 border-t-0 z-50 overflow-hidden"
+                className="absolute left-0 right-0 top-full bg-white rounded-b-3xl shadow-2xl border border-gray-200 border-t-0 z-50 overflow-hidden"
             >
                 {/* No query – show trending */}
                 {!query && (

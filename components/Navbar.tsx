@@ -90,14 +90,13 @@ const Navbar = () => {
             <div className="relative" ref={searchRef}>
               <form
                 onSubmit={handleSearchSubmit}
-                className={`flex w-full bg-white transition-all duration-200 ${
+                className={`flex w-full bg-white transition-all duration-200 overflow-hidden ${
                   isSearchOpen
-                    ? 'rounded-t-2xl shadow-2xl border border-gray-200'
-                    : 'rounded-2xl shadow-sm border border-gray-200'
+                    ? 'rounded-t-3xl shadow-2xl border border-gray-200'
+                    : 'rounded-full shadow-sm hover:shadow-md border border-gray-200 focus-within:border-orange-500/60'
                 }`}
               >
                 <div className="relative flex-1 flex items-center">
-                  <Search size={18} className="absolute left-3.5 md:left-4 text-gray-400 pointer-events-none" strokeWidth={2} />
                   <input
                     type="text"
                     value={searchQuery}
@@ -107,28 +106,31 @@ const Navbar = () => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     placeholder="Search in Gadget's CITi ..."
-                    className={`w-full h-12 md:h-12 pl-10 md:pl-11 pr-8 bg-transparent outline-none placeholder:text-gray-500 text-[16px] md:text-base ${
-                      isSearchOpen ? 'rounded-tl-2xl' : 'rounded-l-2xl'
-                    }`}
+                    className="no-border w-full h-11 md:h-12 pl-5 md:pl-6 pr-11 md:pr-12 bg-transparent outline-none placeholder:text-gray-400 text-slate-800 text-[15px] md:text-base rounded-full focus:outline-none focus:ring-0"
                   />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => { setSearchQuery(''); setSearchResults([]); setIsSearchOpen(false); }}
-                      className="absolute right-3 text-gray-400 hover:text-gray-700 transition-colors"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                    </button>
-                  )}
+                  <div className="absolute right-3.5 md:right-4 flex items-center">
+                    {searchQuery ? (
+                      <button
+                        type="button"
+                        onClick={() => { setSearchQuery(''); setSearchResults([]); setIsSearchOpen(false); }}
+                        className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer rounded-full hover:bg-gray-100"
+                        aria-label="Clear search"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="p-1.5 text-gray-400 hover:text-orange-500 transition-colors cursor-pointer rounded-full hover:bg-orange-50"
+                        aria-label="Search"
+                      >
+                        <Search size={19} strokeWidth={2.2} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <button
-                  type="submit"
-                  className={`px-4 md:px-6 bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all ${
-                    isSearchOpen ? 'rounded-tr-2xl' : 'rounded-r-2xl'
-                  }`}
-                >
-                  <Search size={18} className="md:size-[22px]" strokeWidth={2.5} />
-                </button>
+                {/* Hidden submit button to guarantee Enter key submits even when search icon is hidden */}
+                <button type="submit" className="hidden" aria-hidden="true" />
               </form>
 
               {/* Search Dropdown */}
