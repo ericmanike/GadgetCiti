@@ -12,6 +12,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useToast } from '@/components/toastProvider';
 import { deleteCloudinaryImage } from '@/lib/utils';
 import ProductColorSelector from '@/components/ProductColorSelector';
+import { parseImageUrls } from '@/lib/products';
 
 interface Category {
   id: string;
@@ -108,9 +109,7 @@ export default function AdminProductsPage() {
       if (error) throw error;
 
       const mappedProducts: ProductItem[] = dbProducts?.map((row: any) => {
-        const images = row.product_images?.flatMap((img: any) => 
-          Array.isArray(img.image_url) ? img.image_url : (img.image_url ? [img.image_url] : [])
-        ) || [];
+        const images = parseImageUrls(row.product_images);
         const overviewText = Array.isArray(row.over_view?.features) && row.over_view.features.length > 0
           ? row.over_view.features[0]
           : (row.over_view?.overview || '');
@@ -284,7 +283,7 @@ export default function AdminProductsPage() {
           }
         }
 
-        const finalImages = [...existingImages, ...uploadedUrls];
+        const finalImages = Array.from(new Set([...existingImages, ...uploadedUrls].filter(Boolean)));
         const primaryImage = finalImages.length > 0 ? finalImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
 
         const priceNum = Number(values.price);
@@ -320,10 +319,12 @@ export default function AdminProductsPage() {
 
           // Replace product_images
           await supabase.from('product_images').delete().eq('product_id', editingProduct.id);
-          await supabase.from('product_images').insert({
+
+          const imageRows = primaryImage.map((url: string) => ({
             product_id: editingProduct.id,
-            image_url: primaryImage
-          });
+            image_url: url
+          }));
+          await supabase.from('product_images').insert(imageRows);
 
           showToast("Product updated successfully! 🚀", "success");
         } else {
@@ -347,10 +348,11 @@ export default function AdminProductsPage() {
 
           if (productError) throw productError;
 
-          await supabase.from('product_images').insert({
+          const imageRows = primaryImage.map((url: string) => ({
             product_id: product.id,
-            image_url: primaryImage
-          });
+            image_url: url
+          }));
+          await supabase.from('product_images').insert(imageRows);
 
           showToast("Product published successfully! 🚀", "success");
         }
@@ -371,7 +373,8 @@ export default function AdminProductsPage() {
 
   const handleEditProduct = (prod: ProductItem) => {
     setEditingProduct(prod);
-    setExistingImages(prod.images || (prod.imageUrl ? [prod.imageUrl] : []));
+    const cleanImages = parseImageUrls(prod.images || (prod.imageUrl ? [prod.imageUrl] : []));
+    setExistingImages(Array.from(new Set(cleanImages)));
     setSelectedColors(prod.variants || []);
     formik.setValues({
       name: prod.name,

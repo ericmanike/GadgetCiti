@@ -286,7 +286,7 @@ export default function SellerProductsPage() {
           }
         }
 
-        const finalImages = [...existingImages, ...uploadedUrls];
+        const finalImages = Array.from(new Set([...existingImages, ...uploadedUrls].filter(Boolean)));
         const primaryImage = finalImages.length > 0 ? finalImages : ["https://placehold.co/800?text=photo+unavailable&font=roboto"];
 
         const priceNum = Number(values.price);
@@ -323,10 +323,12 @@ export default function SellerProductsPage() {
 
           // Replace product_images
           await supabase.from('product_images').delete().eq('product_id', editingProduct.id);
-          await supabase.from('product_images').insert({
+
+          const imageRows = primaryImage.map((url: string) => ({
             product_id: editingProduct.id,
-            image_url: primaryImage
-          });
+            image_url: url
+          }));
+          await supabase.from('product_images').insert(imageRows);
 
           showToast("Product updated successfully! 🚀", "success");
         } else {
@@ -350,10 +352,11 @@ export default function SellerProductsPage() {
 
           if (productError) throw productError;
 
-          await supabase.from('product_images').insert({
+          const imageRows = primaryImage.map((url: string) => ({
             product_id: product.id,
-            image_url: primaryImage
-          });
+            image_url: url
+          }));
+          await supabase.from('product_images').insert(imageRows);
 
           showToast("Product uploaded successfully! 🚀", "success");
         }
@@ -374,7 +377,8 @@ export default function SellerProductsPage() {
 
   const handleEditProduct = (p: ProductItem) => {
     setEditingProduct(p);
-    setExistingImages(p.images || (p.imageUrl ? [p.imageUrl] : []));
+    const cleanImages = parseImageUrls(p.images || (p.imageUrl ? [p.imageUrl] : []));
+    setExistingImages(Array.from(new Set(cleanImages)));
     setSelectedColors(p.variants || []);
     formik.setValues({
       name: p.name,

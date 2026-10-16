@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
-import { MonitorCog, Cable, ArrowRight } from 'lucide-react';
+import { MonitorCog, Cable, ArrowRight, PackageX } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
@@ -162,8 +162,18 @@ export default function Home() {
           </div>
           {loading ? (
             <SkeletonCards cols={4} rows={1} />
-          ) : (
+          ) : SPONSORED_GADGETS.length > 0 ? (
             <AutoScrollProductRow products={SPONSORED_GADGETS} />
+          ) : (
+            <div className="w-full py-12 px-4 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center my-2">
+              <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
+                <PackageX className="w-7 h-7 stroke-[1.75]" />
+              </div>
+              <h3 className="text-base md:text-lg font-bold text-slate-800">No products found</h3>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                There are currently no new arrival products available. Check back soon!
+              </p>
+            </div>
           )}
         </section>
 
@@ -181,8 +191,18 @@ export default function Home() {
           </div>
           {loading ? (
             <SkeletonCards cols={4} rows={1} />
-          ) : (
+          ) : RECOMMENDED_GADGETS.length > 0 ? (
             <ProductScrollRow products={RECOMMENDED_GADGETS} />
+          ) : (
+            <div className="w-full py-12 px-4 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center my-2">
+              <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
+                <PackageX className="w-7 h-7 stroke-[1.75]" />
+              </div>
+              <h3 className="text-base md:text-lg font-bold text-slate-800">No products found</h3>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
+                There are currently no popular products available. Check back soon!
+              </p>
+            </div>
           )}
         </section>
 

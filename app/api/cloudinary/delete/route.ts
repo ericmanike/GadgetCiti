@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+
 export async function POST(req: Request) {
   try {
     const { publicId } = await req.json();
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
     }
 
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dwjvjjplu';
-    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiKey = process.env.CLOUDINARY_API_KEY || process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '598532967332644';
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!apiKey || !apiSecret) {
