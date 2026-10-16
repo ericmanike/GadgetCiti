@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
 import Pattern from '@/components/ui/Pattern';
-import { MonitorCog, Cable, ArrowRight, PackageX } from 'lucide-react';
+import { MonitorCog, Cable, ArrowRight, PackageX, Search } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
 
 const COMPUTER_SLIDES = [
@@ -137,7 +137,7 @@ export default function Home() {
                 hover:scale-[1.02] active:scale-[0.98]
                 cursor-pointer select-none"
               >
-                <span className="font-black tracking-widest"> Find the Best Tech. </span>
+                <span className="font-black tracking-widest"> Shop Now!. </span>
                 
                 <div className="relative z-10 p-1.5 bg-white/20 rounded-xl group-hover/btn:bg-white/30 transition-colors">
                   <MonitorCog className="w-5 h-5 group-hover/btn:rotate-45 transition-transform duration-500 ease-out" /> 
@@ -165,9 +165,9 @@ export default function Home() {
           ) : SPONSORED_GADGETS.length > 0 ? (
             <AutoScrollProductRow products={SPONSORED_GADGETS} />
           ) : (
-            <div className="w-full py-12 px-4 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center my-2">
+            <div className="w-full py-12 px-4 rounded-2xl bg-white shadow-lg flex flex-col items-center justify-center text-center my-2">
               <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
-                <PackageX className="w-7 h-7 stroke-[1.75]" />
+                <Search className="w-7 h-7 stroke-[1.75]" />
               </div>
               <h3 className="text-base md:text-lg font-bold text-slate-800">No products found</h3>
               <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
@@ -176,8 +176,8 @@ export default function Home() {
             </div>
           )}
         </section>
-
-        {/* Trending Now - Carousel */}
+{/* 
+        
         <section className="w-full overflow-hidden pb-10">
           <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
@@ -194,9 +194,9 @@ export default function Home() {
           ) : RECOMMENDED_GADGETS.length > 0 ? (
             <ProductScrollRow products={RECOMMENDED_GADGETS} />
           ) : (
-            <div className="w-full py-12 px-4 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center my-2">
+            <div className="w-full py-12 px-4 rounded-2xl bg-white  shadow-lg flex flex-col items-center justify-center text-center my-2">
               <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
-                <PackageX className="w-7 h-7 stroke-[1.75]" />
+                <Search className="w-7 h-7 stroke-[1.75]" />
               </div>
               <h3 className="text-base md:text-lg font-bold text-slate-800">No products found</h3>
               <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
@@ -204,7 +204,7 @@ export default function Home() {
               </p>
             </div>
           )}
-        </section>
+        </section> */}
 
       </div>
 

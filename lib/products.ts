@@ -25,14 +25,14 @@ export async function fetchAllProducts(): Promise<Product[]> {
     const { data, error } = await supabase
         .from('products')
         .select(`
-            id, name, brand, price, discount, stock, over_view, specifications, created_at,
+            id, name, brand, price, discount, stock, over_view, created_at,
             categories(name),
             product_images(image_url),
             reviews(rating)
         `);
 
     if (error || !data) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching products:", error?.message || error || "No data returned");
         return [];
     }
 
@@ -47,7 +47,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
         const { data, error } = await supabase
             .from('products')
             .select(`
-                id, name, brand, price, discount, stock, over_view, specifications, created_at,
+                id, name, brand, price, discount, stock, over_view, created_at,
                 categories(name),
                 product_images(image_url),
                 reviews(rating)
@@ -104,12 +104,13 @@ export function mapDBProductToClient(row: any): Product {
     const ratingCount = row.reviews?.length || 0;
 
     let specs = [];
-    if (row.specifications && typeof row.specifications === 'object') {
-        const specKeys = Object.keys(row.specifications);
-        if (specKeys.length > 0 && !Array.isArray(row.specifications)) {
-            specs = specKeys.map(key => ({ label: key, value: String(row.specifications[key]) }));
-        } else if (Array.isArray(row.specifications)) {
-            specs = row.specifications;
+    const rawSpecs = row.specifications || row.over_view?.specifications;
+    if (rawSpecs && typeof rawSpecs === 'object') {
+        const specKeys = Object.keys(rawSpecs);
+        if (specKeys.length > 0 && !Array.isArray(rawSpecs)) {
+            specs = specKeys.map(key => ({ label: key, value: String(rawSpecs[key]) }));
+        } else if (Array.isArray(rawSpecs)) {
+            specs = rawSpecs;
         }
     }
 

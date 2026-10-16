@@ -97,7 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             .select(`
                                 quantity,
                                 products (
-                                    id, name, brand, price, discount, stock, over_view, specifications, created_at,
+                                    id, name, brand, price, discount, stock, over_view, created_at,
                                     categories (name),
                                     product_images (image_url),
                                     reviews (rating)
