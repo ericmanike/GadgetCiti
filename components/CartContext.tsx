@@ -35,7 +35,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Initial local storage load
     useEffect(() => {
         setIsMounted(true);
-        const savedCart = localStorage.getItem("gadgetciti-cart");
+        const savedCart = localStorage.getItem("teqvault-cart") || localStorage.getItem("gadgetciti-cart");
         if (savedCart) {
             try {
                 setCart(JSON.parse(savedCart));
@@ -123,7 +123,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             // Merge any local guest items that aren't already in DB
                             const localCart = (() => {
                                 try {
-                                    const raw = localStorage.getItem("gadgetciti-cart");
+                                    const raw = localStorage.getItem("teqvault-cart") || localStorage.getItem("gadgetciti-cart");
                                     return raw ? (JSON.parse(raw) as CartItem[]) : [];
                                 } catch { return []; }
                             })();
@@ -142,7 +142,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                             // DB cart exists but is empty — migrate local guest items into it
                             const localCart = (() => {
                                 try {
-                                    const raw = localStorage.getItem("gadgetciti-cart");
+                                    const raw = localStorage.getItem("teqvault-cart") || localStorage.getItem("gadgetciti-cart");
                                     return raw ? (JSON.parse(raw) as CartItem[]) : [];
                                 } catch { return []; }
                             })();
@@ -160,7 +160,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         // No DB cart at all — migrate local guest items into a new DB cart
                         const localCart = (() => {
                             try {
-                                const raw = localStorage.getItem("gadgetciti-cart");
+                                const raw = localStorage.getItem("teqvault-cart") || localStorage.getItem("gadgetciti-cart");
                                 return raw ? (JSON.parse(raw) as CartItem[]) : [];
                             } catch { return []; }
                         })();
@@ -194,7 +194,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Sync to local storage
     useEffect(() => {
         if (isMounted) {
-            localStorage.setItem("gadgetciti-cart", JSON.stringify(cart));
+            localStorage.setItem("teqvault-cart", JSON.stringify(cart));
         }
     }, [cart, isMounted]);
 

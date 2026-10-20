@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
               Customer Feedback
             </span>
             <h2 className="text-2xl md:text-3xl font-black tracking-tight uppercase font-outfit">
-              What Our Clients Say About Gadget CITi
+              What Our Clients Say About TEQVAULT
             </h2>
             <p className="text-slate-400 text-xs md:text-sm font-medium">
               Over 1,200+ satisfied customers across Ghana trust our electronics, trade-ins, and IT services.

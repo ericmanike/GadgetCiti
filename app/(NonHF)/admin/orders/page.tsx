@@ -111,7 +111,7 @@ export default function AdminOrdersPage() {
           allOrdersList = ordersRes.data.map((row: any) => {
             const userObj = row.users || (row.user_id ? userMap[row.user_id] : null);
             const userName = userObj?.name || userObj?.full_name || (userObj?.email ? userObj.email.split('@')[0] : (row.user_id ? `Customer (${String(row.user_id).slice(0, 8)})` : 'Guest Customer'));
-            const userEmail = userObj?.email || (row.user_id ? `user-${String(row.user_id).slice(0, 8)}@gadgetsciti.com` : 'Guest Checkout');
+            const userEmail = userObj?.email || (row.user_id ? `user-${String(row.user_id).slice(0, 8)}@teqvault.com` : 'Guest Checkout');
             const userPhone = userObj?.phone || userObj?.phone_number || 'N/A';
 
             return {

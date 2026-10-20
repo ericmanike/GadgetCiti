@@ -165,7 +165,7 @@ export default function StoreProfilePage() {
               value={formik.values.storeName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              placeholder="e.g. Gadget CITi Tech Hub"
+              placeholder="e.g. TEQVAULT Tech Hub"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] outline-none transition text-sm font-semibold text-gray-900"
             />
             {formik.touched.storeName && formik.errors.storeName && (
@@ -224,7 +224,7 @@ export default function StoreProfilePage() {
                 value={formik.values.storeEmail}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                placeholder="store@gadgetsciti.com"
+                placeholder="store@teqvault.com"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#1e293b] focus:ring-1 focus:ring-[#1e293b] outline-none transition text-sm font-semibold text-gray-900"
               />
               {formik.touched.storeEmail && formik.errors.storeEmail && (

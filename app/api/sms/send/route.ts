@@ -25,10 +25,10 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    console.log('[SMS API ROUTE RECEIVED]', { recipient, senderid: senderid || senderId || 'GadgetCiti', messagesCount: messagesArray.length });
+    console.log('[SMS API ROUTE RECEIVED]', { recipient, senderid: senderid || senderId || 'TEQVAULT', messagesCount: messagesArray.length });
 
     const result = await sendSMS({
-      senderId: senderid || senderId || 'GadgetCiti', 
+      senderId: senderid || senderId || 'TEQVAULT', 
       messages: messagesArray
     });
 

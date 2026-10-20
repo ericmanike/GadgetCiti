@@ -7,7 +7,7 @@ interface ProductPageProps {
     params: Promise<{ slug: string }>;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.teqvault.com';
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
     const { slug } = await params;
@@ -19,16 +19,16 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     const mainImage = product.images?.[0] || `${siteUrl}/favicon.ico`;
 
     return {
-        title: `${product.name} | Gadget CITi`,
+        title: `${product.name} | TEQVAULT`,
         description: product.description,
         alternates: {
             canonical: pageUrl,
         },
         openGraph: {
-            title: `${product.name} | Gadget CITi`,
+            title: `${product.name} | TEQVAULT`,
             description: product.description,
             url: pageUrl,
-            siteName: 'Gadget CITi',
+            siteName: 'TEQVAULT',
             images: [{ url: mainImage, width: 800, height: 800, alt: product.name }],
             type: 'website',
         },
@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         description: product.description,
         brand: {
             '@type': 'Brand',
-            name: product.brand || 'Gadget CITi',
+            name: product.brand || 'TEQVAULT',
         },
         offers: {
             '@type': 'Offer',

@@ -9,16 +9,16 @@ import Image from 'next/image';
 
 import { fetchAllProducts, Product } from '@/lib/products';
 import { useEffect, useState } from 'react';
-import Pattern from '@/components/ui/Pattern';
 import { MonitorCog, Cable, ArrowRight, PackageX, Search } from 'lucide-react';
 import SkeletonCards from '@/components/SkeletonCards';
+import { CategoryRowsSection } from '@/components/CategoryRowsSection';
 
 const COMPUTER_SLIDES = [
 
    {
     id: 4,
     title: 'Partner With Us',
-    description: 'Grow your business on Gadgets CIti. Reach thousands of buyers with 0% commission options.',
+    description: 'Grow your business on TEQVAULT. Reach thousands of buyers with 0% commission options.',
     ctaText: 'Contact Us',
     ctaLink: '/contact',
     backgroundImage: '/Seller.jpg',
@@ -71,7 +71,7 @@ export default function Home() {
 
   return (
     <main className="w-full bg-slate-50 min-h-screen   overflow-x-hidden">
-      <HeroSlider slides={COMPUTER_SLIDES} />
+
   
       <div className="relative  z-10 px-4 md:px-10 space-y-10">
         
@@ -138,10 +138,7 @@ export default function Home() {
                 cursor-pointer select-none"
               >
                 <span className="font-black tracking-widest"> Shop Now!. </span>
-                
-                <div className="relative z-10 p-1.5 bg-white/20 rounded-xl group-hover/btn:bg-white/30 transition-colors">
-                  <MonitorCog className="w-5 h-5 group-hover/btn:rotate-45 transition-transform duration-500 ease-out" /> 
-                </div>
+
                 <ArrowRight className="relative z-10 w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-300" />
               </Link>
             </div>
@@ -152,7 +149,7 @@ export default function Home() {
         <section className="w-full">
           <div className="flex items-center justify-between mb-3 md:mb-4">
             <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
-              New Arrival
+            Top Selling
             </h2>
             {!loading && SPONSORED_GADGETS.length > 0 && (
               <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
@@ -176,41 +173,34 @@ export default function Home() {
             </div>
           )}
         </section>
-{/* 
-        
-        <section className="w-full overflow-hidden pb-10">
-          <div className="flex items-center justify-between mb-3 md:mb-4">
-            <h2 className="text-base md:text-2xl font-black text-slate-900 flex items-center gap-2 md:gap-3 uppercase">
-              Most Popular
-            </h2>
-            {!loading && RECOMMENDED_GADGETS.length > 0 && (
-              <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
-                View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-              </Link>
-            )}
-          </div>
-          {loading ? (
-            <SkeletonCards cols={4} rows={1} />
-          ) : RECOMMENDED_GADGETS.length > 0 ? (
-            <ProductScrollRow products={RECOMMENDED_GADGETS} />
-          ) : (
-            <div className="w-full py-12 px-4 rounded-2xl bg-white  shadow-lg flex flex-col items-center justify-center text-center my-2">
-              <div className="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-3">
-                <Search className="w-7 h-7 stroke-[1.75]" />
-              </div>
-              <h3 className="text-base md:text-lg font-bold text-slate-800">No products found</h3>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm">
-                There are currently no popular products available. Check back soon!
-              </p>
-            </div>
-          )}
-        </section> */}
+
+        {/* Category Rows: Each category title with its respective products */}
+        <CategoryRowsSection products={ALL_PRODUCTS} loading={loading} />
 
       </div>
 
-        <section className="relative overflow-hidden bg-[#632cf5] text-white py-16 lg:py-24">
-        {/* Decorative background gradients or patterns */}
-       
+      {/* Non-straight Wave / Curved Top Border */}
+      <div className="w-full overflow-hidden leading-none pointer-events-none -mb-1 mt-6">
+        <svg
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          className="w-full h-12 sm:h-20 md:h-28 block"
+        >
+          {/* Subtle accent depth wave */}
+          <path
+            d="M0,70 C360,10 600,100 900,40 C1140,0 1320,60 1440,40 L1440,120 L0,120 Z"
+            fill="#7b4bf7"
+            fillOpacity="0.4"
+          />
+          {/* Main solid wave matching section background */}
+          <path
+            d="M0,45 C280,105 520,15 760,65 C1000,115 1240,30 1440,65 L1440,120 L0,120 Z"
+            fill="#632cf5"
+          />
+        </svg>
+      </div>
+
+      <section className="relative overflow-hidden bg-[#632cf5] text-white py-16 lg:py-24">
 
         <div className="relative mx-auto w-[80%] px-2 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column (Text & Button) */}

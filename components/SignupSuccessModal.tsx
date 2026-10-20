@@ -26,8 +26,8 @@ const ConfettiParticle = ({ delay }: { delay: number }) => {
   const yEnd = -150 - Math.random() * 200;
   
   const colors = [
-    '#fbcb08', // Letronix yellow
-    '#fb923c', // Letronix orange
+    '#fbcb08', // TEQVAULT yellow
+    '#fb923c', // TEQVAULT orange
     '#3b82f6', // Premium blue
     '#10b981', // Success green
     '#ec4899', // Pink accent
@@ -282,7 +282,7 @@ export default function SignupSuccessModal({ isOpen, onClose, type, email, redir
 
                 <div className="space-y-2">
                   <h2 className="text-[22px] font-extrabold text-slate-900 tracking-tight">
-                    Welcome to Letronix!
+                    Welcome to TEQVAULT!
                   </h2>
                   <p className="text-sm font-medium text-slate-500 max-w-[280px] mx-auto leading-relaxed">
                     Your account has been successfully created.

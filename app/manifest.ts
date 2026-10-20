@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Gadget CITi',
-    short_name: 'Gadget CITi',
+    name: 'TEQVAULT',
+    short_name: 'TEQVAULT',
     description: 'A market for all your electronic and gadget needs',
     start_url: '/',
     display: 'standalone',

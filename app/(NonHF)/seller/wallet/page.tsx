@@ -89,7 +89,7 @@ export default function SellerWalletPage() {
     type: 'momo',
     networkOrBank: 'MTN Mobile Money',
     accountNumber: '054 123 4567',
-    accountName: 'Gadget CITi Store'
+    accountName: 'TEQVAULT Store'
   });
 
   // Form states
@@ -387,7 +387,7 @@ export default function SellerWalletPage() {
             </p>
           </div>
           <div className="text-[10px] text-gray-500 font-semibold flex items-center gap-1">
-            <ShieldCheck size={14} className="text-emerald-500" /> Protected by Letronix Escrow Guarantee
+            <ShieldCheck size={14} className="text-emerald-500" /> Protected by TEQVAULT Escrow Guarantee
           </div>
         </div>
 

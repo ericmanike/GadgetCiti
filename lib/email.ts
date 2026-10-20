@@ -55,7 +55,7 @@ export async function sendOrderConfirmationEmail({
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px;">
         <div style="text-align: center; padding-bottom: 20px; border-bottom: 2px solid #f8fafc;">
-          <h1 style="color: #FF6900; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Letronix</h1>
+          <h1 style="color: #FF6900; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">TEQVAULT</h1>
           <p style="color: #64748b; font-size: 14px; margin: 4px 0 0 0;">Order Confirmation & Receipt</p>
         </div>
 
@@ -91,18 +91,18 @@ export async function sendOrderConfirmationEmail({
 
         <div style="border-top: 1px solid #f1f5f9; padding-top: 20px; text-align: center; font-size: 12px; color: #94a3b8;">
           <p style="margin: 0 0 4px 0;">Need help with your order? Reply directly to this email or visit our support center.</p>
-          <p style="margin: 0;">© ${new Date().getFullYear()} Letronix. All rights reserved.</p>
+          <p style="margin: 0;">© ${new Date().getFullYear()} TEQVAULT. All rights reserved.</p>
         </div>
       </div>
     `;
 
     const fromAddress = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-    const sender = fromAddress.includes('<') ? fromAddress : `Letronix Orders <${fromAddress}>`;
+    const sender = fromAddress.includes('<') ? fromAddress : `TEQVAULT Orders <${fromAddress}>`;
 
     const { data, error } = await resend.emails.send({
       from: sender,
       to: [to],
-      subject: `Order Confirmation #${orderReference} - Letronix`,
+      subject: `Order Confirmation #${orderReference} - TEQVAULT`,
       html,
     });
 

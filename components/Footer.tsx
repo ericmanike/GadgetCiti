@@ -27,7 +27,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
                     {/* Brand Section */}
                     <div className="space-y-4 lg:col-span-2">
-                        <h3 className="text-3xl font-black text-white tracking-tighter font-outfit">Gadget's CITi</h3>
+                        <h3 className="text-3xl font-black text-white tracking-tighter font-outfit">TEQVAULT</h3>
                         <p className="text-base leading-relaxed text-gray-400 max-w-md">
                             Your trusted platform for authentic smartphones, laptops, tech accessories, device trade-ins, flexible financing, and professional IT repair services.
                         </p>
@@ -36,7 +36,7 @@ export default function Footer() {
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Twitter className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Instagram className="h-6 w-6" /></a>
                             <a href="#" className="text-orange-500 hover:text-white transition-colors"><Linkedin className="h-6 w-6" /></a>
-                            <a href="mailto:support@gadgetsciti.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
+                            <a href="mailto:support@teqvault.com" className="text-orange-500 hover:text-white transition-colors"><Mail className="h-6 w-6" /></a>
                         </div>
                     </div>
 
@@ -78,14 +78,14 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-orange-500 shrink-0" />
-                                <span>support@gadgetsciti.com</span>
+                                <span>support@teqvault.com</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
-                    <p>&copy; {new Date().getFullYear()} Gadget CITi. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} TEQVAULT. All rights reserved.</p>
                     <div className="flex gap-6 text-xs sm:text-sm font-medium text-white">
                         <span>Powered by Effinity Technologies Ltd</span>
                     </div>

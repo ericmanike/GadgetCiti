@@ -31,7 +31,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         if (user) {
             try {
                 // Check for un-synced items from localStorage before loading
-                const savedLocal = localStorage.getItem("gadgetciti-wishlist");
+                const savedLocal = localStorage.getItem("teqvault-wishlist") || localStorage.getItem("gadgetciti-wishlist");
                 if (savedLocal) {
                     try {
                         const localItems: Product[] = JSON.parse(savedLocal);
@@ -49,6 +49,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
                                     .upsert(inserts, { onConflict: "user_id,product_id" });
                             }
                         }
+                        localStorage.removeItem("teqvault-wishlist");
                         localStorage.removeItem("gadgetciti-wishlist");
                     } catch (e) {
                         console.error("Error syncing local wishlist to Supabase:", e);
@@ -82,7 +83,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
             }
         } else {
             // Load from localStorage for guests
-            const saved = localStorage.getItem("gadgetciti-wishlist");
+            const saved = localStorage.getItem("teqvault-wishlist") || localStorage.getItem("gadgetciti-wishlist");
             if (saved) {
                 try {
                     setWishlist(JSON.parse(saved));
@@ -104,7 +105,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     // Save to localStorage when unauthenticated
     useEffect(() => {
         if (isMounted && !user) {
-            localStorage.setItem("gadgetciti-wishlist", JSON.stringify(wishlist));
+            localStorage.setItem("teqvault-wishlist", JSON.stringify(wishlist));
         }
     }, [wishlist, isMounted, user]);
 

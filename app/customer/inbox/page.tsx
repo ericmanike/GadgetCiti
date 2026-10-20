@@ -17,7 +17,7 @@ export default function InboxPage() {
                 </div>
                 <h2 className="text-lg font-bold text-slate-900 mb-1.5">You have no messages</h2>
                 <p className="text-slate-500 text-sm max-w-md leading-relaxed">
-                    Here you will find all the communications from Gadget CITi about your orders and account.
+                    Here you will find all the communications from TEQVAULT about your orders and account.
                 </p>
             </div>
         </div>

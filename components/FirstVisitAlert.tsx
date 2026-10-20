@@ -55,7 +55,7 @@ export const FirstVisitPopup: React.FC = () => {
                 </button>
                 <div className="text-4xl mb-3">🛒  💻 🎧</div>
                 <h2 className="text-2xl font-black text-white leading-tight">
-                  Welcome to<br />Gadget's CITi!
+                  Welcome to<br />TEQVAULT!
                 </h2>
                 <p className="text-orange-100 text-sm mt-1 font-medium">
                   Find the best tech for your home or office

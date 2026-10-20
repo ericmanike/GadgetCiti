@@ -3,25 +3,25 @@ import { ShieldCheck, Scale, AlertCircle, FileText, CreditCard, Truck, RefreshCw
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.teqvault.com';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Gadget CITi',
-  description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+  title: 'Terms of Service | TEQVAULT',
+  description: 'Read the Terms of Service for TEQVAULT regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
   alternates: {
     canonical: `${siteUrl}/terms`,
   },
   openGraph: {
-    title: 'Terms of Service | Gadget CITi',
-    description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+    title: 'Terms of Service | TEQVAULT',
+    description: 'Read the Terms of Service for TEQVAULT regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
     url: `${siteUrl}/terms`,
-    siteName: 'Gadget CITi',
+    siteName: 'TEQVAULT',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Terms of Service | Gadget CITi',
-    description: 'Read the Terms of Service for Gadget CITi regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
+    title: 'Terms of Service | TEQVAULT',
+    description: 'Read the Terms of Service for TEQVAULT regarding online electronics purchases, device trade-ins, Pay Small Small financing, warranties, and delivery in Ghana.',
   },
 };
 
@@ -51,7 +51,7 @@ export default function TermsOfServicePage() {
             <AlertCircle className="w-5 h-5" />
           </div>
           <div className="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
-            <p className="font-extrabold text-slate-900 text-base">Welcome to Gadget CITi</p>
+            <p className="font-extrabold text-slate-900 text-base">Welcome to TEQVAULT</p>
             <p>
               By accessing our platform, purchasing consumer electronics, using our "Pay Small Small" financing, or sending devices for trade-in/repairs, you agree to be bound by these Terms of Service. Please review them carefully before placing an order.
             </p>
@@ -68,7 +68,7 @@ export default function TermsOfServicePage() {
               <h2 className="text-xl font-bold text-slate-900">General & Business Overview</h2>
             </div>
             <p className="text-slate-600">
-              Gadget CITi (also operating as CITi Hub) is a registered consumer electronics retail and services firm in Ghana. We specialize in flagship smartphones, laptops, tablets, IT hardware, trade-in programs, and installment financing solutions.
+              TEQVAULT is a registered consumer electronics retail and services firm in Ghana. We specialize in flagship smartphones, laptops, tablets, IT hardware, trade-in programs, and installment financing solutions.
             </p>
             <p className="text-slate-600">
               By engaging our platform, you affirm that you are at least 18 years old or operating under legal parental consent.
@@ -113,7 +113,7 @@ export default function TermsOfServicePage() {
             </div>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
               <li><strong>Brand New Products:</strong> Covered by standard manufacturer warranties covering factory defects up to 12 months.</li>
-              <li><strong>Refurbished / Pre-owned Products:</strong> Covered by a 6-month Gadget CITi functional store warranty. Physical drop damage, liquid intrusion, or third-party repair attempts void the warranty.</li>
+              <li><strong>Refurbished / Pre-owned Products:</strong> Covered by a 6-month TEQVAULT functional store warranty. Physical drop damage, liquid intrusion, or third-party repair attempts void the warranty.</li>
             </ul>
           </section>
 
@@ -124,7 +124,7 @@ export default function TermsOfServicePage() {
               <h2 className="text-xl font-bold text-slate-900">Trade-In & Seller Regulations</h2>
             </div>
             <p className="text-slate-600">
-              Sellers trading devices with Gadget CITi guarantee legal ownership. All iCloud, Google, and Samsung accounts must be removed prior to device valuation.
+              Sellers trading devices with TEQVAULT guarantee legal ownership. All iCloud, Google, and Samsung accounts must be removed prior to device valuation.
             </p>
           </section>
 
@@ -142,8 +142,8 @@ export default function TermsOfServicePage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base text-white">Contact Us</h3>
-            <p className="text-xs text-white">Gadget CITi | Ghana</p>
-            <p className="text-xs text-white">Email: support@gadgetsciti.com | Phone: 0543442518</p>
+            <p className="text-xs text-white">TEQVAULT | Ghana</p>
+            <p className="text-xs text-white">Email: support@teqvault.com | Phone: 0543442518</p>
           </div>
 
         </div>

@@ -53,10 +53,10 @@ const CustomerSidebar = () => {
                 {/* Header */}
                 <div className="flex items-center space-x-3 pb-6 border-b border-gray-150 shrink-0">
                     <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-lg tracking-wider shadow-lg shadow-orange-500/30">
-                        C
+                        T
                     </div>
                     <span className="font-black text-xl text-slate-900 tracking-widest uppercase">
-                        Gadget CITi<span className="text-orange-500 text-xs font-bold block leading-none">MY ACCOUNT</span>
+                        TEQVAULT<span className="text-orange-500 text-xs font-bold block leading-none">MY ACCOUNT</span>
                     </span>
                 </div>
 

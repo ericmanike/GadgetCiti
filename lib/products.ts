@@ -10,6 +10,7 @@ export interface Product {
     oldPrice?: number;
     brand: string;
     category: string;
+    categorySlug?: string;
     images: string[];
     inStock: boolean;
     stock: number;
@@ -21,12 +22,31 @@ export interface Product {
     createdAt?: string;
 }
 
+export interface DBCategory {
+    id: string | number;
+    name: string;
+    slug: string;
+}
+
+export async function fetchCategories(): Promise<DBCategory[]> {
+    const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+        .order('id');
+
+    if (error || !data) {
+        console.error("Error fetching categories:", error?.message || error);
+        return [];
+    }
+    return data;
+}
+
 export async function fetchAllProducts(): Promise<Product[]> {
     const { data, error } = await supabase
         .from('products')
         .select(`
             id, name, brand, price, discount, stock, over_view, created_at,
-            categories(name),
+            categories(id, name, slug),
             product_images(image_url),
             reviews(rating)
         `);
@@ -48,7 +68,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
             .from('products')
             .select(`
                 id, name, brand, price, discount, stock, over_view, created_at,
-                categories(name),
+                categories(id, name, slug),
                 product_images(image_url),
                 reviews(rating)
             `)
@@ -132,6 +152,7 @@ export function mapDBProductToClient(row: any): Product {
         oldPrice: calculatedOldPrice,
         brand: row.brand || "Unbranded",
         category: row.categories?.name || "Uncategorized",
+        categorySlug: row.categories?.slug || (row.categories?.name ? row.categories.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : undefined),
         images: images.length > 0 ? images : ["https://placehold.co/800?text=photo+unavailable&font=roboto"],
         inStock: Number(row.stock || 0) > 0,
         stock: Number(row.stock || 0),

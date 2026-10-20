@@ -3,25 +3,25 @@ import { ShieldCheck, Lock, Eye, Database, Server, UserCheck, Mail, ArrowRight, 
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.teqvault.com';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Gadget CITi',
-  description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+  title: 'Privacy Policy | TEQVAULT',
+  description: 'Learn how TEQVAULT collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
   alternates: {
     canonical: `${siteUrl}/privacy`,
   },
   openGraph: {
-    title: 'Privacy Policy | Gadget CITi',
-    description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+    title: 'Privacy Policy | TEQVAULT',
+    description: 'Learn how TEQVAULT collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
     url: `${siteUrl}/privacy`,
-    siteName: 'Gadget CITi',
+    siteName: 'TEQVAULT',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Privacy Policy | Gadget CITi',
-    description: 'Learn how Gadget CITi collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
+    title: 'Privacy Policy | TEQVAULT',
+    description: 'Learn how TEQVAULT collects, protects, and handles your personal data, transaction information, and privacy when shopping for electronics online.',
   },
 };
 
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
           <div className="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
             <p className="font-extrabold text-slate-900 text-base">Your Data Security Commitment</p>
             <p>
-              At Gadget CITi, we safeguard your personal data strictly in accordance with Ghana's Data Protection Act, 2012 (Act 843). We do not sell or monetize your personal information.
+              At TEQVAULT, we safeguard your personal data strictly in accordance with Ghana's Data Protection Act, 2012 (Act 843). We do not sell or monetize your personal information.
             </p>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
                 Zero Sensitive Payment Storage:
               </p>
               <p className="mt-1 text-slate-700">
-                Gadget CITi never stores, sees, or logs raw credit card numbers or Mobile Money PINs. All authorization takes place directly within Paystack’s encrypted network.
+                TEQVAULT never stores, sees, or logs raw credit card numbers or Mobile Money PINs. All authorization takes place directly within Paystack’s encrypted network.
               </p>
             </div>
           </section>
@@ -123,8 +123,8 @@ export default function PrivacyPolicyPage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base ">Support Desk</h3>
-            <p className="text-xs ">Gadget CITi | Ghana</p>
-            <p className="text-xs ">Email: support@gadgetsciti.com | Phone: 054 344 2518</p>
+            <p className="text-xs ">TEQVAULT | Ghana</p>
+            <p className="text-xs ">Email: support@teqvault.com | Phone: 054 344 2518</p>
           </div>
 
         </div>

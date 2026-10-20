@@ -1,7 +1,7 @@
 {
-  "name": "Recyco",
-  "short_name": "Recyco",
-  "description": "A smart waste management platform",
+  "name": "TEQVAULT",
+  "short_name": "TEQVAULT",
+  "description": "Your trusted platform for quality gadgets, electronics, and accessories",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

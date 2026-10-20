@@ -61,7 +61,7 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
       });
 
       const link = document.createElement('a');
-      link.download = `GadgetsCiti-Receipt-ORD-${order.id.substring(0, 8)}.png`;
+      link.download = `TEQVAULT-Receipt-ORD-${order.id.substring(0, 8)}.png`;
       link.href = dataUrl;
       link.click();
 
@@ -107,10 +107,10 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
                Official Receipt 
               </h2>
               <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                 Gadget's CITi 
+                 TEQVAULT 
               </p>
               <p className="text-[10px] text-slate-600 font-semibold">
-                Ghana • support@gadgetsciti.com
+                Ghana • support@teqvault.com
               </p>
             </div>
 
@@ -203,7 +203,7 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
                 *{order.id.slice(0, 12).toUpperCase()}*
               </p>
               <p className="text-[10px] text-slate-500 font-semibold leading-tight pt-1">
-                Thank you for shopping with Gadget's CITi!<br />
+                Thank you for shopping with TEQVAULT!<br />
                 Keep this receipt for warranty claims.
               </p>
             </div>

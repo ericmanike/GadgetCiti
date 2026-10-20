@@ -59,13 +59,13 @@ export default function AboutPage() {
             transition={{ duration: 0.4 }}
           >
             <span className="inline-block px-4 py-1.5 bg-orange-100 text-orange-600 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-              About Gadget CITi
+              About TEQVAULT
             </span>
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight font-outfit">
               Your Complete Hub for Electronics & Professional IT Solutions
             </h1>
             <p className="text-slate-600 text-base md:text-lg leading-relaxed font-medium mt-4">
-              Gadget CITi (CITi Hub) is a premier Ghanaian electronics retailer and tech service provider located in Kumasi, KNUST. We bridge the gap between quality technology and everyday affordability through curated products, trade-in programs, and flexible payment plans.
+              TEQVAULT is a premier Ghanaian electronics retailer and tech service provider located in Kumasi, KNUST. We bridge the gap between quality technology and everyday affordability through curated products, trade-in programs, and flexible payment plans.
             </p>
           </motion.div>
         </section>
@@ -127,7 +127,7 @@ export default function AboutPage() {
         <section className="bg-white p-8 md:p-12 rounded-3xl border border-slate-200 shadow-sm space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 uppercase">
-              Why Customers Choose Gadget CITi
+              Why Customers Choose TEQVAULT
             </h2>
             <p className="text-slate-500 text-sm">
               Built on integrity, technical expertise, and customer satisfaction.
@@ -157,7 +157,7 @@ export default function AboutPage() {
             <div className="flex flex-wrap gap-4 pt-2 justify-center md:justify-start text-xs font-semibold text-white">
               <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Ghana</span>
               <span className="flex items-center gap-1.5"><Phone className="w-4 h-4" /> 054 344 2518</span>
-              <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> support@gadgetsciti.com</span>
+              <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> support@teqvault.com</span>
             </div>
           </div>
 

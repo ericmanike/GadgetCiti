@@ -21,7 +21,7 @@ export interface SMSResponse {
  // Reusable SMS Sender for Moolre API
 
 export async function sendSMS({
-  senderId = process.env.MOOLRE_DEFAULT_SENDER_ID || 'GadgetCiti',
+  senderId = process.env.MOOLRE_DEFAULT_SENDER_ID || 'TEQVAULT',
   messages
 }: SendSMSOptions): Promise<SMSResponse> {
   const env = process.env.NEXT_PUBLIC_MOOLRE_ENVIRONMENT || 'live';
@@ -107,7 +107,7 @@ export async function sendSingleSMS(
   recipient: string,
   message: string,
   ref?: string,
-  senderId = 'GadgetCiti'
+  senderId = 'TEQVAULT'
 ): Promise<SMSResponse> {
   return sendSMS({
     senderId,
@@ -120,7 +120,7 @@ export async function sendSingleSMS(
 export async function sendBulkSMS<T extends { phone: string; name?: string }>(
   users: T[],
   messageGenerator: (user: T) => string,
-  senderId = 'GadgetCiti'
+  senderId = 'TEQVAULT'
 ): Promise<SMSResponse> {
   const messages: SMSMessageItem[] = users.map(user => ({
     recipient: user.phone,

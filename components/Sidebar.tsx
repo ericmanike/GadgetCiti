@@ -85,7 +85,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
 
 
       <div className="w-full p-4 px-5 flex items-center justify-between border-b border-slate-100 shadow-sm shrink-0">
-        <span className="text-gray-800 text-[16px] font-bold logo tracking-wide">GadgetCITi</span>
+        <span className="text-gray-800 text-[16px] font-bold logo tracking-wide">TEQVAULT</span>
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}

@@ -85,7 +85,7 @@ export default function OrdersPage() {
             name: item.products?.name || 'Gadget Product',
             price: Number(item.price) || 0,
             quantity: Number(item.quantity) || 1,
-            brand: item.products?.brand || 'Gadgets Citi',
+            brand: item.products?.brand || 'TEQVAULT',
             image: item.products?.product_images?.[0]?.image_url || ''
           }))
         }));

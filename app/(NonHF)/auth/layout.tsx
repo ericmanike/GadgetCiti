@@ -4,8 +4,8 @@ import { HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login/Signup - Gadget's CITi",
-  description: "Sign in or create a free account with Gadget's CITi. Start your mobile data agent business or buy bundles directly.",
+  title: "Login/Signup - TEQVAULT",
+  description: "Sign in or create a free account with TEQVAULT. Start your mobile data agent business or buy bundles directly.",
 };
 
 interface AuthLayoutProps {
@@ -23,7 +23,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             className="group cursor-pointer select-none"
           >
             <span className="text-2xl font-extrabold text-slate-900 tracking-tight logo">
-              Gadget's CITi
+              TEQVAULT
             </span>
           </Link>
         </div>
@@ -42,7 +42,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             Need help? Watch how to log in
           </Link>
           <span className="text-xs text-slate-400 font-medium">
-            © {new Date().getFullYear()} Gadget's CITi
+            © {new Date().getFullYear()} TEQVAULT
           </span>
         </div>
       </div>

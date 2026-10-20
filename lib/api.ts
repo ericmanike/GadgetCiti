@@ -1,5 +1,5 @@
 /**
- * Letronix API Client Library
+ * TEQVAULT API Client Library
  * Complete client for all Express Backend API endpoints
  */
 
@@ -10,7 +10,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/a
  */
 export function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
-  return localStorage.getItem('letronix_auth_token');
+  return localStorage.getItem('teqvault_auth_token') || localStorage.getItem('letronix_auth_token');
 }
 
 /**
@@ -18,7 +18,7 @@ export function getAuthToken(): string | null {
  */
 export function setAuthToken(token: string): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('letronix_auth_token', token);
+    localStorage.setItem('teqvault_auth_token', token);
   }
 }
 
@@ -27,6 +27,7 @@ export function setAuthToken(token: string): void {
  */
 export function removeAuthToken(): void {
   if (typeof window !== 'undefined') {
+    localStorage.removeItem('teqvault_auth_token');
     localStorage.removeItem('letronix_auth_token');
   }
 }

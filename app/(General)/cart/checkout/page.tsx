@@ -72,8 +72,8 @@ export default function CheckoutPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     recipient: phone,
-                    message: `Hi ${customerName || 'Valued Customer'}, your order of GHS ${orderTotal.toFixed(2)} at Gadget's CITi has been confirmed! Thank you for shopping with us.`,
-                    senderid: 'GadgetCiti'
+                    message: `Hi ${customerName || 'Valued Customer'}, your order of GHS ${orderTotal.toFixed(2)} at TEQVAULT has been confirmed! Thank you for shopping with us.`,
+                    senderid: 'TEQVAULT'
                 })
             });
             const data = await res.json();
@@ -126,7 +126,7 @@ export default function CheckoutPage() {
         setIsPaying(true);
 
         const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY!;
-        const reference = `gadgetciti-${Date.now()}`;
+        const reference = `teqvault-${Date.now()}`;
 
         try {
             const PaystackPop = (await import('@paystack/inline-js')).default;
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
                     </div>
                     <h1 className="text-2xl font-black text-gray-900 mb-2">Order Placed! 🎉</h1>
                     <p className="text-gray-500 text-sm mb-6">
-                        Thank you for shopping with <span className="font-bold text-orange-500">Gadget's CITi</span>.<br />
+                        Thank you for shopping with <span className="font-bold text-orange-500">TEQVAULT</span>.<br />
                         Your order is being processed and you'll receive a confirmation shortly.
                     </p>
                     <p className="text-xs font-black tracking-widest text-gray-400 uppercase mb-1">Order Total</p>

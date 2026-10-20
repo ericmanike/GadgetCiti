@@ -18,12 +18,12 @@ export async function POST(req: Request) {
         }
 
         const fromAddress = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-        const sender = fromAddress.includes("<") ? fromAddress : `Letronix Contact <${fromAddress}>`;
+        const sender = fromAddress.includes("<") ? fromAddress : `TEQVAULT Contact <${fromAddress}>`;
 
         const { data, error } = await resend.emails.send({
             from: sender,
             to: ["manikeeric@gmail.com"],
-            subject: subject ? `[Letronix Contact] ${subject} - ${name}` : `New Contact Form Submission from ${name}`,
+            subject: subject ? `[TEQVAULT Contact] ${subject} - ${name}` : `New Contact Form Submission from ${name}`,
             html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
                     <h2 style="color: #FF6900; margin-top: 0;">New Contact Message</h2>
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
                     </div>
 
                     <p style="font-size: 12px; color: #999; margin-top: 30px; text-align: center;">
-                        This email was sent from the Letronix contact form.
+                        This email was sent from the TEQVAULT contact form.
                     </p>
                 </div>
             `,

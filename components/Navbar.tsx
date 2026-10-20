@@ -81,7 +81,7 @@ const Navbar = () => {
             </button>
             <Link href="/" className="flex items-center gap-2 md:gap-2.5 group cursor-pointer select-none">
 
-              <span className="text-2xl font-extrabold text-gray-800 logo">Gadget's CITi</span>
+              <span className="text-2xl font-extrabold text-gray-800 logo">TEQVAULT</span>
             </Link>
           </div>
 
@@ -105,7 +105,7 @@ const Navbar = () => {
                       setIsSearchOpen(true);
                     }}
                     onFocus={() => setIsSearchOpen(true)}
-                    placeholder="Search in Gadget's CITi ..."
+                    placeholder="Search in TEQVAULT ..."
                     className="no-border w-full h-11 md:h-12 pl-5 md:pl-6 pr-11 md:pr-12 bg-transparent outline-none placeholder:text-gray-400 text-slate-800 text-[15px] md:text-base rounded-full focus:outline-none focus:ring-0"
                   />
                   <div className="absolute right-3.5 md:right-4 flex items-center">

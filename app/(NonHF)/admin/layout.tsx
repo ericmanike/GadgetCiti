@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             A
           </div>
           <span className="font-black text-xl text-slate-900 tracking-widest uppercase">
-            Gadget CITi<span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
+            TEQVAULT<span className="text-orange-500 text-xs font-bold block leading-none">ADMIN PANEL</span>
           </span>
         </div>
 
@@ -213,7 +213,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black text-sm tracking-wider">
             A
           </div>
-          <span className="font-black text-md text-slate-900 tracking-widest">GADGET CITI ADMIN</span>
+          <span className="font-black text-md text-slate-900 tracking-widest">TEQVAULT ADMIN</span>
         </div>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
@@ -234,7 +234,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-4 border-b border-gray-150">
-              <span className="font-black text-slate-900 tracking-wider">GADGET CITI ADMIN</span>
+              <span className="font-black text-slate-900 tracking-wider">TEQVAULT ADMIN</span>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
                 className="text-gray-400 hover:text-gray-600"

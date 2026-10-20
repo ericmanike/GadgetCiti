@@ -3,25 +3,25 @@ import { RefreshCw, CheckCircle, Clock, AlertTriangle, ShieldCheck, HelpCircle, 
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.gadgetsciti.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.teqvault.com';
 
 export const metadata: Metadata = {
-  title: 'Return & Refund Policy | Gadget CITi',
-  description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+  title: 'Return & Refund Policy | TEQVAULT',
+  description: 'Review the Return and Refund Policy for TEQVAULT. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
   alternates: {
     canonical: `${siteUrl}/refund-policy`,
   },
   openGraph: {
-    title: 'Return & Refund Policy | Gadget CITi',
-    description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+    title: 'Return & Refund Policy | TEQVAULT',
+    description: 'Review the Return and Refund Policy for TEQVAULT. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
     url: `${siteUrl}/refund-policy`,
-    siteName: 'Gadget CITi',
+    siteName: 'TEQVAULT',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Return & Refund Policy | Gadget CITi',
-    description: 'Review the Return and Refund Policy for Gadget CITi. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
+    title: 'Return & Refund Policy | TEQVAULT',
+    description: 'Review the Return and Refund Policy for TEQVAULT. Information on returns, replacements, warranty claims, and refund timelines for electronics.',
   },
 };
 
@@ -50,7 +50,7 @@ export default function RefundPolicyPage() {
           <div className="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-1">
             <p className="font-extrabold text-slate-900 text-base">7-Day Hassle-Free Returns</p>
             <p>
-              If your device arrives with factory defects, transit damage, or does not match your ordered specifications, Gadget CITi offers a straightforward 7-day return or exchange policy.
+              If your device arrives with factory defects, transit damage, or does not match your ordered specifications, TEQVAULT offers a straightforward 7-day return or exchange policy.
             </p>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function RefundPolicyPage() {
           {/* Contact Box */}
           <div className="p-6 bg-orange-500 text-white rounded-2xl space-y-2">
             <h3 className="font-bold text-base "> For Returns</h3>
-            <p className="text-xs ">Call Support: 054 344 2518 | Email: support@gadgetsciti.com</p>
+            <p className="text-xs ">Call Support: 054 344 2518 | Email: support@teqvault.com</p>
 
           </div>
 

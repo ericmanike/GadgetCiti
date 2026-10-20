@@ -26,13 +26,13 @@ export interface PaySmallSmallPlan {
     payments: PaymentRecord[];
 }
 
-const LOCAL_STORAGE_PREFIX = 'gadgetciti-pay-small-small-';
+const LOCAL_STORAGE_PREFIX = 'teqvault-pay-small-small-';
 
 // Local storage helpers
 function getLocalPlans(userId: string): PaySmallSmallPlan[] {
     if (typeof window === 'undefined') return [];
     try {
-        const data = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${userId}`);
+        const data = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${userId}`) || localStorage.getItem(`gadgetciti-pay-small-small-${userId}`);
         return data ? JSON.parse(data) : [];
     } catch (e) {
         console.error('Failed to parse local plans:', e);
