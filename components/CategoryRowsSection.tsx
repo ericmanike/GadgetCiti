@@ -143,7 +143,7 @@ export function CategoryRowsSection({
             group/btn relative inline-flex items-center justify-center gap-3.5 
             px-8 md:px-10 py-3.5 md:py-4 
             bg-orange-500 hover:bg-orange-600
-            text-white rounded-2xl
+            text-white rounded-full
             font-black text-sm md:text-base uppercase tracking-wider
             transition-all duration-300 shadow-lg shadow-orange-500/25
             hover:shadow-xl hover:shadow-orange-500/35

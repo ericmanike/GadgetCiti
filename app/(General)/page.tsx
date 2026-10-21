@@ -128,16 +128,17 @@ export default function Home() {
                 href="/buy"
                 className="
                 group/btn relative inline-flex items-center justify-center gap-3.5 
-                px-8 md:px-10 py-3.5 md:py-4 
+                px-8 md:px-10 py-3.5 md:py-4  
                 bg-orange-500 hover:bg-orange-600
-                text-white rounded-2xl
+                text-white rounded-full
                 font-black text-sm md:text-base uppercase tracking-wider
                 transition-all duration-300 shadow-lg shadow-orange-500/25
                 hover:shadow-xl hover:shadow-orange-500/35
                 hover:scale-[1.02] active:scale-[0.98]
-                cursor-pointer select-none"
+                cursor-pointer select-none "
+                
               >
-                <span className="font-black tracking-widest"> Shop Now!. </span>
+                <span className="font-black tracking-widest"> Start Shopping!. </span>
 
                 <ArrowRight className="relative z-10 w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-300" />
               </Link>
