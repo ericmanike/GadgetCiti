@@ -66,8 +66,8 @@ export default function Home() {
 
   // Basic slice partitioning for demo since ID is now dynamic from DB
   const SPONSORED_GADGETS = ALL_PRODUCTS.slice(0, 6);
-  const LATEST_GADGETS = ALL_PRODUCTS.length > 6 ? ALL_PRODUCTS.slice(6, 10) : ALL_PRODUCTS.slice(0, 4);
-  const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
+  // const LATEST_GADGETS = ALL_PRODUCTS.length > 6 ? ALL_PRODUCTS.slice(6, 10) : ALL_PRODUCTS.slice(0, 4);
+  // const RECOMMENDED_GADGETS = ALL_PRODUCTS.length > 10 ? ALL_PRODUCTS.slice(10, 16) : ALL_PRODUCTS.slice(0, 6);
 
   return (
     <main className="w-full bg-slate-50 min-h-screen   overflow-x-hidden">
