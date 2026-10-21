@@ -163,7 +163,7 @@ export default function AboutPage() {
 
           <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full sm:w-auto">
             <Link
-              href="/buy"
+              href="/shop"
               className="px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold text-center uppercase tracking-wider transition-all"
             >
               Browse Shop

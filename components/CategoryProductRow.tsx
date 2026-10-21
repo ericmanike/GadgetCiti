@@ -11,7 +11,7 @@ interface CategoryProductRowProps {
   title: string;
   /** Category slug used for View All URL */
   slug?: string;
-  /** Custom View All link (overrides default /buy?category=...) */
+  /** Custom View All link (overrides default /shop?category=...) */
   viewAllHref?: string;
   /** Products belonging to this category */
   products: Product[];
@@ -38,7 +38,7 @@ export function CategoryProductRow({
 
   const targetLink =
     viewAllHref ||
-    `/buy?category=${encodeURIComponent(slug || title.toLowerCase().trim())}`;
+    `/shop?category=${encodeURIComponent(slug || title.toLowerCase().trim())}`;
 
   // Check scroll position to dynamically show/hide scroll arrows
   const checkScroll = () => {

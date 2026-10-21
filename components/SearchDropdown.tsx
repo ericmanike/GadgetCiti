@@ -112,7 +112,7 @@ export default function SearchDropdown({
                         {results.length > 0 && (
                             <div className="border-t border-gray-100 px-4 py-3">
                                 <Link
-                                    href={`/buy?search=${encodeURIComponent(query)}`}
+                                    href={`/shop?search=${encodeURIComponent(query)}`}
                                     onClick={onClose}
                                     className="flex items-center justify-center gap-1.5 text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors"
                                 >

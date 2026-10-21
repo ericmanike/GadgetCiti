@@ -150,7 +150,7 @@ export default function OrdersPage() {
             <p className="text-xs md:text-sm text-slate-600 mb-6 max-w-sm leading-relaxed">
               All your placed orders and receipts will appear here so you can track delivery progress.
             </p>
-            <Link href="/buy">
+            <Link href="/shop">
               <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl text-xs md:text-sm font-bold uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer">
                 Start Shopping Now
               </button>

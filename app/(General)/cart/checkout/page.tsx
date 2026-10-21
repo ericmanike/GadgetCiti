@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                         <button onClick={()=>{clearCart(); router.push('/customer/orders'); }} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl transition-all">
                           Track My Order
                         </button>
-                        <button onClick={()=>{clearCart(); router.push('/buy'); }} className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
+                        <button onClick={()=>{clearCart(); router.push('/shop'); }} className="w-full border border-gray-200 text-gray-700 font-bold py-3 rounded-2xl hover:bg-gray-50 transition-all">
                             Continue Shopping
                         </button>
                     </div>

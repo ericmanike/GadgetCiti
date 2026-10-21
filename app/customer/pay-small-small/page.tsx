@@ -95,7 +95,7 @@ export default function PaySmallSmallPage() {
                         {/* Actions */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6">
                             <Link
-                                href="/buy"
+                                href="/shop"
                                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 transition-all hover:scale-[1.02] active:scale-[0.98] select-none"
                             >
                                 <ShoppingBag className="w-4 h-4" />

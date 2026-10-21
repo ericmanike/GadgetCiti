@@ -91,7 +91,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <nav className="flex items-center gap-2 text-[12px] md:text-[16px] md:text-sm text-gray-500 font-medium">
                 <Link href="/" className="hover:text-blue-600">Home</Link>
                 <ChevronRight size={12} />
-                <Link href="/buy" className="hover:text-blue-600">Shop now</Link>
+                <Link href="/shop" className="hover:text-blue-600">Shop now</Link>
                 <ChevronRight size={12} />
                 <span className="text-gray-900 truncate">{product.name}</span>
             </nav>
@@ -211,7 +211,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 <div className="lg:col-span-6 flex flex-col gap-6">
                     <div className="flex flex-col gap-1.5">
                         <div className="flex items-start justify-between">
-                            <Link href={`/buy?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
+                            <Link href={`/shop?brand=${product.brand}`} className="text-slate-700 text-xs font-black uppercase tracking-widest hover:underline">
                                 {product.brand}
                             </Link>
                           
@@ -409,7 +409,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <section className="flex flex-col gap-8">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl md:text-3xl font-black text-gray-900 uppercase">You May Also Like</h2>
-                    <Link href="/buy" className="text-orange-500 font-black text-xs uppercase hover:underline">Explore More</Link>
+                    <Link href="/shop" className="text-orange-500 font-black text-xs uppercase hover:underline">Explore More</Link>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                     {relatedProducts.map((p) => (

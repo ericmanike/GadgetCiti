@@ -95,7 +95,7 @@ const CustomerSidebar = () => {
                 </div>
 
                 <Link
-                    href="/buy"
+                    href="/shop"
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-slate-700 hover:text-orange-500 hover:bg-slate-50 transition-colors uppercase font-bold tracking-wider cursor-pointer border border-gray-200 rounded-xl"
                 >
                     <ArrowLeft size={14} className="text-[#1E2939]" />

@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: 'Shop Quality Phones, Laptops & Accessories | TEQVAULT',
   description: 'Browse and buy quality iPhones, Android smartphones, laptops, audio gadgets, and electronic accessories at affordable prices on TEQVAULT.',
   alternates: {
-    canonical: `${siteUrl}/buy`,
+    canonical: `${siteUrl}/shop`,
   },
   openGraph: {
     title: 'Shop Quality Phones, Laptops & Accessories | TEQVAULT',
     description: 'Browse and buy quality iPhones, Android smartphones, laptops, audio gadgets, and electronic accessories at affordable prices on TEQVAULT.',
-    url: `${siteUrl}/buy`,
+    url: `${siteUrl}/shop`,
     siteName: 'TEQVAULT',
     type: 'website',
   },

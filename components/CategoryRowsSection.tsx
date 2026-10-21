@@ -138,7 +138,7 @@ export function CategoryRowsSection({
       {/* Centered Explore More Button */}
       <div className="flex justify-center pt-8 md:pt-14 pb-4 md:pb-8">
         <Link
-          href="/buy"
+          href="/shop"
           className="
             group/btn relative inline-flex items-center justify-center gap-3.5 
             px-8 md:px-10 py-3.5 md:py-4 

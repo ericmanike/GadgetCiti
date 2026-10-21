@@ -102,7 +102,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       const lower = query.toLowerCase();
       if (lower.includes('falaa') || lower.includes('deal') || lower.includes('discount') || lower.includes('sale')) {
         aiResponseText = "🔥 Check out our Falaa Deals! We have products discounted up to 30% off across laptops, smartphones, and accessories.";
-        actionLink = { label: 'View Falaa Deals', href: '/buy?deals=true' };
+        actionLink = { label: 'View Falaa Deals', href: '/shop?deals=true' };
       } else if (lower.includes('pay small') || lower.includes('installment') || lower.includes('layaway') || lower.includes('finance')) {
         aiResponseText = "💳 With Pay Small Small, you can reserve any gadget with a flexible down payment and pay the balance in easy installments!";
         actionLink = { label: 'Explore Pay Small Small', href: '/customer/pay-small-small' };
@@ -117,7 +117,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
         actionLink = { label: 'Contact Page', href: '/contact' };
       } else if (lower.includes('phone') || lower.includes('laptop') || lower.includes('buy') || lower.includes('gadget')) {
         aiResponseText = "⚡ Explore our vast catalog of verified laptops, smartphones, audio, and accessories!";
-        actionLink = { label: 'Browse Products', href: '/buy' };
+        actionLink = { label: 'Browse Products', href: '/shop' };
       }
 
       const aiMsg: Message = {

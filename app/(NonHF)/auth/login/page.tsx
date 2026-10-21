@@ -29,8 +29,8 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   // Read and sanitize redirect URL
-  const rawRedirectTo = searchParams.get("redirectTo") || "/buy";
-  const redirectTo = (rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")) ? rawRedirectTo : "/buy";
+  const rawRedirectTo = searchParams.get("redirectTo") || "/shop";
+  const redirectTo = (rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")) ? rawRedirectTo : "/shop";
 
   const handleGoogleAuth = async () => {
     setIsGoogleLoading(true);

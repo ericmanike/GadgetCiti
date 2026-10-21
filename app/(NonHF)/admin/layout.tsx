@@ -141,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Sign Out
             </button>
             <button
-              onClick={() => router.push('/buy')}
+              onClick={() => router.push('/shop')}
               className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl transition duration-200 shadow-lg shadow-orange-500/20 cursor-pointer"
             >
               Go to Store

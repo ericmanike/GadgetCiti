@@ -28,7 +28,7 @@ const COMPUTER_SLIDES = [
     title: 'High-Performance Workstations',
     description: 'Powerful setups for creators, developers,gamers and power users.',
     ctaText: 'Shop Workstations',
-    ctaLink: '/buy?category=computers',
+    ctaLink: '/shop?category=computers',
     backgroundImage: '/officeSet.jpg',
   },
   {
@@ -36,7 +36,7 @@ const COMPUTER_SLIDES = [
     title: 'iPhone & Latest Smartphones',
     description: 'Discover the newest flagship iPhones and smartphones with cutting-edge mobile tech.',
     ctaText: 'Explore Smartphones',
-    ctaLink: '/buy?category=smartphones',
+    ctaLink: '/shop?category=smartphones',
     backgroundImage: '/cat_smartphones.png',
   },
   {
@@ -44,7 +44,7 @@ const COMPUTER_SLIDES = [
     title: 'IT & Networking Devices',
     description: 'Reliable networking hardware and server infrastructure for your business.',
     ctaText: 'Discover More',
-    ctaLink: '/buy?category=wifi-network-devices',
+    ctaLink: '/shop?category=wifi-network-devices',
     backgroundImage: '/router.jpg',
   },
  
@@ -100,7 +100,7 @@ export default function Home() {
             ].map((cat, idx) => (
               <Link
                 key={idx}
-                href={`/buy?category=${cat.query}`}
+                href={`/shop?category=${cat.query}`}
                 className="group flex flex-col gap-2 shrink-0 w-[110px] sm:w-[130px] md:w-[150px] select-none"
               >
                 {/* Image Container */}
@@ -125,7 +125,7 @@ export default function Home() {
             {/* View All Button */}
             <div className="col-span-full flex justify-center mt-4 md:mt-6">
               <Link
-                href="/buy"
+                href="/shop"
                 className="
                 group/btn relative inline-flex items-center justify-center gap-3.5 
                 px-8 md:px-10 py-3.5 md:py-4  
@@ -153,7 +153,7 @@ export default function Home() {
             Top Selling
             </h2>
             {!loading && SPONSORED_GADGETS.length > 0 && (
-              <Link href="/buy" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
+              <Link href="/shop" className="text-orange-500 font-bold text-base flex items-center hover:translate-x-1 transition-transform group whitespace-nowrap">
                 View All <svg className="w-4 h-4 md:w-5 md:h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </Link>
             )}
@@ -216,7 +216,7 @@ export default function Home() {
             <div className="mt-8">
               
               <Link
-                href="/buy"
+                href="/shop"
                 className="inline-block rounded-full bg-[#E0E7FF] text-[#4F46E5] px-8 py-3.5 text-2xl font-bold transition-all duration-200 hover:bg-white hover:scale-[1.03] active:scale-[0.98] shadow-md hover:shadow-lg"
               >
               Browse All

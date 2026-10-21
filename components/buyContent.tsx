@@ -503,7 +503,7 @@ export default function BuyPage() {
               <button
                 onClick={() => {
                   setFilteredProducts({ categories: [], priceRange: '', brands: [], conditions: [] });
-                  router.push('/buy');
+                  router.push('/shop');
                 }}
                 className="ml-auto text-xs font-bold text-red-500 hover:text-red-600 hover:underline cursor-pointer transition flex items-center gap-1 pl-2"
               >

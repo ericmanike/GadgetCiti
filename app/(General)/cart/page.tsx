@@ -16,7 +16,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-100 pt-6 pb-8 px-4 md:px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-2 mb-8">
-          <Link href="/buy" className="text-orange-500 hover:text-orange-600 transition-colors">
+          <Link href="/shop" className="text-orange-500 hover:text-orange-600 transition-colors">
             <ArrowLeft size={24} />
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 flex items-center gap-2">
@@ -34,7 +34,7 @@ export default function CartPage() {
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               Looks like you haven't added anything to your cart yet. Explore our gadgets and find the best deals!
             </p>
-            <Link href="/buy">
+            <Link href="/shop">
               <button className="bg-orange-500 text-white px-10 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-200">
                 Start Shopping
               </button>
@@ -106,7 +106,7 @@ export default function CartPage() {
               ))}
 
               <div className="flex justify-between items-center p-4">
-                <Link href="/buy" className="text-orange-500 font-bold flex items-center gap-2 hover:translate-x-[-4px] transition-transform">
+                <Link href="/shop" className="text-orange-500 font-bold flex items-center gap-2 hover:translate-x-[-4px] transition-transform">
                   <ArrowLeft size={18} />
                   Back to Shopping
                 </Link>

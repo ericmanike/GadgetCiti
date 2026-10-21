@@ -62,7 +62,7 @@ const Navbar = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       setIsSearchOpen(false);
-      router.push(`/buy?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -177,7 +177,7 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/buy">
+            <ActiveLink href="/shop">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <ShoppingBag size={18} className="group-hover:text-orange-500" />
                 <span className="text-sm font-semibold whitespace-nowrap">Shop now</span>
@@ -191,14 +191,14 @@ const Navbar = () => {
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/buy?category=new-arrivals">
+            <ActiveLink href="/shop?category=new-arrivals">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group">
                 <Truck size={18} className="group-hover:text-orange-500" />
                 <span className="text-sm font-semibold whitespace-nowrap"> New Arrivals</span>
               </div>
             </ActiveLink>
 
-            <ActiveLink href="/buy?deals=true">
+            <ActiveLink href="/shop?deals=true">
               <div className="flex items-center gap-1.5 hover:text-orange-500 transition cursor-pointer group whitespace-nowrap">
                 <Zap size={18} className="group-hover:text-orange-500 text-orange-500 fill-orange-500/20" />
                 <span className="text-sm font-semibold">Falaa Deals</span>

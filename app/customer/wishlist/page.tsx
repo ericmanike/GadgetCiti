@@ -72,7 +72,7 @@ export default function WishlistPage() {
                             Found something you like? Click the heart icon on any product card while browsing to save it here for quick access later.
                         </p>
 
-                        <Link href="/buy">
+                        <Link href="/shop">
                             <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl text-xs md:text-sm font-bold tracking-wide transition-all shadow-md hover:shadow-orange-500/20 active:scale-95 cursor-pointer">
                                
                                 Start Shopping

@@ -235,7 +235,7 @@ export default function CategoriesPage() {
                   </div>
 
                   <Link
-                    href={`/buy?category=${cat.query}`}
+                    href={`/shop?category=${cat.query}`}
                     className="inline-flex items-center justify-center gap-2 w-full bg-slate-50 group-hover:bg-orange-500 text-slate-700 group-hover:text-white font-bold text-xs py-3 rounded-xl shadow-xs transition-all duration-300 group/btn active:scale-[0.98]"
                   >
                     Shop Department

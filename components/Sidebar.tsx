@@ -41,10 +41,10 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ isOpen, setIsOp
       title: 'Shop & Explore',
       items: [
         { id: 1, name: 'Home', href: '/', icon: Home },
-        { id: 2, name: 'Shop now', href: '/buy', icon: ShoppingBagIcon },
+        { id: 2, name: 'Shop now', href: '/shop', icon: ShoppingBagIcon },
         { id: 9, name: 'My Orders', href: '/customer/orders', icon: ClipboardList },
         { id: 15, name: 'Become a Seller', href: '/seller', icon: Store },
-        { id: 7, name: 'Falaa Deals', href: '/buy?deals=true', icon: Zap },
+        { id: 7, name: 'Falaa Deals', href: '/shop?deals=true', icon: Zap },
       ]
     },
     {

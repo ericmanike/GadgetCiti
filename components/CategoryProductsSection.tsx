@@ -63,7 +63,7 @@ export function CategoryProductsSection({
   }, [products, activeCategory]);
 
   const activeTabObj = CATEGORY_TABS.find((t) => t.id === activeCategory) || CATEGORY_TABS[0];
-  const targetCategoryLink = activeTabObj.query ? `/buy?category=${activeTabObj.query}` : "/buy";
+  const targetCategoryLink = activeTabObj.query ? `/shop?category=${activeTabObj.query}` : "/shop";
 
   return (
     <section className={`w-full space-y-6 ${className}`}>
@@ -134,7 +134,7 @@ export function CategoryProductsSection({
             No products found in this category right now.
           </p>
           <Link
-            href="/buy"
+            href="/shop"
             className="inline-block mt-3 text-xs font-bold text-orange-500 hover:underline"
           >
             Browse all items in catalog →
