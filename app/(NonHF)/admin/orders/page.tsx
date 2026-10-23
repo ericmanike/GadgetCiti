@@ -42,6 +42,7 @@ interface Order {
   status: string;
   user_id: string;
   delivery_address?: string;
+  phone_number?: string;
   users: UserProfile | null;
   order_items: OrderItem[];
   isMock?: boolean;
@@ -109,7 +110,7 @@ export default function AdminOrdersPage() {
             const userObj = row.users || (row.user_id ? userMap[row.user_id] : null);
             const userName = userObj?.name || userObj?.full_name || (userObj?.email ? userObj.email.split('@')[0] : (row.user_id ? `Customer (${String(row.user_id).slice(0, 8)})` : 'Guest Customer'));
             const userEmail = userObj?.email || (row.user_id ? `user-${String(row.user_id).slice(0, 8)}@teqvault.com` : 'Guest Checkout');
-            const userPhone = userObj?.phone || userObj?.phone_number || 'N/A';
+            const userPhone = row.phone_number || userObj?.phone || userObj?.phone_number || 'N/A';
 
             return {
               id: String(row.id),
@@ -118,6 +119,7 @@ export default function AdminOrdersPage() {
               status: row.status || 'Paid',
               user_id: row.user_id || '',
               delivery_address: row.delivery_address || row.delivery_addreess || undefined,
+              phone_number: row.phone_number || undefined,
               users: {
                 name: userName,
                 email: userEmail,
@@ -491,16 +493,18 @@ export default function AdminOrdersPage() {
                     <User size={16} className="text-orange-500" />
                     <span className="text-xs font-bold uppercase tracking-wider">Customer Profile</span>
                   </div>
-                  {selectedOrder.users ? (
+                  {selectedOrder.users || selectedOrder.phone_number ? (
                     <div className="space-y-2 text-sm text-slate-700">
-                      <div className="font-bold text-slate-900 text-base leading-snug">{selectedOrder.users.name}</div>
-                      <div className="flex items-center gap-2 text-slate-500 text-xs">
-                        <Mail size={12} className="shrink-0" />
-                        <span className="truncate">{selectedOrder.users.email}</span>
-                      </div>
+                      <div className="font-bold text-slate-900 text-base leading-snug">{selectedOrder.users?.name || 'Customer'}</div>
+                      {selectedOrder.users?.email && (
+                        <div className="flex items-center gap-2 text-slate-500 text-xs">
+                          <Mail size={12} className="shrink-0" />
+                          <span className="truncate">{selectedOrder.users.email}</span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-slate-500 text-xs">
                         <Phone size={12} className="shrink-0" />
-                        <span>{selectedOrder.users.phone}</span>
+                        <span>{selectedOrder.phone_number || selectedOrder.users?.phone || 'N/A'}</span>
                       </div>
                     </div>
                   ) : (
@@ -596,7 +600,7 @@ export default function AdminOrdersPage() {
                     status: selectedOrder.status,
                     user_name: selectedOrder.users?.name,
                     user_email: selectedOrder.users?.email,
-                    user_phone: selectedOrder.users?.phone,
+                    user_phone: selectedOrder.phone_number || selectedOrder.users?.phone,
                     delivery_address: selectedOrder.delivery_address,
                     items: selectedOrder.order_items.map(i => ({
                       name: i.products.name,

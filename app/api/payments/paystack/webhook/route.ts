@@ -188,7 +188,13 @@ export async function POST(request: Request) {
           f.variable_name === 'address'
         )?.value || metadata?.delivery_address || metadata?.delivery_addreess || null;
 
-        // SCHEMA PAYLOAD FOR `orders` TABLE: (user_id, total, status, updated_at, delivery_address)
+        // Extract customer phone number
+        const phoneNum = customerPhone || metadata?.custom_fields?.find((f: any) => 
+          f.variable_name === 'phone_number' || 
+          f.variable_name === 'phone'
+        )?.value || metadata?.phone || null;
+
+        // SCHEMA PAYLOAD FOR `orders` TABLE: (user_id, total, status, updated_at, delivery_address, phone_number)
         const orderPayload: Record<string, any> = {
           total: dbCalculatedTotal > 0 ? dbCalculatedTotal : amountPaidGHS,
           status: orderStatus,
@@ -197,6 +203,10 @@ export async function POST(request: Request) {
 
         if (deliveryAddr) {
           orderPayload.delivery_address = deliveryAddr;
+        }
+
+        if (phoneNum) {
+          orderPayload.phone_number = phoneNum;
         }
 
         if (userId) {
@@ -213,12 +223,17 @@ export async function POST(request: Request) {
             .select('id')
             .single();
 
-          // Fallback if column error occurs (e.g. legacy delivery_addreess or missing column)
-          if (orderErr && deliveryAddr && (orderErr.message?.toLowerCase().includes('delivery_address') || orderErr.code === 'PGRST204')) {
-            console.warn('[Paystack Webhook] Retrying order insert with delivery_addreess fallback...');
+          // Fallback if column error occurs (e.g. legacy delivery_addreess or missing phone_number)
+          if (orderErr) {
+            console.warn('[Paystack Webhook] ⚠️ First insert failed, attempting safe column retry...', orderErr.message);
             const retryPayload = { ...orderPayload };
-            delete retryPayload.delivery_address;
-            retryPayload.delivery_addreess = deliveryAddr;
+            if (orderErr.message?.toLowerCase().includes('delivery_address')) {
+              delete retryPayload.delivery_address;
+              retryPayload.delivery_addreess = deliveryAddr;
+            }
+            if (orderErr.message?.toLowerCase().includes('phone_number')) {
+              delete retryPayload.phone_number;
+            }
 
             const retryRes = await supabase
               .from('orders')
@@ -230,7 +245,10 @@ export async function POST(request: Request) {
               orderData = retryRes.data;
               orderErr = null;
             } else {
+              // Strip all optional fields if error persists to guarantee order recording
+              delete retryPayload.delivery_address;
               delete retryPayload.delivery_addreess;
+              delete retryPayload.phone_number;
               const safeRes = await supabase
                 .from('orders')
                 .insert([retryPayload])
