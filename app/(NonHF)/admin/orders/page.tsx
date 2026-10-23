@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   ClipboardList, Search, Filter, CheckCircle, 
   Clock, Truck, AlertCircle, RefreshCw, Eye, ChevronRight, Sparkles,
-  User, Mail, Phone, Calendar, DollarSign, ShoppingBag, X, TrendingUp
+  User, Mail, Phone, Calendar, DollarSign, ShoppingBag, X, TrendingUp, MapPin
 } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { supabase } from '@/lib/supabase';
@@ -41,6 +41,7 @@ interface Order {
   total: number;
   status: string;
   user_id: string;
+  delivery_address?: string;
   users: UserProfile | null;
   order_items: OrderItem[];
   isMock?: boolean;
@@ -72,11 +73,7 @@ export default function AdminOrdersPage() {
           supabase
             .from('orders')
             .select(`
-              id,
-              created_at,
-              total,
-              status,
-              user_id,
+              *,
               users (
                 id,
                 name,
@@ -120,6 +117,7 @@ export default function AdminOrdersPage() {
               total: Number(row.total) || 0,
               status: row.status || 'Paid',
               user_id: row.user_id || '',
+              delivery_address: row.delivery_address || row.delivery_addreess || undefined,
               users: {
                 name: userName,
                 email: userEmail,
@@ -529,6 +527,21 @@ export default function AdminOrdersPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Delivery Destination */}
+                <div className="bg-slate-50/25 border border-slate-200 p-4 rounded-2xl space-y-2 md:col-span-2">
+                  <div className="flex items-center gap-2 border-b border-slate-150 pb-2 text-slate-500">
+                    <MapPin size={16} className="text-orange-500" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Delivery Destination</span>
+                  </div>
+                  <div className="text-sm font-semibold text-slate-800">
+                    {selectedOrder.delivery_address ? (
+                      <span>{selectedOrder.delivery_address}</span>
+                    ) : (
+                      <span className="text-slate-400 italic font-normal">No specific address recorded</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Itemized Products */}
@@ -584,6 +597,7 @@ export default function AdminOrdersPage() {
                     user_name: selectedOrder.users?.name,
                     user_email: selectedOrder.users?.email,
                     user_phone: selectedOrder.users?.phone,
+                    delivery_address: selectedOrder.delivery_address,
                     items: selectedOrder.order_items.map(i => ({
                       name: i.products.name,
                       quantity: i.quantity,

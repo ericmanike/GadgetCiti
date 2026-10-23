@@ -46,11 +46,7 @@ export default function OrdersPage() {
     // Fetch directly from Supabase orders database
     try {
       let query = supabase.from('orders').select(`
-        id,
-        created_at,
-        total,
-        status,
-        user_id,
+        *,
         order_items (
           id,
           quantity,
@@ -78,6 +74,7 @@ export default function OrdersPage() {
           created_at: row.created_at || new Date().toISOString(),
           total: Number(row.total) || 0,
           status: row.status || 'Paid',
+          delivery_address: row.delivery_address || row.delivery_addreess || undefined,
           user_name: user?.user_metadata?.full_name || user?.email?.split('@')[0],
           user_email: user?.email,
           items: (row.order_items || []).map((item: any) => ({
@@ -178,9 +175,17 @@ export default function OrdersPage() {
                             Order #{order.id.slice(-8)}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px] md:text-xs text-slate-500 mt-0.5">
-                          <Calendar size={12} />
-                          <span>{new Date(order.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}</span>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] md:text-xs text-slate-500 mt-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar size={12} />
+                            <span>{new Date(order.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}</span>
+                          </div>
+                          {order.delivery_address && (
+                            <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+                              <MapPin size={12} className="text-orange-500 shrink-0" />
+                              <span className="truncate max-w-[200px] md:max-w-xs">{order.delivery_address}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

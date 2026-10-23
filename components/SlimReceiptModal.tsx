@@ -136,6 +136,12 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
                   <span className="font-medium text-slate-700 truncate max-w-[170px]">{order.user_email}</span>
                 </div>
               )}
+              {order.delivery_address && (
+                <div className="flex justify-between items-start gap-2">
+                  <span className="text-slate-500 font-semibold uppercase shrink-0">Address:</span>
+                  <span className="font-medium text-slate-700 text-right truncate max-w-[190px]">{order.delivery_address}</span>
+                </div>
+              )}
               <div className="flex justify-between items-center pt-1">
                 <span className="text-slate-500 font-semibold uppercase">Status:</span>
                 <span className="px-2 py-0.5 bg-orange-600 text-white text-[10px] font-black rounded uppercase tracking-wider">

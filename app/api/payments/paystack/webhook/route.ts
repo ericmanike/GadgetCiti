@@ -181,26 +181,65 @@ export async function POST(request: Request) {
         // Status string
         const orderStatus = isPriceMatched ? 'paid' : 'flagged_mismatch';
 
-        // STRICT SCHEMA PAYLOAD FOR `orders` TABLE: (user_id, total, status, updated_at)
+        // Extract delivery address from metadata
+        const deliveryAddr = metadata?.custom_fields?.find((f: any) => 
+          f.variable_name === 'delivery_address' || 
+          f.variable_name === 'delivery_addreess' || 
+          f.variable_name === 'address'
+        )?.value || metadata?.delivery_address || metadata?.delivery_addreess || null;
+
+        // SCHEMA PAYLOAD FOR `orders` TABLE: (user_id, total, status, updated_at, delivery_address)
         const orderPayload: Record<string, any> = {
           total: dbCalculatedTotal > 0 ? dbCalculatedTotal : amountPaidGHS,
           status: orderStatus,
           updated_at: new Date().toISOString()
         };
 
+        if (deliveryAddr) {
+          orderPayload.delivery_address = deliveryAddr;
+        }
+
         if (userId) {
           orderPayload.user_id = userId;
         }
 
-        console.log('\n[Paystack Webhook] Inserting record into `orders` with STRICT SCHEMA keys:', Object.keys(orderPayload));
+        console.log('\n[Paystack Webhook] Inserting record into `orders` with keys:', Object.keys(orderPayload));
 
         try {
           // 1. Insert into orders table
-          const { data: orderData, error: orderErr } = await supabase
+          let { data: orderData, error: orderErr } = await supabase
             .from('orders')
             .insert([orderPayload])
             .select('id')
             .single();
+
+          // Fallback if column error occurs (e.g. legacy delivery_addreess or missing column)
+          if (orderErr && deliveryAddr && (orderErr.message?.toLowerCase().includes('delivery_address') || orderErr.code === 'PGRST204')) {
+            console.warn('[Paystack Webhook] Retrying order insert with delivery_addreess fallback...');
+            const retryPayload = { ...orderPayload };
+            delete retryPayload.delivery_address;
+            retryPayload.delivery_addreess = deliveryAddr;
+
+            const retryRes = await supabase
+              .from('orders')
+              .insert([retryPayload])
+              .select('id')
+              .single();
+
+            if (!retryRes.error) {
+              orderData = retryRes.data;
+              orderErr = null;
+            } else {
+              delete retryPayload.delivery_addreess;
+              const safeRes = await supabase
+                .from('orders')
+                .insert([retryPayload])
+                .select('id')
+                .single();
+              orderData = safeRes.data;
+              orderErr = safeRes.error;
+            }
+          }
 
           if (orderErr) {
             console.error('[Paystack Webhook] ❌ Supabase `orders` Insert Error:', orderErr);
@@ -243,7 +282,6 @@ export async function POST(request: Request) {
             // 3. Send Order Confirmation Email to Checkout Customer
             if (customerEmail) {
               console.log(`[Paystack Webhook] 📧 Sending purchase confirmation email to: ${customerEmail}`);
-              const deliveryAddr = metadata?.custom_fields?.find((f: any) => f.variable_name === 'delivery_address')?.value;
               
               sendOrderConfirmationEmail({
                 to: customerEmail,
@@ -255,7 +293,7 @@ export async function POST(request: Request) {
                   quantity: v.quantity,
                   unit_price: v.unit_price,
                 })),
-                deliveryAddress: deliveryAddr,
+                deliveryAddress: deliveryAddr || undefined,
               }).catch((emailErr) => {
                 console.error('[Paystack Webhook] ❌ Error sending purchase email:', emailErr);
               });
