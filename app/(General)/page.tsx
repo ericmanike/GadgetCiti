@@ -14,8 +14,15 @@ import SkeletonCards from '@/components/SkeletonCards';
 import { CategoryRowsSection } from '@/components/CategoryRowsSection';
 
 const COMPUTER_SLIDES = [
-
-   {
+  {
+    id: 0,
+    title: 'TEQVAULT Official Grand Launch!',
+    description: 'Watch the official launch commercial. Celebrate with 10% off storewide using code LAUNCH10.',
+    ctaText: 'Watch Launch Video',
+    ctaLink: '/launch',
+    backgroundImage: '/launch_ad_hero.jpg',
+  },
+  {
     id: 4,
     title: 'Partner With Us',
     description: 'Grow your business on TEQVAULT. Reach thousands of buyers with 0% commission options.',

@@ -32,6 +32,10 @@ const Marquee = () => {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+        <Link href="/launch" className="text-yellow-400 hover:text-yellow-300 flex items-center justify-center gap-1.5 hover:underline font-bold transition-colors whitespace-nowrap text-xs sm:text-sm">
+          <span>🚀 Launch Ad</span>
+          <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        </Link>
         <Link href="/customer/pay-small-small" className="text-orange-500 hover:text-orange-400 flex items-center justify-center gap-1.5 hover:underline font-bold transition-colors whitespace-nowrap text-xs sm:text-sm">
           <BanknoteArrowUp className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
           <span>Pay Small Small</span>
