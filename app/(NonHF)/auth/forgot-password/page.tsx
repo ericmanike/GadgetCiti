@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ArrowLeft, Mail } from "lucide-react";
@@ -16,6 +17,7 @@ const forgotPasswordSchema = Yup.object().shape({
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
@@ -25,11 +27,17 @@ export default function ForgotPasswordPage() {
     },
     validationSchema: forgotPasswordSchema,
     onSubmit: async (values, { resetForm }) => {
+      if (!captchaToken) {
+        showToast("Please complete the security check (CAPTCHA)", "error");
+        return;
+      }
+
       setLoading(true);
 
       try {
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(values.email, {
           redirectTo: `${window.location.origin}/auth/reset-password`,
+          captchaToken,
         });
 
         if (resetError) {
@@ -37,6 +45,7 @@ export default function ForgotPasswordPage() {
         } else {
           showToast("A password reset link has been sent to your email address.", "success");
           resetForm();
+          setCaptchaToken(undefined);
         }
       } catch (err: any) {
         showToast("An error occurred. Please try again.", "error");
@@ -79,6 +88,22 @@ export default function ForgotPasswordPage() {
           {formik.touched.email && formik.errors.email && (
             <p className="mt-1 text-[12px] font-medium text-red-500">{formik.errors.email}</p>
           )}
+        </div>
+
+        {/* Turnstile CAPTCHA */}
+        <div className="flex justify-center my-3">
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAEolcdFOtWjBK2n_"}
+            onSuccess={(token) => {
+              setCaptchaToken(token);
+            }}
+            onExpire={() => {
+              setCaptchaToken(undefined);
+            }}
+            onError={() => {
+              setCaptchaToken(undefined);
+            }}
+          />
         </div>
 
         <button

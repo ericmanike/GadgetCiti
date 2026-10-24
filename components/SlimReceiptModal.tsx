@@ -195,26 +195,6 @@ export default function SlimReceiptModal({ order, onClose }: SlimReceiptModalPro
               </div>
             </div>
 
-            {/* Fake Barcode Graphic */}
-            <div className="pt-2 text-center space-y-2">
-              <div className="flex items-center justify-center space-x-0.5 h-10 overflow-hidden">
-                {[4, 2, 6, 1, 3, 5, 2, 4, 1, 7, 2, 5, 3, 1, 6, 2, 4, 2, 5, 1, 3, 6, 2, 4, 1].map((w, i) => (
-                  <div
-                    key={i}
-                    className="bg-slate-900 h-full"
-                    style={{ width: `${w}px` }}
-                  />
-                ))}
-              </div>
-              <p className="font-mono text-[9px] text-slate-400 tracking-widest">
-                *{order.id.slice(0, 12).toUpperCase()}*
-              </p>
-              <p className="text-[10px] text-slate-500 font-semibold leading-tight pt-1">
-                Thank you for shopping with TEQVAULT!<br />
-                Keep this receipt for warranty claims.
-              </p>
-            </div>
-
           </div>
         </div>
 
